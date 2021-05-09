@@ -1,0 +1,275 @@
+openapi: 3.0.0
+info:
+  title: Gamers Social Media Api
+  version: '1.0'
+servers:
+  - url: http://localhost:3001/api
+paths:
+  /auth/is:
+    get:
+      summary: check if user is logged in to his account
+      tags:
+      - users
+      responses:
+        '200':
+          description: an answer 'yes' or 'no'
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                logged in:
+                  value: yes
+                not logged in:
+                  value: no
+  /auth/logout:
+    get:
+      summary: log user out of his account
+      tags:
+      - users
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: user is not logged in
+  /auth/profile:
+    get:
+      summary: get user profile
+      tags:
+      - users
+      responses:
+        '200':
+          description: user profile
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  email:
+                    type: string
+        '404':
+          description: user is not logged in
+  /auth/login:
+    post:
+      summary: login to user account
+      description: the user credentials will be saved in a session
+      tags:
+      - users
+      responses:
+        '200':
+          description: user logged in
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                success:
+                  value: logged in successfuly
+        '400':
+          description: failed to login
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                user dose not exist:
+                  value: incorrect email
+                bad password:
+                  value: incorrect password
+        '404':
+          description: user is logged in
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: a valid email address
+                password:
+                  type: string
+                  description: a sha256 hash of the password
+                remember_me:
+                  type: boolean
+                  description: a 'true' value will keep the session alive for longer
+              required: 
+                - email
+                - password
+  /auth/signup:
+    post:
+      summary: register an account
+      tags:
+      - users
+      responses:
+        '200':
+          description: account was created
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                success:
+                  value: signup was successful
+        '400':
+          description: failed to register
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                formatting:
+                  value: name, email or password are not formatted correctly
+                email is already used:
+                  value: email is being used already
+        '404':
+          description: user is logged in
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: a name for the user
+                email:
+                  type: string
+                  description: a valid email address
+                password:
+                  type: string
+                  description: a sha256 hash of the password
+              required: 
+                - name
+                - email
+                - password
+  /auth/request_password_reset:
+    get:
+      summary: reset account password via a link sent to the user email
+      tags:
+      - users
+      parameters:
+        - in: query
+          description: the user email address
+          name: email
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: link was sent to the email
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                success:
+                  value: password reset mail sent
+        '400':
+          description: faild to send link
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                no user with this email:
+                  value: email dose not exist
+        '404':
+          description: user is logged in
+  /auth/reset_password:
+    post:
+      summary: reset account password
+      tags:
+      - users
+      parameters:
+        - in: query
+          description: the authentication code sent in the mail
+          name: code
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  description: a sha256 hash of the password
+              required: 
+                - password
+      responses:
+        '200':
+          description: account password was reset successfuly
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                success:
+                  value: password changed
+        '400':
+          description: faild to reset account password
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                password field is missing:
+                  value: password is required
+                invalid code:
+                  value: password reset code dose not exist or has been expired
+        '404':
+          description: user is logged in
+  /contact:
+    post:
+      summary: contact support
+      tags:
+      - contact
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: sender name
+                email:
+                  type: string
+                  description: sender email
+                message:
+                  type: string
+                  description: sender message
+              required: 
+                - user
+                - email
+                - message
+      responses:
+        '200':
+          description: message was sent to support successfuly
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                success:
+                  value: message was sent
+        '400':
+          description: faild to send message
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                formating:
+                  value: name, email or message are not formatted correctly
