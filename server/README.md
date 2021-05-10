@@ -40,7 +40,7 @@ var router = express.Router()
 
 var { cat } = require('../controllers/cat')
 
-router.post('/', cat)
+router.get('/', cat)
 
 module.exports = router
 ```
