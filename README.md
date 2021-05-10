@@ -8,7 +8,7 @@
 ## install  
 ```   
 git clone https://github.com/m365i/Gamers-Social-Media.git   
-cd Gaming-Social-Media-Platform  
+cd Gaming-Social-Media  
 cd client  
 npm install  
 cd ..  
