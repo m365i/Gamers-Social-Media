@@ -66,7 +66,7 @@ var apiRouter = require('./routes/index')
 
 app.use('/api', apiRouter)
 
-app.use(express.static(path.dirname('public')))
+app.use(express.static(path.join(__dirname, 'public')))
 
 httpServer.listen(port, function () {
 	console.log('Listening on http://localhost:%s', port)
