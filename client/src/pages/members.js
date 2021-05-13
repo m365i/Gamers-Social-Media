@@ -16,7 +16,9 @@ export default function Members() {
 				dispatch(removeUser())
 				history.replace('/login')
 			})
-			.catch(() => undefined)
+			.catch(() => {
+				history.replace('/login')
+			})
 	}
 
 	return (

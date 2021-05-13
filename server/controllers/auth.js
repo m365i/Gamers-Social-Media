@@ -1,4 +1,6 @@
 
+
+var mongoose = require('mongoose')
 var passport = require('passport')
 var { StatusCodes } = require('http-status-codes')
 var User = require('../models/user')
@@ -123,7 +125,7 @@ exports.profile = async function (req, res, next) {
 	try {
 		const id = req.user.id,
 			email = req.user.email
-		const profile = await Profile.findOne({ userId: id }).exec()
+		const profile = await Profile.findOne({ userId: new mongoose.Types.ObjectId(id) }).exec()
 		return res.status(StatusCodes.OK).send({ id, name: profile.name, email })
 	} catch (err) {
 		next(err)

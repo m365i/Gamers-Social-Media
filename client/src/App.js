@@ -22,6 +22,7 @@ import PrivateRoute from './components/PrivateRoute'
 import ForgotPassword from './pages/forgot_password'
 import ResetPassword from './pages/reset_password'
 import Contact from './pages/contact'
+import Chat from './pages/chat'
 
 const history = createBrowserHistory()
 
@@ -45,6 +46,7 @@ export default function App() {
 				<Route path="/reset-password/:code" component={ResetPassword} />
 				<Route path="/forgot-password" component={ForgotPassword} />
 				<Route path="/contact" component={Contact} />
+				<Route path="/chat" component={Chat} />
 				<PrivateRoute authed={user !== undefined} path='/members' component={Members} />
 				<Route path="/" component={Home} />
 			</Switch>

@@ -447,3 +447,27 @@ paths:
               examples:
                 name missing:
                   value: game name is missing
+  /api/chat:
+    get:
+      summary: socket io server link for the chat service
+      description: the server will check if the room exist, if not he will close the connection. <br>
+                  a status will be sent to the clinet on port 'status' indicating that the user can or<br>
+                  cant add messages to this chat - either 'allowed to chat' or 'not allowed to chat'.<br>
+                  after that the server will send to the client some previus messages that where sent in the chat<br>
+                  the client should listen on 'message' and 'more' port to recive messages.<br>
+                  when the clinet want to send a message he need to do it on port 'message', the request should contain a message string.<br>
+                  when the clinet want to recive older messages he need to do it on port 'more', the request should contain an index of the last message(the message 'seq' field).<br>
+                  older messages will be sent on 'more' port, and new + start messages on 'message' port.<br>
+                  if on 'more' port you get an empty array of messages, that mean there are no more older messages.<br>
+      tags:
+      - chat
+      parameters:
+        - in: query
+          description: room id
+          name: room
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: connection established
