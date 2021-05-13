@@ -4,6 +4,24 @@ info:
   version: '1.0'
 servers:
   - url: http://localhost:3001/api
+
+components:
+  schemas:
+    game:
+      type: object
+      properties:
+        appid:
+          type: integer
+        name:
+          type: string
+        release_date:
+          type: string
+        developer:
+          type: string
+        platform:
+          type: string
+        short_description:
+          type: string
 paths:
   /auth/is:
     get:
@@ -273,3 +291,159 @@ paths:
               examples:
                 formating:
                   value: name, email or message are not formatted correctly
+  /contact/all:
+    get:
+      summary: get all contacts
+      tags:
+      - contact
+      parameters:
+        - in: query
+          description: filter contacts by acknowledge
+          name: acknowledge
+          schema:
+            type: boolean
+          required: false
+        - in: query
+          description: filter contacts by date range
+          name: from_date
+          schema:
+            type: string
+          required: false
+        - in: query
+          description: filter contacts by date range
+          name: to_date
+          schema:
+            type: string
+          required: false
+      responses:
+        '200':
+          description: contacts data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  description: contact
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      description: the contact id
+                    name:
+                      type: string
+                      description: sender name
+                    email:
+                      type: string
+                      description: sender email
+                    message:
+                      type: string
+                      description: sender message
+                    createdAt:
+                      type: string
+                      description: date the message was created
+                    updatedAt:
+                      type: string
+                      description: date the message was last acknowledged
+  /contact/acknowledge:
+    get:
+      summary: acknowledge contact
+      tags:
+      - contact
+      parameters:
+        - in: query
+          description: contact id
+          name: id
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: contact was acknowledge
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                id missing:
+                  value: contact [id] was acknowledged
+        '400':
+          description: missing parameters
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                id missing:
+                  value: contact id is missing
+  /games/random:
+    get:
+      summary: get random games
+      tags:
+      - games
+      responses:
+        '200':
+          description: list of games
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/game'
+  /games/info:
+    get:
+      summary: get game info
+      tags:
+      - games
+      parameters:
+        - in: query
+          description: name of the game
+          name: name
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: game info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/game'
+        '400':
+          description: missing parameters
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                name missing:
+                  value: game name is missing
+        '404':
+          description: game not found
+  /games/autoComplete:
+    get:
+      summary: gets games that start with the name givin
+      tags:
+      - games
+      parameters:
+        - in: query
+          description: prefix to name of a game
+          name: name
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: games info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/game'
+        '400':
+          description: missing parameters
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                name missing:
+                  value: game name is missing

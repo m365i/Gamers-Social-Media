@@ -25,3 +25,38 @@ exports.contact = async function (req, res, next) {
 		return next(err)
 	}
 }
+
+exports.all = async function (req, res, next) {
+	let { acknowledge, from_date, to_date } = req.query
+	// filter contacts
+	let search = {}
+	if(acknowledge !== undefined) {
+		search.acknowledge = (acknowledge === 'true')
+	}
+	if(from_date !== undefined) {
+		search.createdAt = { $gte: from_date }
+	}
+	if(to_date !== undefined) {
+		search.createdAt = { $lte: to_date }
+	}
+	// search by filter
+	try {
+		const allContact = await Contact.find(search).exec()
+		return res.status(StatusCodes.OK).send(allContact)
+	} catch (err) {
+		return next(err)
+	}
+}
+
+exports.acknowledge = async function (req, res, next) {
+	const { id } = req.query
+	if(!id) {
+		return res.status(StatusCodes.BAD_REQUEST).send('contact id is missing')
+	}
+	try {
+		await Contact.updateOne({ _id: id }, { acknowledge: true }).exec()
+		return res.status(StatusCodes.OK).send(`contact ${id} was acknowledged`)
+	} catch (err) {
+		return next(err)
+	}
+}
