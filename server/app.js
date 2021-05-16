@@ -65,7 +65,7 @@ io.use(wrap(sessionMiddleware))
 io.use(wrap(passportInitialize))
 io.use(wrap(passportSession))
 // routes
-require('./controllers/chat')(io)
+require('./controllers/room').chat(io)
 
 // database
 var mongoose = require('mongoose')

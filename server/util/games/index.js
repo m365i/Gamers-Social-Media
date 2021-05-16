@@ -10,9 +10,23 @@ function placeImage(game) {
 	return game
 }
 
+// check if a game exist
+exports.hasGame = function(name) {
+	const found = steam.find((game) => (game.name === name))
+	if(found) {
+		return true
+	}
+	return false
+}
+
 // get a game by its name
 exports.getGame = function(name) {
-	return placeImage(steam.find((game) => game.name === name))
+	name = name.toLowerCase()
+	const found = steam.find((game) => (game.name.toLowerCase() === name))
+	if(found) {
+		return placeImage(found)
+	}
+	return undefined
 }
 
 // get 5 random games

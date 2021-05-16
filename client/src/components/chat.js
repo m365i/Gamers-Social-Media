@@ -9,12 +9,12 @@ import moment from 'moment'
 import grey from '@material-ui/core/colors/grey'
 import {ChatSocket} from '../services/chatSocket'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
 	container: {
-		height: props => props.height,
-		width: props => props.width,
 		display: 'flex',
-		flexDirection: 'column'
+		flexDirection: 'column',
+		height: '500px',
+		width: '400px'
 	},
 	error: {
 		height: '100%',
@@ -39,8 +39,8 @@ const useStyles = makeStyles((theme) => ({
 		position: 'fixed'
 	},
 	messageImageSmall: {
-		width: theme.spacing(3),
-		height: theme.spacing(3)
+		width: '24px',
+		height: '24px'
 	},
 	messageText: {
 		color: 'black'
@@ -49,12 +49,12 @@ const useStyles = makeStyles((theme) => ({
 		display: 'flex',
 		justifyContent: 'space-between',
 		color: grey[700],
-		fontSize: theme.typography.caption
+		fontSize: '0.875rem'
 	}
 }))
 
-function Chat({room, height, width}) {
-	const classes = useStyles({height, width})
+function Chat({room}) {
+	const classes = useStyles({})
 
 	const [list, setList] = useState([])
 	const [message, setMessage] = useState('')
@@ -64,14 +64,17 @@ function Chat({room, height, width}) {
 	const messagesListRef = useRef(undefined)
 	const [canLoadMore, setCanLoadMore] = useState(true)
 	const [isLoadingMore, setIsLoadingMore] = useState(false)
-	const onScrollMessagesList = () => {
-		const scrollTop = messagesListRef.current.scrollTop
-		const top = messagesListRef.current.scrollHeight - messagesListRef.current.clientHeight
-		if(canLoadMore && !isLoadingMore && top+scrollTop < 70 && list.length > 0) {
-			setIsLoadingMore(true)
-			socket.GetMore(list[list.length-1].seq)
+	const [updateScroll, setUpdateScroll] = useState(0)
+	useEffect(() => {
+		if(messagesListRef.current) {
+			const scrollTop = messagesListRef.current.scrollTop
+			const top = messagesListRef.current.scrollHeight - messagesListRef.current.clientHeight
+			if(canLoadMore && !isLoadingMore && top+scrollTop < 70 && list.length > 0) {
+				setIsLoadingMore(true)
+				socket.GetMore(list[list.length-1].seq)
+			}
 		}
-	}
+	}, [updateScroll])
 
 	const [openEmojiDialog, setOpenEmojiDialog] = useState(false)
 	const onEmojiClick = (event, emojiObject) => {
@@ -117,6 +120,7 @@ function Chat({room, height, width}) {
 			setIsLoadingMore(false)
 		}
 		socket.OnMoreListener(more)
+		const scrollInterval = setInterval(() => setUpdateScroll(Date.now()), 2000)
 		return () => {
 			socket.RemoveOnErrorListener(error)
 			socket.RemoveOnStatusListener(status)
@@ -124,6 +128,7 @@ function Chat({room, height, width}) {
 			socket.RemoveOnMessageListener(message)
 			socket.RemoveOnMoreListener(more)
 			socket.Disconnect()
+			clearInterval(scrollInterval)
 		}
 	}, [])
 
@@ -151,8 +156,7 @@ function Chat({room, height, width}) {
 					<Mui.List 
 						dense={true} 
 						className={classes.list} 
-						ref={messagesListRef} 
-						onScroll={onScrollMessagesList}>
+						ref={messagesListRef}>
 						{
 							list.map(m => {
 								return (

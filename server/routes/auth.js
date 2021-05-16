@@ -10,6 +10,6 @@ router.get('/logout', ensureLoggedIn(), logout)
 router.get('/is', is)
 router.get('/profile', ensureLoggedIn(), profile)
 router.get('/request_password_reset', ensureLoggedOut(), request_password_reset)
-router.post('/reset_password', ensureLoggedOut(), reset_password)
+router.put('/reset_password', ensureLoggedOut(), reset_password)
 
 module.exports = router

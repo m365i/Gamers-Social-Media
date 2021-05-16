@@ -38,7 +38,7 @@ exports.signup = async function (req, res, next) {
 	const { name, email, password } = req.body
 	// validate input
 	try {
-		const name_validator = Joi.string().min(3).max(64).pattern(/^[a-zA-Z0-9][a-zA-Z0-9 -_'+]+[a-zA-Z0-9]$/)
+		const name_validator = Joi.string().min(3).max(64).pattern(/^[a-zA-Z0-9][a-zA-Z0-9 -_'+]+$/)
 		Joi.attempt(name, name_validator)
 		const email_validator = Joi.string().email()
 		Joi.attempt(email, email_validator)
@@ -126,7 +126,7 @@ exports.profile = async function (req, res, next) {
 		const id = req.user.id,
 			email = req.user.email
 		const profile = await Profile.findOne({ userId: new mongoose.Types.ObjectId(id) }).exec()
-		return res.status(StatusCodes.OK).send({ id, name: profile.name, email })
+		return res.status(StatusCodes.OK).send({ id, name: profile.name, email, country: profile.country, birth: profile.birth, status: profile.status })
 	} catch (err) {
 		next(err)
 	}

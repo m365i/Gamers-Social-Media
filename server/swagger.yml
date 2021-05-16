@@ -22,6 +22,21 @@ components:
           type: string
         short_description:
           type: string
+    room:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        creator:
+          type: string
+        game:
+          type: string
+        platform:
+          type: string
+        description:
+          type: string
 paths:
   /auth/is:
     get:
@@ -68,6 +83,12 @@ paths:
                   name:
                     type: string
                   email:
+                    type: string
+                  country:
+                    type: string
+                  birth:
+                    type: string
+                  status:
                     type: string
         '404':
           description: user is not logged in
@@ -201,7 +222,7 @@ paths:
         '404':
           description: user is logged in
   /auth/reset_password:
-    post:
+    put:
       summary: reset account password
       tags:
       - users
@@ -291,7 +312,6 @@ paths:
               examples:
                 formating:
                   value: name, email or message are not formatted correctly
-  /contact/all:
     get:
       summary: get all contacts
       tags:
@@ -345,7 +365,7 @@ paths:
                       type: string
                       description: date the message was last acknowledged
   /contact/acknowledge:
-    get:
+    put:
       summary: acknowledge contact
       tags:
       - contact
@@ -447,6 +467,48 @@ paths:
               examples:
                 name missing:
                   value: game name is missing
+  /avatar/username/{user}:
+    get:
+      summary: get animal avatar by user name
+      tags:
+      - avatar
+      parameters:
+        - in: path
+          description: name of a user
+          name: user
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: animal avatar image for the user
+          content:
+            application/png:
+              schema:
+                type: string
+                format: binary
+  /avatar/animal/{name}:
+    get:
+      summary: get animal avatar by its name
+      tags:
+      - avatar
+      parameters:
+        - in: path
+          description: name of an animal
+          name: name
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: animal avatar image by this name
+          content:
+            application/png:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: animal by this name was not found
   /api/chat:
     get:
       summary: socket io server link for the chat service
@@ -460,7 +522,7 @@ paths:
                   older messages will be sent on 'more' port, and new + start messages on 'message' port.<br>
                   if on 'more' port you get an empty array of messages, that mean there are no more older messages.<br>
       tags:
-      - chat
+      - rooms
       parameters:
         - in: query
           description: room id
@@ -471,3 +533,182 @@ paths:
       responses:
         '200':
           description: connection established
+  /room/list:
+    get:
+      summary: get a list of rooms by the user who created them
+      tags:
+      - rooms
+      parameters:
+        - in: query
+          description: user id of the user who created the room, if none specified the logged user id will be used
+          name: userId
+          schema:
+            type: string
+          required: false
+      responses:
+        '200':
+          description: list of the user rooms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/room"
+        '400':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                the specified user not found:
+                  value: user not found
+                user id was not specified and no user is logged in:
+                  value: no specified user id
+  /room/:
+    post:
+      summary: craete a room
+      tags:
+      - rooms
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                game:
+                  type: string
+                platform:
+                  type: string
+                description:
+                  type: string
+              required: 
+                - name
+                - game
+                - platform
+                - description
+      responses:
+        '200':
+          description: room was created
+          content:
+            plain/text:
+              schema:
+                type: string
+                description: the created room id
+        '400':
+          description: input validation
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                formatting:
+                  value: name, game, platform or description are not formatted correctly
+        '404':
+          description: user is not logged in
+    get:
+      summary: get a room by its id
+      tags:
+      - rooms
+      parameters:
+        - in: query
+          description: room id
+          name: roomId
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: the room with the specified id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/room"
+        '400':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                the specified room not found:
+                  value: room not found
+                room id is required:
+                  value: no specified room id
+    delete:
+      summary: delete a room by its id
+      tags:
+      - rooms
+      parameters:
+        - in: query
+          description: room id
+          name: roomId
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: the room was deleted
+        '403':
+          description: room dose not exist or user has no permisision to delete room
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                exist or permisision:
+                  value: room dose not exist or user have no permisision to delete it
+        '404':
+          description: user is not logged in
+    put:
+      summary: edit a room by its id
+      tags:
+      - rooms
+      parameters:
+        - in: query
+          description: room id
+          name: roomId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                game:
+                  type: string
+                platform:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '200':
+          description: saved changes
+        '403':
+          description: room dose not exist or user has no permisision to edit room
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                exist or permisision:
+                  value: room dose not exist or user have no permisision to delete it
+        '400':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                formating:
+                  value: name, game, platform or description are not formatted correctly
+        '404':
+          description: user is not logged in

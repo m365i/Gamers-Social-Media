@@ -9,7 +9,7 @@ const roomSchema = new mongoose.Schema({
 	},
 	game: String,
 	platform: String,
-	status: String
+	description: String
 })
 
 const roomMemberSchema = new mongoose.Schema({
@@ -23,7 +23,26 @@ const roomMemberSchema = new mongoose.Schema({
 	}
 })
 
+const roomScheduleSchema = new mongoose.Schema({
+	roomId: { 
+		type: mongoose.Schema.Types.ObjectId, 
+		ref: 'Room'
+	},
+	fromDate: Date,
+	toDate: Date
+})
+
+const roomAnnouncementsSchema = new mongoose.Schema({
+	roomId: { 
+		type: mongoose.Schema.Types.ObjectId, 
+		ref: 'Room'
+	},
+	text: String
+})
+
 module.exports = {
 	Room: mongoose.model('Room', roomSchema),
-	RoomMember: mongoose.model('Room_Member', roomMemberSchema)
+	RoomMember: mongoose.model('Room_Member', roomMemberSchema),
+	RoomSchedule: mongoose.model('Room_Schedule', roomScheduleSchema),
+	RoomAnnouncement: mongoose.model('Room_Announcement', roomAnnouncementsSchema)
 }
