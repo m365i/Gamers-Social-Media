@@ -57,7 +57,7 @@ app.use(passportSession)
 // socket-io chat setup
 const wrap = middleware => (socket, next) => middleware(socket.request, {}, next)
 var io = require('socket.io')(httpServer, {
-	path: '/api/chat',
+	path: '/api/room/chat',
 	cors: corsOptions
 })
 // session support, user found at -> socket.request.user

@@ -509,7 +509,7 @@ paths:
                 format: binary
         '404':
           description: animal by this name was not found
-  /api/chat:
+  /room/chat:
     get:
       summary: socket io server link for the chat service
       description: the server will check if the room exist, if not he will close the connection. <br>
@@ -536,6 +536,38 @@ paths:
   /room/list:
     get:
       summary: get a list of rooms by the user who created them
+      tags:
+      - rooms
+      parameters:
+        - in: query
+          description: user id of the user who created the room, if none specified the logged user id will be used
+          name: userId
+          schema:
+            type: string
+          required: false
+      responses:
+        '200':
+          description: list of the user rooms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/room"
+        '400':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                the specified user not found:
+                  value: user not found
+                user id was not specified and no user is logged in:
+                  value: no specified user id
+  /room/my:
+    get:
+      summary: get the list of rooms that the user is registered in 
       tags:
       - rooms
       parameters:
@@ -710,5 +742,426 @@ paths:
               examples:
                 formating:
                   value: name, game, platform or description are not formatted correctly
+        '404':
+          description: user is not logged in
+  /room/members:
+    get:
+      summary: list room members
+      tags:
+      - rooms
+      parameters:
+        - in: query
+          description: room id
+          name: roomId
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: list of room members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    userId:
+                      type: string
+                    name:
+                      type: string
+                    image:
+                      type: string
+        '400':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                no room id:
+                  value: no specified room id
+                room dose not exist:
+                  value: room not found
+    post:
+      summary: add the current user as a member to a room
+      tags:
+      - rooms
+      parameters:
+        - in: query
+          description: room id
+          name: roomId
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: current user was added as a member to this room
+        '403':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                already a member:
+                  value: user is a member of this room
+        '400':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                no room id:
+                  value: no specified room id
+                room dose not exist:
+                  value: room not found
+        '404':
+          description: user is not logged in
+    delete:
+      summary: remove the currect user as a member from this room, for the creator of the room to leave the room he need to delete it completely.
+      tags:
+      - rooms
+      parameters:
+        - in: query
+          description: room id
+          name: roomId
+          schema:
+            type: string
+          required: true
+      responses:
+        '400':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                no room id:
+                  value: no specified room id
+                room dose not exist:
+                  value: room not found
+        '403':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                not a member:
+                  value: user is not a member of this room
+                user is the owner:
+                  value: user is the owner of this room
+        '404':
+          description: user is not logged in
+  /room/is-member:
+    get:
+      summary: check if user is a member of a room
+      tags:
+      - rooms
+      parameters:
+        - in: query
+          description: room id
+          name: roomId
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: user is a member of this room
+        '403':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                not a member:
+                  value: user is not a member of this room
+        '400':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                no room id:
+                  value: no specified room id
+                room dose not exist:
+                  value: room not found
+  /room/announcements:
+    get:
+      summary: list room announcements
+      tags:
+      - rooms
+      parameters:
+        - in: query
+          description: room id
+          name: roomId
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: list of room announcements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    roomId:
+                      type: string
+                    message:
+                      type: string
+        '400':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                no room id:
+                  value: no specified room id
+                room dose not exist:
+                  value: room not found
+    post:
+      summary: add an announcement to a room, only the owner is allowed to post announcements.
+      tags:
+      - rooms
+      parameters:
+        - in: query
+          description: room id
+          name: roomId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+              required: 
+                - message
+      responses:
+        '200':
+          description: announcement has been posted
+        '403':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                not a member:
+                  value: user is not a member of this room
+                not the owner:
+                  value: user is not the owner of this room
+        '400':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                no room id:
+                  value: no specified room id
+                room dose not exist:
+                  value: room not found
+        '404':
+          description: user is not logged in
+    delete:
+      summary: delete announcement 
+      tags:
+      - rooms
+      parameters:
+        - in: query
+          description: room id
+          name: roomId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                announcementId:
+                  type: string
+              required: 
+                - announcementId
+      responses:
+        '200':
+          description: announcement has been removed
+        '403':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                not a member:
+                  value: user is not a member of this room
+                not the owner:
+                  value: user is not the owner of this room
+        '400':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                no room id:
+                  value: no specified room id
+                room dose not exist:
+                  value: room not found
+        '404':
+          description: user is not logged in
+  /room/schedule:
+    get:
+      summary: list room schedules
+      tags:
+      - rooms
+      parameters:
+        - in: query
+          description: room id
+          name: roomId
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: list of room schedules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    roomId:
+                      type: string
+                    fromDate:
+                      type: string
+                    toDate:
+                      type: string
+        '400':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                no room id:
+                  value: no specified room id
+                room dose not exist:
+                  value: room not found
+    post:
+      summary: add a schedule to a room, only the owner is allowed to post schedules.
+      tags:
+      - rooms
+      parameters:
+        - in: query
+          description: room id
+          name: roomId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fromDate:
+                  type: string
+                toDate:
+                  type: string
+              required: 
+                - fromDate
+                - toDate
+      responses:
+        '200':
+          description: schedule has been posted
+        '403':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                not a member:
+                  value: user is not a member of this room
+                not the owner:
+                  value: user is not the owner of this room
+        '400':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                no room id:
+                  value: no specified room id
+                room dose not exist:
+                  value: room not found
+        '404':
+          description: user is not logged in
+    delete:
+      summary: delete schedule 
+      tags:
+      - rooms
+      parameters:
+        - in: query
+          description: room id
+          name: roomId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                scheduleId:
+                  type: string
+              required: 
+                - scheduleId
+      responses:
+        '200':
+          description: schedule has been removed
+        '403':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                not a member:
+                  value: user is not a member of this room
+                not the owner:
+                  value: user is not the owner of this room
+        '400':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                no room id:
+                  value: no specified room id
+                room dose not exist:
+                  value: room not found
         '404':
           description: user is not logged in

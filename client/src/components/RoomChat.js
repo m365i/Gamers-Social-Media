@@ -14,7 +14,7 @@ const useStyles = makeStyles(() => ({
 		display: 'flex',
 		flexDirection: 'column',
 		height: '500px',
-		width: '400px'
+		minWidth: '400px'
 	},
 	error: {
 		height: '100%',
@@ -40,7 +40,8 @@ const useStyles = makeStyles(() => ({
 	},
 	messageImageSmall: {
 		width: '24px',
-		height: '24px'
+		height: '24px',
+		backgroundColor: 'red'
 	},
 	messageText: {
 		color: 'black'
@@ -53,7 +54,7 @@ const useStyles = makeStyles(() => ({
 	}
 }))
 
-function Chat({room}) {
+function RoomChat({room}) {
 	const classes = useStyles({})
 
 	const [list, setList] = useState([])
@@ -65,6 +66,7 @@ function Chat({room}) {
 	const [canLoadMore, setCanLoadMore] = useState(true)
 	const [isLoadingMore, setIsLoadingMore] = useState(false)
 	const [updateScroll, setUpdateScroll] = useState(0)
+	
 	useEffect(() => {
 		if(messagesListRef.current) {
 			const scrollTop = messagesListRef.current.scrollTop
@@ -109,6 +111,9 @@ function Chat({room}) {
 		}
 		socket.OnDisconnectedListener(disconnect)
 		const message = (msgs) => {
+			if (msgs.length < 20) {
+				setCanLoadMore(false)
+			}
 			setNewMessage(msgs)
 		}
 		socket.OnMessageListener(message)
@@ -141,12 +146,16 @@ function Chat({room}) {
 	}, [newMessage])
 
 	function sendMessage() {
+		if(!message || message.trim() === '') {
+			return
+		}
 		socket.SendMessage(message)
 		setMessage('')
 	}
 
 	return (
 		<Mui.Box className={classes.container}>
+			<Mui.Typography variant="h5"> Chat </Mui.Typography>
 			{
 				error ?
 					<Mui.Box className={classes.error}>
@@ -234,4 +243,4 @@ function Chat({room}) {
 	)
 }
 
-export default Chat
+export default RoomChat

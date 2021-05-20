@@ -7,9 +7,14 @@ import store from './state/store'
 
 import App from './App'
 
+import DateMomentUtils from '@date-io/moment'
+import { MuiPickersUtilsProvider } from '@material-ui/pickers'
+
 ReactDOM.render(
 	<Provider store={store}>
-		<App />
+		<MuiPickersUtilsProvider utils={DateMomentUtils}>
+			<App />
+		</MuiPickersUtilsProvider>
 	</Provider>,
 	document.getElementById('root'),
 )

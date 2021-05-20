@@ -4,7 +4,7 @@ import {io} from 'socket.io-client'
 export function ChatSocket(room) {
 
 	const socket = io(process.env.REACT_APP_SERVER_URL, {
-		path: '/api/chat',
+		path: '/api/room/chat',
 		query: {room},
 		autoConnect: true,
 		withCredentials: true

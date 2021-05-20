@@ -1,5 +1,8 @@
 
-var mongoose = require('mongoose')
+var mongoose = require('mongoose'),
+	autoIncrement = require('mongoose-auto-increment')
+
+autoIncrement.initialize(mongoose.connection)
 
 const roomSchema = new mongoose.Schema({
 	name: String,
@@ -22,6 +25,7 @@ const roomMemberSchema = new mongoose.Schema({
 		ref: 'Room'
 	}
 })
+roomMemberSchema.plugin(autoIncrement.plugin, { model: 'Room_Member', field: 'seq' })
 
 const roomScheduleSchema = new mongoose.Schema({
 	roomId: { 
@@ -31,14 +35,16 @@ const roomScheduleSchema = new mongoose.Schema({
 	fromDate: Date,
 	toDate: Date
 })
+roomScheduleSchema.plugin(autoIncrement.plugin, { model: 'Room_Schedule', field: 'seq' })
 
 const roomAnnouncementsSchema = new mongoose.Schema({
 	roomId: { 
 		type: mongoose.Schema.Types.ObjectId, 
 		ref: 'Room'
 	},
-	text: String
+	message: String
 })
+roomAnnouncementsSchema.plugin(autoIncrement.plugin, { model: 'Room_Announcement', field: 'seq' })
 
 module.exports = {
 	Room: mongoose.model('Room', roomSchema),

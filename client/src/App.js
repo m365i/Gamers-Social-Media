@@ -48,7 +48,7 @@ export default function App() {
 				<PrivateRoute access={!isLoggedIn} redirect="/" path="/reset-password/:code" component={ResetPassword} />
 				<PrivateRoute access={!isLoggedIn} redirect="/" path="/forgot-password" component={ForgotPassword} />
 				<Route path="/contact" component={Contact} />
-				<PrivateRoute access={isLoggedIn} redirect="/login" path="/room/:id" component={Room} />
+				<Route path="/room/:id" component={Room} />
 				<PrivateRoute access={isLoggedIn} redirect="/login" path="/members" component={Members} />
 				<Route path="/" component={Home} />
 			</Switch>
