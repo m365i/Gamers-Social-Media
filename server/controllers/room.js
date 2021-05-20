@@ -430,7 +430,8 @@ exports.chat = (io) => {
 			// send more messages to this client from index
 			const msgs = await Chat.aggregate()
 				.match({
-					seq: {$lt: index}
+					seq: {$lt: index},
+					to: new mongoose.Types.ObjectId(roomId)
 				}).lookup({
 					from: 'profiles',
 					localField: 'from',

@@ -111,7 +111,7 @@ function RoomChat({room}) {
 		}
 		socket.OnDisconnectedListener(disconnect)
 		const message = (msgs) => {
-			if (msgs.length < 20) {
+			if(msgs.length === 0) {
 				setCanLoadMore(false)
 			}
 			setNewMessage(msgs)
