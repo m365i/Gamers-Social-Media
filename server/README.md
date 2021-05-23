@@ -65,7 +65,8 @@ router.use('/cat', catRouter) // <---- what we added!
 module.exports = router
 ```
 
-finally now you can access the page `http://localhost:3001/cat` and you shuold get the message `cat` in the browser.  
+finally now you can access the page `http://localhost:3001/api/cat` and you shuold get the message `cat` in the browser.  
+**notice!** that all routes start with `/api`  
 
 ### Advanced: adding api docs for your route  
 
