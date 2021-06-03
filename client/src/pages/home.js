@@ -3,49 +3,61 @@ import React from 'react'
 import './home.css'
 import RoomCard from '../components/RoomCard'
 
+
 import { Link } from 'react-router-dom'
 import { selectUser } from '../state/userSlice'
 import { useSelector } from 'react-redux'
 export default function Home() {
 	const { user, loading } = useSelector(selectUser)
+
+	function checkLoggedIn() {
+
+		if (user != null) {
+			return('/members')
+		}
+		else{
+			return('/login')
+		}
+	
+	}
 	return (
 		<>
 			<div className="container-fluid header">
 				<div>
 					<div className="container pt-4">
-						<a href="http://localhost:3000">
+						<Link to="/">
 							<img src="images/logo.png" alt="logo" />
-						</a>
+						</Link>
 
 						{/* <!-- Just an image --> */}
 						<ul className="navbar float-right" style={{ listStyleType: 'none', marginTop: '-15px' }}>
 							<li>
-								<a className="navbar-brand" href="#">
+								<Link className="navbar-brand" to="/">
 									<img src="images/home_icon.png" alt="Home" />
-								</a>
-								<a href="http://localhost:3000">Home</a>
+								</Link>
+								<Link to="/">Home</Link>
 							</li>
 							<li>
-								<a className="navbar-brand" href="#">
+								<Link className="navbar-brand" to="/about_us">
 									<img src="images/about_icon.png" alt="About us" />
 									About us
-								</a>
+								</Link>
 							</li>
 							<li>
-								<a className="navbar-brand" href="#">
+								<Link className="navbar-brand" to="/search">
 									<img src="images/search_icon.png" alt="Search" />
 									Search
-								</a>
+								</Link>
 							</li>
 							<li>
-								<a className="navbar-brand" href="#">
+								<Link className="navbar-brand" to={checkLoggedIn}>
 									<img src="images/login_icon.png" alt="Login" />
 									{loading && '...'}
 									{(!loading && user) ? `${user.name}` :
 										'not logged in'
 									}
-								</a>
-								<a href="http://localhost:3000/login"> Login </a>
+								</Link>
+								<Link to="/login"> Login </Link>
 							</li>
 						</ul>
 
@@ -73,9 +85,11 @@ export default function Home() {
 							<h4>
 								Play and organize competitions in all games.
 							</h4>
-							<button type="button" className="btn-lg btn-warning font-weight-bold px-5 mt-2 mx-2">
-
-								<Link to="/signup"> Sign Up</Link> </button>
+							<Link to="/signup">
+								<button type="button" className="btn-lg btn-warning font-weight-bold px-5 mt-2 mx-2">
+									Sign Up
+								</button>
+							</Link>
 							<button type="button" className="btn-lg btn-outline-light font-weight-bold px-4 mt-2 mx-2"
 								style={{ 'background': 'transparent!important' }}>Learn More</button>
 						</div>
@@ -158,9 +172,9 @@ export default function Home() {
 					<div className="row">
 						<div className="col-8 my-4">
 							<span style={{ 'color': '#ffa800', fontWeight: 'bold' }}>PlayTogether</span> is a free LFG app for finding
-					gamer friends,<br />
-					getting personal game recommendations,<br />
-					and coordinating gameplay sessions with non-toxic people.
+							gamer friends,<br />
+							getting personal game recommendations,<br />
+							and coordinating gameplay sessions with non-toxic people.
 						</div>
 
 						<div className="col-4 my-4">
