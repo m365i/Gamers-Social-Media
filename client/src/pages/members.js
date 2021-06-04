@@ -2,14 +2,14 @@
 
 import React from 'react'
 
-import MemberNavBar from '../components/MemberNavBar'
+import NavBarComponent from '../components/NavBarComponent'
 
 export default function Members() {
 
 
 	return (
 		<>
-			<MemberNavBar/>
+			<NavBarComponent/>
 
 		</>
 	)

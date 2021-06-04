@@ -38,18 +38,29 @@
   <style>
     .room_info {
       background: url('%PUBLIC_URL%/images/room_bg_hover.png') repeat-x top left;
-      height: 112px;
       margin-top: 147px;
       padding: 15px;
       color: #ffa800;
     }
+
+    body {
+      background: url('%PUBLIC_URL%/images/background.png') no-repeat center;
+      background-color: #19273a !important;
+    }
+
+    @media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+      body {
+        
+        width: 100%;
+        
+      }
+    }
   </style>
 </head>
 
-<body
-  style="background: url('%PUBLIC_URL%/images/background.png') no-repeat center;background-color: #19273a!important;">
+<body>
   <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div id="root"></div>
+  <div class="container-md " id="root"></div>
   <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
