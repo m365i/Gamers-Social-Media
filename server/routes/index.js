@@ -7,6 +7,7 @@ var gamesRouter = require('./games')
 var avatarRouter = require('./avatar')
 var roomRouter = require('./room')
 var searchRouter = require('./search')
+var profileRouter = require('./profile_routes')
 
 router.use('/auth', authRouter)
 router.use('/contact', contactRouter)
@@ -14,5 +15,6 @@ router.use('/games', gamesRouter)
 router.use('/avatar', avatarRouter)
 router.use('/room', roomRouter)
 router.use('/search', searchRouter)
+router.use('/profiles', profileRouter)
 
 module.exports = router

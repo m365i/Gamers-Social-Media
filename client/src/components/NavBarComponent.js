@@ -48,8 +48,6 @@ function NavBarComponent() {
 			return ('/members')
 		}
 		else {
-			console.log('BLAA')
-			
 			return ('/login')
 		}
 
