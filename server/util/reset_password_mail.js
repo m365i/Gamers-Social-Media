@@ -42,8 +42,8 @@ async function sendResetPasswordMail(email) {
 	mail.replace(/{email}/g, email)
 	mail.replace(/{expire_time_minutes}/g, RESET_PASSWORD_LINK_EXPIRE_TIME_MINUTES)
 	getMailTransporter().sendMail({
-		from: `"support" <${process.env.NO_REPLY_MAIL}>`,
-		to: `${email}, ${email}`,
+		from: `support <no@reply>`,
+		to: email,
 		subject: 'Your account password reset link',
 		html: mail,
 	})

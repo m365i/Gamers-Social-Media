@@ -3,7 +3,8 @@ info:
   title: Gamers Social Media Api
   version: '1.0'
 servers:
-  - url: http://localhost:3001/api
+  - url: /api
+  - url: http://localhost:5000/api
 
 components:
   schemas:

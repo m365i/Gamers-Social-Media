@@ -1,20 +1,11 @@
 'use strict'
 const nodemailer = require('nodemailer')
 
-let transporter
-
-nodemailer.createTestAccount()
-	.then(account => {
-		transporter = nodemailer.createTransport({
-			host: 'smtp.ethereal.email',
-			port: 587,
-			secure: false,
-			auth: {
-				user: account.user,
-				pass: account.pass,
-			},
-		})
-	})
+let transporter = nodemailer.createTransport({
+	host: process.env.SMTP_SERVER,
+	port: process.env.SMTP_PORT,
+	secure: false
+})
 
 function getMailTransporter() {
 	return transporter

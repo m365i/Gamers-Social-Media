@@ -1,0 +1,69 @@
+FROM node:14-alpine
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# environment variables
+ENV PORT=8080
+
+#ENV DB_HOST=mongodb:/0.0.0.0:27017
+#ENV DB_NAME=gamers_social_media
+#ENV DB_USER=
+#ENV DB_PASSWORD=
+
+#SMTP_SERVER=0.0.0.0
+#SMTP_PORT=25
+
+ENV SESSION_SECRET=32eyh392eyd89539deuq2doy3u298yd938r
+
+ENV NODE_ENV=production
+
+# server
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY ./server/package*.json ./
+
+# Building dependencies for production
+RUN npm ci --only=production
+
+# Bundle app source
+COPY ./server/ .
+
+# remove enviorment variables
+RUN rm .env
+
+# client
+
+# Move to temp directory to build client app
+WORKDIR temp
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY ./client/package*.json ./
+
+# Building dependencies for production
+RUN npm ci --only=production
+
+# Bundle app source
+COPY ./client/ .
+
+# remove enviorment variables
+RUN rm .env
+
+# build app for production
+RUN npm run build
+
+# Move client build to server public directory
+RUN mv build/* ../public
+
+# Move back to app directory
+WORKDIR ..
+
+# Remove client development folder
+RUN rm -r temp
+
+EXPOSE 8080
+CMD [ "node", "app.js" ]
