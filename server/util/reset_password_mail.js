@@ -37,16 +37,19 @@ async function sendResetPasswordMail(email) {
 	addPasswordResetLink(email, code)
 	console.log('code:' + code)
 	let mail = fs.readFileSync(path.join(__dirname, './reset-password-email.html'), 'utf8')
-	mail.replace(/{link_reset_password}/g, process.env.CLINET_URL + '/rest-password?code=' + code)
-	mail.replace(/{link_contact_support}/g, process.env.CLINET_URL + '/contact')
+	mail.replace(/{link_reset_password}/g, process.env.CLIENT_URL + '/rest-password?code=' + code)
+	mail.replace(/{link_contact_support}/g, process.env.CLIENT_URL + '/contact')
 	mail.replace(/{email}/g, email)
 	mail.replace(/{expire_time_minutes}/g, RESET_PASSWORD_LINK_EXPIRE_TIME_MINUTES)
-	getMailTransporter().sendMail({
-		from: `support <no@reply>`,
-		to: email,
-		subject: 'Your account password reset link',
-		html: mail,
-	})
+	const transporter = getMailTransporter()
+	if(transporter) {
+		transporter.sendMail({
+			from: `support <no@reply>`,
+			to: email,
+			subject: 'Your account password reset link',
+			html: mail,
+		})
+	}
 }
 
 module.exports = {

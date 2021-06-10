@@ -12,10 +12,10 @@ var morgan = require('morgan')
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
 
 // core
-if(process.env.NODE_ENV === 'development') {
+if(process.env.NODE_ENV === 'development' && process.env.CLIENT_URL === '') {
 	var cors = require('cors')
 	var corsOptions = {
-		origin: [process.env.DEV_CLIENT_URL, process.env.DEV_SERVER_URL],
+		origin: [process.env.CLIENT_URL, process.env.SERVER_URL],
 		credentials: true
 	}
 	app.use(cors(corsOptions))
@@ -24,6 +24,9 @@ if(process.env.NODE_ENV === 'development') {
 // database
 var mongoose = require('mongoose')
 var mongoConnection = 'mongodb://' + ((process.env.DB_USER && process.env.DB_USER !== '') ? (process.env.DB_USER + ':' + process.env.DB_PASSWORD + '@') : '') + process.env.DB_HOST + '/' + process.env.DB_NAME + '?authSource=admin'
+if(process.env.DB_CONNECTION_STRING && process.env.DB_CONNECTION_STRING !== '') {
+	mongoConnection = process.env.DB_CONNECTION_STRING
+}
 var mongoOptions = {
 	useNewUrlParser: true, 
 	useUnifiedTopology: true

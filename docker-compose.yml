@@ -35,6 +35,7 @@ services:
       DB_NAME: gamers_social_media
       DB_USER: root
       DB_PASSWORD: dhgsye3gkdghwegd3ud23du
+	  SMTP_EXIST: true
 	  SMTP_SERVER: smtp
 	  SMTP_PORT: 25
     networks:

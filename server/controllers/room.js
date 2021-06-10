@@ -164,7 +164,7 @@ exports.listMembers = async function (req, res, next) {
 	members = members.map(m => {
 		return {
 			name: m.profile[0].name,
-			image: m.profile[0].image || ((process.env.DEV_SERVER_URL || '') + '/api/avatar/username/' + m.profile[0].name),
+			image: m.profile[0].image || (process.env.SERVER_URL + '/api/avatar/username/' + m.profile[0].name),
 			userId: m.userId
 		}
 	})
@@ -358,7 +358,7 @@ exports.chat = (io) => {
 		return msgs.map(m => {
 			return {
 				name: m.profile[0].name,
-				image: m.profile[0].image || ((process.env.DEV_SERVER_URL || '') + '/api/avatar/username/' + m.profile[0].name),
+				image: m.profile[0].image || (process.env.SERVER_URL + '/api/avatar/username/' + m.profile[0].name),
 				message: m.message,
 				userId: m.from,
 				seq: m.seq,
