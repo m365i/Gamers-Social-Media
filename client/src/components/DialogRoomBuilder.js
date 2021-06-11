@@ -2,13 +2,16 @@
 import * as Mui from '@material-ui/core'
 import * as MuiLab from '@material-ui/lab'
 import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from 'react'
-import {actionEditRoom, selectRoom} from '../state/roomSlice'
+import {actionAfterEditRoom, selectRoom} from '../state/roomSlice'
 import {useDispatch, useSelector} from 'react-redux'
 import clsx from 'clsx'
 import Joi from 'joi'
 import {autoCompleteGame, create as createRoom} from '../services/roomAPI'
+import {
+	edit as gameEditRoom
+} from '../services/roomAPI'
 
-function _InputRoom({init, disabled}, ref) {
+function _InputRoom({init, disabled}, ref) { // init should be a state so it won't changed in repeated calls 
 
 	const [name, setName] = useState('')
 	const [nameValidation, setNameValidation] = useState(undefined)
@@ -190,7 +193,7 @@ function _InputRoom({init, disabled}, ref) {
 
 			<br />
 
-			<Mui.ButtonGroup color="primary" aria-label="outlined primary button group">
+			<Mui.ButtonGroup color="primary" aria-label="outlined primary button group" disabled={disabled}>
 				{
 					['Pc', 'Xbox', 'Playstation', 'Android', 'Psp', 'Apple'].map(p => {
 						return (
@@ -226,17 +229,38 @@ export const InputRoom = forwardRef(_InputRoom)
 
 export function DialogEditRoom({open, close}) {
 
-	const {name, game, platform, description} = useSelector(selectRoom)
+	const {roomId, name, game, platform, description} = useSelector(selectRoom)
 	const dispatch = useDispatch()
 
 	const [inputInvalid, setInputInvalid] = useState(false)
 
+	const [initInput, setInitInput] = useState(undefined)
+
+	const [loading, setLoading] = useState(false)
+	const [error, setError] = useState(false)
+
 	const input = useRef()
+
+	useEffect(() => {
+		setInitInput({name, game, platform, description})
+	}, [name, game, platform, description])
 
 	function save() {
 		if(input.current.validate()) {
-			dispatch(actionEditRoom(input.current.data()))
-			close()
+			const {name, game, platform, description} = input.current.data()
+			setLoading(true)
+			gameEditRoom(roomId, name, game, platform, description)
+				.then(() => {
+					dispatch(actionAfterEditRoom({name, game, platform, description}))
+					close()
+				})
+				.catch(err => {
+					setError(err.message)
+					console.error(err)
+				})
+				.finally(() => {
+					setLoading(false)
+				})
 		} else {
 			setInputInvalid(true)
 		}
@@ -249,18 +273,40 @@ export function DialogEditRoom({open, close}) {
 			aria-labelledby="responsive-dialog-title" >
 			<Mui.DialogTitle id="responsive-dialog-title">Edit Room Properties</Mui.DialogTitle>
 			<Mui.DialogContent>
-				<InputRoom ref={input} init={{name, game, platform, description}} onClick={() => setInputInvalid(false)} />
+				<InputRoom ref={input} init={initInput} disabled={loading} onClick={() => setInputInvalid(false)} />
 				{
 					inputInvalid ?
 						<MuiLab.Alert severity="error">Error: input invalid </MuiLab.Alert>
 						: undefined
 				}
 			</Mui.DialogContent>
+			{
+				error ?
+					<MuiLab.Alert severity="error">{error}</MuiLab.Alert>
+					: undefined
+			}
 			<Mui.DialogActions>
-				<Mui.Button autoFocus onClick={close} color="primary">
+				<Mui.Button
+					disabled={loading} 
+					autoFocus 
+					onClick={close} 
+					color="primary">
 					Discard
 				</Mui.Button>
-				<Mui.Button onClick={save} color="primary" autoFocus>
+				<Mui.Button 
+					disabled={loading} 
+					onClick={save} 
+					color="primary" 
+					autoFocus>
+					{
+						loading ?
+							<>
+								<Mui.CircularProgress size={15} color="inherit" />
+								&nbsp;
+								&nbsp;
+							</>
+							: undefined
+					}
 					Save
 				</Mui.Button>
 			</Mui.DialogActions>

@@ -7,7 +7,11 @@ import Icon from '@material-ui/core/Icon'
 import {DateTimePicker} from '@material-ui/pickers'
 import moment from 'moment'
 import {useDispatch, useSelector} from 'react-redux'
-import {deleteSchedule, makeSchedule, selectRoom} from '../state/roomSlice'
+import {selectRoom, updateSchedule} from '../state/roomSlice'
+import {
+	schedule as gameMakeSchedule,
+	deleteSchedule as gameDeleteSchedule
+} from '../services/roomAPI'
 
 const useStyles = makeStyles(() => ({
 	container: {
@@ -19,20 +23,36 @@ const useStyles = makeStyles(() => ({
 	list: {
 		overflowY: 'auto',
 		height: '100%'
+	},
+	error: {
+		marginBottom: '0.5em'
 	}
 }))
 
 function RoomSchedule() {
 	const classes = useStyles()
 
-	const {isOwner, schedules} = useSelector(selectRoom)
+	const {isOwner, roomId, schedules} = useSelector(selectRoom)
 	const dispatch = useDispatch()
 
 	const [selectedDate, handleDateChange] = useState(null)
+
+	const [loading, setLoading] = useState(false)
+	const [error, setError] = useState(undefined)
 	
 	function deleteDate(scheduleIndex) {
 		const scheduleId = schedules[scheduleIndex]._id
-		dispatch(deleteSchedule(scheduleId))
+		setLoading(true)
+		setError(undefined)
+		gameDeleteSchedule(roomId, scheduleId)
+			.then(() => {
+				dispatch(updateSchedule())
+			}).catch(err => {
+				setError(err.message)
+				console.error(err)
+			}).finally(() => {
+				setLoading(false)
+			})
 	}
 	
 	function sendDate(event) {
@@ -41,14 +61,31 @@ function RoomSchedule() {
 		if(!selectedDate) {
 			return
 		}
-		dispatch(makeSchedule(selectedDate))
-		handleDateChange(null)
+		setLoading(true)
+		setError(undefined)
+		gameMakeSchedule(roomId, selectedDate)
+			.then(() => {
+				dispatch(updateSchedule())
+				handleDateChange(null)
+			}).catch(err => {
+				setError(err.message)
+				console.error(err)
+			}).finally(() => {
+				setLoading(false)
+			})
 	}
 	if(undefined) sendDate()
 
 	return (
 		<Mui.Box className={classes.container}> 
 			<Mui.Typography variant="h5"> Schedules </Mui.Typography>
+			{ 
+				error ?
+					<MuiLab.Alert severity="error" className={classes.error}>
+						{ error }
+					</MuiLab.Alert>
+					: undefined
+			}
 			<Mui.List className={classes.list}>
 				{
 					schedules.map((a, i) => (
@@ -70,6 +107,7 @@ function RoomSchedule() {
 				isOwner ?
 					<Mui.Box display="flex" flexDirection="column">
 						<DateTimePicker
+							disabled={loading}
 							autoOk
 							hideTabs
 							fullWidth
@@ -86,10 +124,12 @@ function RoomSchedule() {
 								endAdornment: (
 									<Mui.InputAdornment position="end">
 										<Mui.IconButton
+											disabled={loading}
 											aria-label="event">
 											<Icon> event </Icon>
 										</Mui.IconButton>
 										<Mui.IconButton
+											disabled={loading}
 											aria-label="send"
 											onClick={sendDate}>
 											<Icon> send </Icon>
