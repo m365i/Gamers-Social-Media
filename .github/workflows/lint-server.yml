@@ -1,4 +1,4 @@
-name: Lint
+name: Linter Server
 
 on: pull_request
 
