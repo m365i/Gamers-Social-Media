@@ -13,7 +13,12 @@ import * as MuiLab from '@material-ui/lab'
 import Icon from '@material-ui/core/icon'
 import { DialogEditRoom } from '../components/DialogRoomBuilder'
 import {makeStyles} from '@material-ui/core/styles'
-import {actionDeleteRoom, actionJoinRoom, actionLeaveRoom, fetchRoom, selectRoom} from '../state/roomSlice'
+import {actionChangeRoomMembership, fetchRoom, selectRoom} from '../state/roomSlice'
+import {
+	deleteRoom as gameDeleteRoom,
+	leave as gameLeaveRoom,
+	join as gameJoinRoom
+} from '../services/roomAPI'
 
 const useStyles = makeStyles(() => ({
 	container: {
@@ -75,6 +80,9 @@ function Room() {
 	const {name, game, creator_info, platform, description, isMember, isOwner, members, loading, error} = useSelector(selectRoom)
 	const dispatch = useDispatch()
 
+	const [deleteRoomLoading, setDeleteRoomLoading] = useState(false)
+	const [changeRoomMembershipLoading, setChangeRoomMembershipLoading] = useState(false)
+
 	const [openEditDialog, setOpenEditDialog] = useState(false)
 
 	useEffect(() => {
@@ -86,21 +94,52 @@ function Room() {
 	function editRoom() {
 		setOpenEditDialog(true)
 	}
-
 	function deleteRoom() {
-		if (confirm('Are you sure you want to delete this room?')) {
-			dispatch(actionDeleteRoom())
+		if (window.confirm('Are you sure you want to delete this room?')) {
+			setDeleteRoomLoading(true)
+			gameDeleteRoom(id)
+				.then(() => {
+					window.location = '/'
+				})
+				.catch(err => {
+					window.alert('Error: ' + err.message)
+					console.error(err)
+				})
+				.finally(() => {
+					setDeleteRoomLoading(false)
+				})
 		}
 	}
 
 	function leaveRoom() {
-		if (confirm('Are you sure you want to leave this room?')) {
-			dispatch(actionLeaveRoom())
+		if (window.confirm('Are you sure you want to leave this room?')) {
+			setChangeRoomMembershipLoading(true)
+			gameLeaveRoom(id)
+				.then(() => {
+					dispatch(actionChangeRoomMembership())
+				})
+				.catch(err => {
+					window.alert('Error: ' + err.message)
+					console.error(err)
+				})
+				.finally(() => {
+					setChangeRoomMembershipLoading(false)
+				})
 		}
 	}
 
 	function joinRoom() {
-		dispatch(actionJoinRoom())
+		setChangeRoomMembershipLoading(true)
+		gameJoinRoom(id)
+			.then(() => {
+				dispatch(actionChangeRoomMembership())
+			})
+			.catch(err => {
+				window.alert('Error: ' + err.message)
+			})
+			.finally(() => {
+				setChangeRoomMembershipLoading(false)
+			})
 	}
 
 	if(loading) {
@@ -150,18 +189,57 @@ function Room() {
 									roomId={id} />
 								&nbsp;
 								&nbsp;
-								<Mui.Button variant="contained" color="secondary" onClick={deleteRoom}>
+								<Mui.Button 
+									disabled={deleteRoomLoading}
+									variant="contained" 
+									color="secondary" 
+									onClick={deleteRoom}>
+									{
+										deleteRoomLoading ?
+											<>
+												<Mui.CircularProgress size={15} color="inherit" />
+												&nbsp;
+												&nbsp;
+											</>
+											: undefined
+									}
 									<Icon>delete</Icon> &nbsp; Delete
 								</Mui.Button>
 							</>
 							:
 							isMember ?
-								<Mui.Button variant="contained" color="secondary" onClick={leaveRoom}>
+								<Mui.Button 
+									disabled={changeRoomMembershipLoading}
+									variant="contained" 
+									color="secondary" 
+									onClick={leaveRoom}>
+									{
+										changeRoomMembershipLoading ?
+											<>
+												<Mui.CircularProgress size={15} color="inherit" />
+												&nbsp;
+												&nbsp;
+											</>
+											: undefined
+									}
 									<Icon>logout</Icon> &nbsp; Leave
 								</Mui.Button>
 								:
 								user ?
-									<Mui.Button variant="contained" color="primary" onClick={joinRoom}>
+									<Mui.Button 
+										disabled={changeRoomMembershipLoading}
+										variant="contained" 
+										color="primary" 
+										onClick={joinRoom}>
+										{
+											changeRoomMembershipLoading ?
+												<>
+													<Mui.CircularProgress size={15} color="inherit" />
+													&nbsp;
+													&nbsp;
+												</>
+												: undefined
+										}
 										<Icon>add</Icon> &nbsp; Join
 									</Mui.Button>
 									:

@@ -8,6 +8,8 @@ import Picker from 'emoji-picker-react'
 import moment from 'moment'
 import grey from '@material-ui/core/colors/grey'
 import {ChatSocket} from '../services/chatSocket'
+import {useSelector} from 'react-redux'
+import {selectRoom} from '../state/roomSlice'
 
 const useStyles = makeStyles(() => ({
 	container: {
@@ -57,6 +59,8 @@ const useStyles = makeStyles(() => ({
 function RoomChat({room}) {
 	const classes = useStyles({})
 
+	const {isMember} = useSelector(selectRoom)
+
 	const [list, setList] = useState([])
 	const [message, setMessage] = useState('')
 	const [allowedToChat, setAllowedToChat] = useState(undefined)
@@ -90,6 +94,12 @@ function RoomChat({room}) {
 	const [socket, setSocket] = useState(undefined)
 
 	useEffect(() => {
+		// reset edit options
+		setMessage('')
+		setAllowedToChat(false)
+		setError(undefined)
+		setList([])
+		// create socket
 		const socket = ChatSocket(room)
 		setSocket(socket)
 		const error = (err) => {
@@ -135,7 +145,7 @@ function RoomChat({room}) {
 			socket.Disconnect()
 			clearInterval(scrollInterval)
 		}
-	}, [])
+	}, [isMember])
 
 	useEffect(() => {
 		if (newMessage) {

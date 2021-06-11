@@ -39,6 +39,16 @@ export const fetchRoom = createAsyncThunk('room/fetchRoom', async ({roomId, user
 	}
 })
 
+export const updateSchedule = createAsyncThunk('room/updateSchedule', async (fromDate, thunkApi) => {
+	try {
+		const roomId = thunkApi.getState().room.roomId
+		const schedules = (await gameSchedules(roomId)).data
+		return schedules
+	} catch (err) {
+		thunkApi.rejectWithValue(err.response.data)
+	}
+})
+
 export const makeSchedule = createAsyncThunk('room/makeSchedule', async (fromDate, thunkApi) => {
 	try {
 		const roomId = thunkApi.getState().room.roomId
@@ -61,6 +71,16 @@ export const deleteSchedule = createAsyncThunk('room/deleteSchedule', async (sch
 	}
 })
 
+export const updateAnnouncement = createAsyncThunk('room/updateAnnouncement', async (message, thunkApi) => {
+	try {
+		const roomId = thunkApi.getState().room.roomId
+		const announcements = (await gameAnnouncements(roomId)).data
+		return announcements
+	} catch (err) {
+		thunkApi.rejectWithValue(err.response.data)
+	}
+})
+
 export const makeAnnouncement = createAsyncThunk('room/makeAnnouncement', async (message, thunkApi) => {
 	try {
 		const roomId = thunkApi.getState().room.roomId
@@ -78,6 +98,16 @@ export const deleteAnnouncement = createAsyncThunk('room/deleteAnnouncement', as
 		await gameDeleteAnnouncement(roomId, announcementId)
 		const announcements = (await gameAnnouncements(roomId)).data
 		return announcements
+	} catch (err) {
+		thunkApi.rejectWithValue(err.response.data)
+	}
+})
+
+export const actionChangeRoomMembership = createAsyncThunk('room/actionChangeRoomMembership', async (_, thunkApi) => {
+	try {
+		const roomId = thunkApi.getState().room.roomId
+		const members = (await gameMembers(roomId)).data
+		return members
 	} catch (err) {
 		thunkApi.rejectWithValue(err.response.data)
 	}
@@ -146,6 +176,14 @@ const roomSlice = createSlice({
 	name: 'room',
 	initialState,
 	reducers: {
+		afterEditRoom: (state, action) => {
+			const {name, game, platform, description} = action.payload
+			state.name = name
+			state.game = game
+			state.platform = platform
+			state.description = description
+			state.loading = false
+		}
 	},
 	extraReducers: {
 		[fetchRoom.pending]: (state) => {
@@ -173,6 +211,14 @@ const roomSlice = createSlice({
 			state.loading = false
 		},
 
+		[updateSchedule.fulfilled]: (state, action) => {
+			const schedules = action.payload
+			state.schedules = schedules
+		},
+		[updateSchedule.rejected]: (state, action) => {
+			state.error = action.payload
+		},
+
 		[makeSchedule.fulfilled]: (state, action) => {
 			const schedules = action.payload
 			state.schedules = schedules
@@ -189,6 +235,14 @@ const roomSlice = createSlice({
 			state.error = action.payload
 		},
 
+		[updateAnnouncement.fulfilled]: (state, action) => {
+			const announcements = action.payload
+			state.announcements = announcements
+		},
+		[updateAnnouncement.rejected]: (state, action) => {
+			state.error = action.payload
+		},
+
 		[makeAnnouncement.fulfilled]: (state, action) => {
 			const announcements = action.payload
 			state.announcements = announcements
@@ -202,6 +256,22 @@ const roomSlice = createSlice({
 			state.announcements = announcements
 		},
 		[deleteAnnouncement.rejected]: (state, action) => {
+			state.error = action.payload
+		},
+
+		[actionChangeRoomMembership.fulfilled]: (state, action) => {
+			const members = action.payload
+			if(state.userId) {
+				state.isMember = false
+				members.forEach(m => {
+					if(state.userId === m.userId) {
+						state.isMember = true
+					}
+				})
+			}
+			state.members = members
+		},
+		[actionChangeRoomMembership.rejected]: (state, action) => {
 			state.error = action.payload
 		},
 
@@ -250,6 +320,6 @@ const roomSlice = createSlice({
 
 export const selectRoom = (state) => state.room
 
-//export const {} = roomSlice.actions
+export const actionAfterEditRoom = roomSlice.actions.afterEditRoom
 
 export default roomSlice.reducer

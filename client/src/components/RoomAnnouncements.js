@@ -6,7 +6,11 @@ import {makeStyles} from '@material-ui/core/styles'
 import Icon from '@material-ui/core/Icon'
 import Picker from 'emoji-picker-react'
 import {useDispatch, useSelector} from 'react-redux'
-import {deleteAnnouncement, makeAnnouncement, selectRoom} from '../state/roomSlice'
+import {updateAnnouncement, selectRoom} from '../state/roomSlice'
+import {
+	announce as gameMakeAnnouncement, 
+	deleteAnnouncement as gameDeleteAnnouncement
+} from '../services/roomAPI'
 
 const useStyles = makeStyles(() => ({
 	container: {
@@ -18,20 +22,26 @@ const useStyles = makeStyles(() => ({
 	list: {
 		overflowY: 'auto',
 		height: '100%'
+	},
+	error: {
+		marginBottom: '0.5em'
 	}
 }))
 
 function RoomAnnouncements() {
 	const classes = useStyles()
 
-	const {isOwner, announcements} = useSelector(selectRoom)
+	const {isOwner, roomId, announcements} = useSelector(selectRoom)
 	const dispatch = useDispatch()
 
 	const [message, setMessage] = useState(undefined)
 
+	const [loading, setLoading] = useState(false)
+	const [error, setError] = useState(undefined)
+
 	const [openEmojiDialog, setOpenEmojiDialog] = useState(false)
 	const onEmojiClick = (event, emojiObject) => {
-		if (emojiObject != undefined) {
+		if (emojiObject !== undefined) {
 			setMessage(message + emojiObject.emoji)
 		}
 		setOpenEmojiDialog(false)
@@ -39,20 +49,47 @@ function RoomAnnouncements() {
 	
 	function deleteMessage(announcementIndex) {
 		const announcementId = announcements[announcementIndex]._id
-		dispatch(deleteAnnouncement(announcementId))
+		setLoading(true)
+		setError(undefined)
+		gameDeleteAnnouncement(roomId, announcementId)
+			.then(() => {
+				dispatch(updateAnnouncement())
+			}).catch(err => {
+				setError(err.message)
+				console.error(err)
+			}).finally(() => {
+				setLoading(false)
+			})
 	}
 	
 	function sendMessage() {
 		if(!message || message.trim() === '') {
 			return
 		}
-		dispatch(makeAnnouncement(message))
-		setMessage('')
+		setLoading(true)
+		setError(undefined)
+		gameMakeAnnouncement(roomId, message)
+			.then(() => {
+				dispatch(updateAnnouncement())
+				setMessage('')
+			}).catch(err => {
+				setError(err.message)
+				console.error(err)
+			}).finally(() => {
+				setLoading(false)
+			})
 	}
 
 	return (
 		<Mui.Box className={classes.container}> 
 			<Mui.Typography variant="h5"> Announcements </Mui.Typography>
+			{ 
+				error ?
+					<MuiLab.Alert severity="error" className={classes.error}>
+						{ error }
+					</MuiLab.Alert>
+					: undefined
+			}
 			<Mui.List className={classes.list}>
 				{
 					announcements.map((a, i) => (
@@ -78,7 +115,7 @@ function RoomAnnouncements() {
 							variant="filled"
 							multiline
 							placeholder="Type your message here"
-							disabled={!isOwner}
+							disabled={loading}
 							rowsMax={6}
 							value={message}
 							onChange={(event) => setMessage(event.target.value)}
@@ -88,13 +125,13 @@ function RoomAnnouncements() {
 									<Mui.IconButton
 										aria-label="emoji"
 										onClick={() => setOpenEmojiDialog(true)}
-										disabled={!isOwner}>
+										disabled={loading}>
 										<Icon> sentiment_satisfied_alt </Icon>
 									</Mui.IconButton>
 									<Mui.IconButton
 										aria-label="send"
 										onClick={() => sendMessage()}
-										disabled={!isOwner}>
+										disabled={loading}>
 										<Icon> send </Icon>
 									</Mui.IconButton>
 								</>
