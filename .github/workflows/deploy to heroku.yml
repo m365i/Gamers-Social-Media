@@ -1,0 +1,27 @@
+name: Deploy to heroku
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+      - uses: actions/checkout@v2
+      
+      - name: Build, Push and Deploy to Heroku
+        env:
+          DB_CONNECTION_STRING: ${{secrets.DB_CONNECTION_STRING}}
+          SESSION_SECRET: ${{secrets.SESSION_SECRET}}
+          SERVER_URL: https://murmuring-peak-70288.herokuapp.com
+          REACT_APP_SERVER_URL: https://murmuring-peak-70288.herokuapp.com
+          CLIENT_URL: https://murmuring-peak-70288.herokuapp.com
+        uses: gonuit/heroku-docker-deploy@v1.3.3 
+        with:
+          email: ${{secrets.HEROKU_EMAIL}}
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
+          dockerfile_directory: ./
+          dockerfile_name: Dockerfile
+          docker_options: "--build-arg DB_CONNECTION_STRING --build-arg SESSION_SECRET --build-arg SERVER_URL --build-arg REACT_APP_SERVER_URL --build-arg CLIENT_URL"
+          
