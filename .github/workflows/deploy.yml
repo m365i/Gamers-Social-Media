@@ -18,7 +18,7 @@ jobs:
           REACT_APP_SERVER_URL: https://murmuring-peak-70288.herokuapp.com
           CLIENT_URL: https://murmuring-peak-70288.herokuapp.com
         id: heroku
-        uses: jctaveras/heroku-deploy@v2.1.17
+        uses: lucassarcanjo/heroku-deploy@2.1.17
         with:
           email: ${{secrets.HEROKU_EMAIL}}
           api_key: ${{secrets.HEROKU_API_KEY}}
