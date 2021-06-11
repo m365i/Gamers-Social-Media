@@ -64,7 +64,8 @@ RUN rm .env
 RUN npm run build
 
 # Move client build to server public directory
-RUN cp build/* ../public
+RUN mkdir -p ../public
+RUN cp -r build/* ../public
 
 # Move back to app directory
 WORKDIR ..
