@@ -64,7 +64,7 @@ RUN rm .env
 RUN npm run build
 
 # Move client build to server public directory
-RUN mv build/* ../public
+RUN cp build/* ../public
 
 # Move back to app directory
 WORKDIR ..
@@ -72,5 +72,5 @@ WORKDIR ..
 # Remove client development folder
 RUN rm -r temp
 
-EXPOSE 8080
+EXPOSE 80
 CMD [ "node", "app.js" ]
