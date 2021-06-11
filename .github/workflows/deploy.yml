@@ -6,15 +6,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
       - uses: actions/checkout@v2
-      - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
-        with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "murmuring-peak-70288"
-          heroku_email: "qanda280@gmail.comm"
+      
+      - name: Build, Push and Deploy to Heroku
+        id: heroku
+        uses: jctaveras/heroku-deploy@v1.0.0
         env:
-          HD_DB_CONNECTION_STRING: ${{secrets.DB_CONNECTION_STRING}}
-          HD_SESSION_SECRET: ${{secrets.SESSION_SECRET}}
-          HD_SERVER_URL: https://murmuring-peak-70288.herokuapp.com
-          HD_REACT_APP_SERVER_URL: https://murmuring-peak-70288.herokuapp.com
-          HD_CLIENT_URL: https://murmuring-peak-70288.herokuapp.com
+          DB_CONNECTION_STRING: ${{secrets.DB_CONNECTION_STRING}}
+          SESSION_SECRET: ${{secrets.SESSION_SECRET}}
+          SERVER_URL: https://murmuring-peak-70288.herokuapp.com
+          REACT_APP_SERVER_URL: https://murmuring-peak-70288.herokuapp.com
+          CLIENT_URL: https://murmuring-peak-70288.herokuapp.com
+        with:
+          api_key: ${{secrets.HEROKU_API_KEY}}
+          app_name: ${{secrets.HEROKU_APP_NAME}}
+          email: ${{secrets.HEROKU_EMAIL}}
+          dockerfile_path: './Dockerfile'
+          options: '--build-arg DB_CONNECTION_STRING --build-arg SESSION_SECRET --build-arg SERVER_URL --build-arg REACT_APP_SERVER_URL --build-arg CLIENT_URL'
