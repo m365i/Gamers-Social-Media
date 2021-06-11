@@ -17,12 +17,12 @@ jobs:
           SERVER_URL: https://murmuring-peak-70288.herokuapp.com
           REACT_APP_SERVER_URL: https://murmuring-peak-70288.herokuapp.com
           CLIENT_URL: https://murmuring-peak-70288.herokuapp.com
-        uses: gonuit/heroku-docker-deploy@v1.3.3 
+        id: heroku
+        uses: jctaveras/heroku-deploy@v1.0.0
         with:
           email: ${{secrets.HEROKU_EMAIL}}
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
-          dockerfile_directory: ./
-          dockerfile_name: Dockerfile
-          docker_options: "--build-arg DB_CONNECTION_STRING --build-arg SESSION_SECRET --build-arg SERVER_URL --build-arg REACT_APP_SERVER_URL --build-arg CLIENT_URL"
+          api_key: ${{secrets.HEROKU_API_KEY}}
+          app_name: ${{secrets.HEROKU_APP_NAME}}
+          dockerfile_path: ''
+          options: "--build-arg DB_CONNECTION_STRING --build-arg SESSION_SECRET --build-arg SERVER_URL --build-arg REACT_APP_SERVER_URL --build-arg CLIENT_URL"
           
