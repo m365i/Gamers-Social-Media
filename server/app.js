@@ -12,20 +12,39 @@ var morgan = require('morgan')
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
 
 // core
-var cors = require('cors')
-var corsOptions = {
-	origin: [process.env.CLINET_URL, process.env.SERVER_URL],
-	credentials: true
+if(process.env.NODE_ENV === 'development' && process.env.CLIENT_URL === '') {
+	var cors = require('cors')
+	var corsOptions = {
+		origin: [process.env.CLIENT_URL, process.env.SERVER_URL],
+		credentials: true
+	}
+	app.use(cors(corsOptions))
 }
-app.use(cors(corsOptions))
 
-// tools
-var cookieParser = require('cookie-parser')
+// database
+var mongoose = require('mongoose')
+var mongoConnection = 'mongodb://' + ((process.env.DB_USER && process.env.DB_USER !== '') ? (process.env.DB_USER + ':' + process.env.DB_PASSWORD + '@') : '') + process.env.DB_HOST + '/' + process.env.DB_NAME + '?authSource=admin'
+if(process.env.DB_CONNECTION_STRING && process.env.DB_CONNECTION_STRING !== '') {
+	mongoConnection = process.env.DB_CONNECTION_STRING
+}
+var mongoOptions = {
+	useNewUrlParser: true, 
+	useUnifiedTopology: true
+}
+mongoose.connect(mongoConnection, mongoOptions)
+mongoose.set('useCreateIndex', true)
+
+// session
+const MongoStore = require('connect-mongo')
 var session = require('express-session')
-app.use(express.json())
-app.use(express.urlencoded({extended: false}))
-app.use(cookieParser())
 var sessionMiddleware = session({
+	store: MongoStore.create({
+		mongoUrl: mongoConnection,
+		mongoOptions: mongoOptions,
+		crypto: {
+			secret: process.env.SESSION_SECRET
+		}
+	}),
 	secret: process.env.SESSION_SECRET,
 	resave: true,
 	saveUninitialized: true,
@@ -35,6 +54,12 @@ var sessionMiddleware = session({
 	},
 })
 app.use(sessionMiddleware)
+
+// tools
+var cookieParser = require('cookie-parser')
+app.use(express.json())
+app.use(express.urlencoded({extended: false}))
+app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
 // auth
@@ -67,10 +92,6 @@ io.use(wrap(passportSession))
 // routes
 require('./controllers/room').chat(io)
 
-// database
-var mongoose = require('mongoose')
-mongoose.connect(process.env.MONGODB_CONNECTION_STRING, {useNewUrlParser: true, useUnifiedTopology: true})
-
 // swagger
 var swaggerUi = require('swagger-ui-express')
 var swaggerDocument = require('yamljs').load('./swagger.yml')
@@ -82,5 +103,5 @@ var apiRouter = require('./routes/index')
 app.use('/api', apiRouter)
 
 httpServer.listen(port, function () {
-	console.log('Listening on http://localhost:%s', port)
+	console.log('Listening on port %s', port)
 })
