@@ -25,13 +25,3 @@ jobs:
         with:
           eslint: true
           eslint_dir: ./server
-
-      - name: Install client Node.js dependencies
-        run: npm ci
-        working-directory: ./client
-
-      - name: Run linters on client
-        uses: wearerequired/lint-action@v1
-        with:
-          eslint: true
-          eslint_dir: ./client
