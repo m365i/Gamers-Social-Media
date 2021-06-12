@@ -257,7 +257,7 @@ exports.select = async function (req, res, next) {
 
 exports.create = async function (req, res, next) {
 	const userId = req.user.id
-	const {name, game, platform, description} = req.body
+	let {name, game, platform, description} = req.body
 	// validate input
 	try {
 		const name_validator = Joi.string().min(3).max(64).pattern(/^[a-zA-Z0-9][a-zA-Z0-9 -_'+]+$/)
@@ -267,8 +267,12 @@ exports.create = async function (req, res, next) {
 		}
 		const platform_validator = Joi.string().pattern(/^Pc|Xbox|Playstation|Android|Apple|Psp$/)
 		Joi.attempt(platform, platform_validator)
-		const description_validator = Joi.string().max(256)
-		Joi.attempt(description, description_validator)
+		if(!description) {
+			description = ''
+		} else {
+			const description_validator = Joi.string().max(256)
+			Joi.attempt(description, description_validator)
+		}
 	} catch (err) {
 		return res.status(StatusCodes.BAD_REQUEST).send('name, game, platform or description are not formatted correctly')
 	}
