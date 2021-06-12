@@ -19,8 +19,8 @@ jobs:
           usedocker: true
           docker_build_args: APP_BUILD_SERVER_URL
         env:
-          DB_CONNECTION_STRING: ${{secrets.DB_CONNECTION_STRING}}
-          SESSION_SECRET: ${{secrets.SESSION_SECRET}}
-          SERVER_URL: https://murmuring-peak-70288.herokuapp.com
-          APP_BUILD_SERVER_URL: https://murmuring-peak-70288.herokuapp.com
-          CLIENT_URL: https://murmuring-peak-70288.herokuapp.com
+          HD_DB_CONNECTION_STRING: ${{secrets.DB_CONNECTION_STRING}}
+          HD_SESSION_SECRET: ${{secrets.SESSION_SECRET}}
+          HD_SERVER_URL: ${{secrets.APP_URL}}
+          HD_CLIENT_URL: ${{secrets.APP_URL}}
+          APP_BUILD_SERVER_URL: ${{secrets.APP_URL}}
