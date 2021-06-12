@@ -17,7 +17,14 @@ import {
 
 export const fetchRoom = createAsyncThunk('room/fetchRoom', async ({roomId, userId}, thunkApi) => {
 	try {
-		const info = (await gameInfo(roomId)).data
+		let info
+		try {
+			info = (await gameInfo(roomId)).data
+		} catch(e) {
+			console.log(e)
+			window.location = '/404'
+			return
+		}
 		const members = (await gameMembers(roomId)).data
 		let isOwner = false, isMember = false
 		if(userId) {
