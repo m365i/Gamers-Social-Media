@@ -12,7 +12,7 @@ var morgan = require('morgan')
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
 
 // core
-if(process.env.NODE_ENV === 'development' && process.env.CLIENT_URL === '') {
+if(process.env.NODE_ENV === 'development') {
 	var cors = require('cors')
 	var corsOptions = {
 		origin: [process.env.CLIENT_URL, process.env.SERVER_URL],
@@ -101,6 +101,17 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 // routes
 var apiRouter = require('./routes/index')
 app.use('/api', apiRouter)
+
+// 404 Page Not Found
+const {StatusCodes} = require('http-status-codes')
+app.get('/api/404', (req, res, next) => {
+	return res.sendStatus(StatusCodes.NOT_FOUND)
+})
+
+// react app
+app.use('/*', (req, res, next) => {
+	return res.sendFile(path.join(__dirname, 'public/index.html'))
+})
 
 httpServer.listen(port, function () {
 	console.log('Listening on port %s', port)
