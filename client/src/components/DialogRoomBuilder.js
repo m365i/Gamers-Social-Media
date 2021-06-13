@@ -43,8 +43,8 @@ function _InputRoom({init, disabled}, ref) { // init should be a state so it won
 				setGameValidation('this field is reqired')
 				valid = false
 			}
-			if (Joi.string().max(256).validate(description).error) {
-				setDescriptionValidation('maximum 256 charectors allowed')
+			if (description !== '' && Joi.string().max(256).validate(description).error) {
+				setDescriptionValidation('maximum 256 characters allowed')
 				valid = false
 			}
 			return valid
