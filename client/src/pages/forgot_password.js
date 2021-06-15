@@ -4,8 +4,8 @@ import {forgotPassword} from '../services/authAPI'
 import {useState} from 'react'
 import clsx from 'clsx'
 import {Link} from 'react-router-dom'
-import * as Mui from '@material-ui/core'
-import * as MuiLab from '@material-ui/lab'
+import {Box, Button, CircularProgress, Grid, TextField, Typography} from '@material-ui/core'
+import {Alert} from '@material-ui/lab'
 import {makeStyles} from '@material-ui/core/styles'
 import SideViewFormLayout from '../components/SideViewFormLayout'
 
@@ -75,41 +75,41 @@ export default function ForgotPassword() {
 	if (success) {
 		return (
 			<SideViewFormLayout image={process.env.PUBLIC_URL + './images/photo-1496206945239-d388b467f2e6.webp'}>
-				<Mui.Typography component='h1' variant='h5' className={classes.title}>
+				<Typography component='h1' variant='h5' className={classes.title}>
 					One More Step
-				</Mui.Typography>
+				</Typography>
 
-				<MuiLab.Alert severity='success'>
+				<Alert severity='success'>
 					Your password reset link will shortly be sent to your email account
 					<br />
 					check it out for further instructions
-				</MuiLab.Alert>
+				</Alert>
 
-				<Mui.Grid container direction='column' justify='center' alignItems='center'>
-					<Mui.Grid item xs={12}>
+				<Grid container direction='column' justify='center' alignItems='center'>
+					<Grid item xs={12}>
 						<Link to='/' className={classes.link}>
-							<Mui.Typography> Go back home </Mui.Typography>
+							<Typography> Go back home </Typography>
 						</Link>
-					</Mui.Grid>
-				</Mui.Grid>
+					</Grid>
+				</Grid>
 			</SideViewFormLayout>
 		)
 	}
 
 	return (
 		<SideViewFormLayout image={process.env.PUBLIC_URL + './images/photo-1496206945239-d388b467f2e6.webp'}>
-			<Mui.Typography component='h1' variant='h5' className={classes.title}>
+			<Typography component='h1' variant='h5' className={classes.title}>
 				Reset Your Password
-			</Mui.Typography>
+			</Typography>
 
-			<MuiLab.Alert severity='info'>
+			<Alert severity='info'>
 				Enter your account email below
 				<br />
 				a link to reaet your password will be sent to your inbox
-			</MuiLab.Alert>
+			</Alert>
 
 			<form noValidate>
-				<Mui.TextField
+				<TextField
 					name='email'
 					label='Email Address'
 					type='text'
@@ -126,7 +126,7 @@ export default function ForgotPassword() {
 					autoComplete='email'
 				/>
 
-				<Mui.Button
+				<Button
 					type='submit'
 					fullWidth
 					variant='contained'
@@ -135,14 +135,14 @@ export default function ForgotPassword() {
 					onClick={onSubmit}
 					disabled={loading} >
 					{loading ?
-						<Mui.CircularProgress color='inherit' size={20} className={classes.progress} /> : undefined}
+						<CircularProgress color='inherit' size={20} className={classes.progress} /> : undefined}
 					Submit
-				</Mui.Button>
-				<Mui.Box display={clsx({'none': error === undefined})}>
-					<MuiLab.Alert severity='error'>
+				</Button>
+				<Box display={clsx({'none': error === undefined})}>
+					<Alert severity='error'>
 						{error}
-					</MuiLab.Alert>
-				</Mui.Box>
+					</Alert>
+				</Box>
 			</form>
 		</SideViewFormLayout>
 	)

@@ -1,6 +1,6 @@
 
 import React from 'react'
-import * as Mui from '@material-ui/core'
+import {Avatar, Box, Chip, Divider, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/core/styles'
 import {useSelector} from 'react-redux'
 import {selectRoom} from '../state/roomSlice'
@@ -26,37 +26,37 @@ function RoomMembers() {
 	const {userId, creator, members} = useSelector(selectRoom)
 
 	return (
-		<Mui.Box className={classes.container}> 
-			<Mui.Typography variant="h5"> Members </Mui.Typography>
-			<Mui.List className={classes.list}>
+		<Box className={classes.container}> 
+			<Typography variant="h5"> Members </Typography>
+			<List className={classes.list}>
 				{
 					members.map(m => (
 						<React.Fragment key={m.userId}>
-							<Mui.ListItem>
-								<Mui.ListItemAvatar>
-									<Mui.Avatar className={classes.memberImage} alt={m.name} src={m.image || '/'} />
-								</Mui.ListItemAvatar>
-								<Mui.ListItemText 
+							<ListItem>
+								<ListItemAvatar>
+									<Avatar className={classes.memberImage} alt={m.name} src={m.image || '/'} />
+								</ListItemAvatar>
+								<ListItemText 
 									primary={m.name} />
-								<Mui.ListItemSecondaryAction>
+								<ListItemSecondaryAction>
 									{
 										(m.userId === userId) ?
-											<Mui.Chip size="small" label="me" variant="outlined" />
+											<Chip size="small" label="me" variant="outlined" />
 											: undefined
 									}
 									{
 										(m.userId === creator) ?
-											<Mui.Chip size="small" label="owner" variant="outlined" />
+											<Chip size="small" label="owner" variant="outlined" />
 											: undefined
 									}
-								</Mui.ListItemSecondaryAction>
-							</Mui.ListItem>
-							<Mui.Divider />
+								</ListItemSecondaryAction>
+							</ListItem>
+							<Divider />
 						</React.Fragment>
 					))
 				}
-			</Mui.List>
-		</Mui.Box>
+			</List>
+		</Box>
 	)
 }
 

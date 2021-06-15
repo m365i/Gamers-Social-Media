@@ -1,7 +1,7 @@
 
 import React, {useState} from 'react'
-import * as Mui from '@material-ui/core'
-import * as MuiLab from '@material-ui/lab'
+import {Box, IconButton, InputAdornment, List, ListItem, ListItemText, Typography} from '@material-ui/core'
+import {Alert} from '@material-ui/lab'
 import {makeStyles} from '@material-ui/core/styles'
 import Icon from '@material-ui/core/Icon'
 import {DateTimePicker} from '@material-ui/pickers'
@@ -77,35 +77,35 @@ function RoomSchedule() {
 	if(undefined) sendDate()
 
 	return (
-		<Mui.Box className={classes.container}> 
-			<Mui.Typography variant="h5"> Schedules </Mui.Typography>
+		<Box className={classes.container}> 
+			<Typography variant="h5"> Schedules </Typography>
 			{ 
 				error ?
-					<MuiLab.Alert severity="error" className={classes.error}>
+					<Alert severity="error" className={classes.error}>
 						{ error }
-					</MuiLab.Alert>
+					</Alert>
 					: undefined
 			}
-			<Mui.List className={classes.list}>
+			<List className={classes.list}>
 				{
 					schedules.map((a, i) => (
 						<React.Fragment key={a._id}>
-							<Mui.ListItem>
-								<Mui.ListItemText> 
-									<MuiLab.Alert
+							<ListItem>
+								<ListItemText> 
+									<Alert
 										onClose={isOwner ? () => deleteDate(i) : undefined}
 										severity="info"
-										icon={<Icon>alarm</Icon>}>{moment(a.fromDate).calendar()}</MuiLab.Alert>
-								</Mui.ListItemText>
-							</Mui.ListItem>
+										icon={<Icon>alarm</Icon>}>{moment(a.fromDate).calendar()}</Alert>
+								</ListItemText>
+							</ListItem>
 						</React.Fragment>
 					))
 				}
-			</Mui.List>
+			</List>
 
 			{ 
 				isOwner ?
-					<Mui.Box display="flex" flexDirection="column">
+					<Box display="flex" flexDirection="column">
 						<DateTimePicker
 							disabled={loading}
 							autoOk
@@ -122,26 +122,26 @@ function RoomSchedule() {
 							rightArrowButtonProps={{ 'aria-label': 'Next month' }}
 							InputProps={{
 								endAdornment: (
-									<Mui.InputAdornment position="end">
-										<Mui.IconButton
+									<InputAdornment position="end">
+										<IconButton
 											disabled={loading}
 											aria-label="event">
 											<Icon> event </Icon>
-										</Mui.IconButton>
-										<Mui.IconButton
+										</IconButton>
+										<IconButton
 											disabled={loading}
 											aria-label="send"
 											onClick={sendDate}>
 											<Icon> send </Icon>
-										</Mui.IconButton>
-									</Mui.InputAdornment>
+										</IconButton>
+									</InputAdornment>
 								),
 							}}
 						/>
-					</Mui.Box>
+					</Box>
 					: undefined
 			}
-		</Mui.Box>
+		</Box>
 	)
 }
 

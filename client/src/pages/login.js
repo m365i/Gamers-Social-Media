@@ -5,8 +5,8 @@ import {useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import clsx from 'clsx'
 import {Link} from 'react-router-dom'
-import * as Mui from '@material-ui/core'
-import * as MuiLab from '@material-ui/lab'
+import {Box, Button, Checkbox, CircularProgress, FormControlLabel, Grid, TextField, Typography} from '@material-ui/core'
+import {Alert} from '@material-ui/lab'
 import {makeStyles} from '@material-ui/core/styles'
 import SideViewFormLayout from '../components/SideViewFormLayout'
 import {fetchUser} from '../state/userSlice'
@@ -98,22 +98,22 @@ export default function Login(props) {
 
 	return (
 		<SideViewFormLayout image={process.env.PUBLIC_URL + './images/photo-1511193311914-0346f16efe90.webp'}>
-			<Mui.Typography component='h1' variant='h5' className={classes.title}>
+			<Typography component='h1' variant='h5' className={classes.title}>
 				Welcome back!
-			</Mui.Typography>
+			</Typography>
 
 			{ // signup message
 				(props.location.state && props.location.state.signup) ?
-					<MuiLab.Alert severity='success'>
+					<Alert severity='success'>
 						<>
 							Congratulation! your account has been successfuly created.
 							<br />
 							you can now log in to cuntinue
 						</>
-					</MuiLab.Alert> : undefined}
+					</Alert> : undefined}
 
 			<form noValidate>
-				<Mui.TextField
+				<TextField
 					name='email'
 					label='Email Address'
 					type='text'
@@ -130,7 +130,7 @@ export default function Login(props) {
 					autoComplete='email'
 				/>
 
-				<Mui.TextField
+				<TextField
 					name='password'
 					label='Password'
 					type='password'
@@ -145,8 +145,8 @@ export default function Login(props) {
 					margin='normal'
 				/>
 
-				<Mui.FormControlLabel
-					control={<Mui.Checkbox
+				<FormControlLabel
+					control={<Checkbox
 						value='remember'
 						color='primary'
 						onChange={onRememberMeChange}
@@ -157,7 +157,7 @@ export default function Login(props) {
 					margin='normal'
 				/>
 
-				<Mui.Button
+				<Button
 					type='submit'
 					fullWidth
 					variant='contained'
@@ -166,26 +166,26 @@ export default function Login(props) {
 					onClick={onLogin}
 					disabled={loading} >
 					{loading ?
-						<Mui.CircularProgress color='inherit' size={20} className={classes.progress} /> : undefined}
+						<CircularProgress color='inherit' size={20} className={classes.progress} /> : undefined}
 					Sign in
-				</Mui.Button>
-				<Mui.Box display={clsx({'none': error === undefined})}>
-					<MuiLab.Alert severity='error'>
+				</Button>
+				<Box display={clsx({'none': error === undefined})}>
+					<Alert severity='error'>
 						{error}
-					</MuiLab.Alert>
-				</Mui.Box>
-				<Mui.Grid container direction='column' justify='center' alignItems='center'>
-					<Mui.Grid item xs={12}>
+					</Alert>
+				</Box>
+				<Grid container direction='column' justify='center' alignItems='center'>
+					<Grid item xs={12}>
 						<Link to='/forgot-password' className={classes.link}>
-							<Mui.Typography> Forgot password? </Mui.Typography>
+							<Typography> Forgot password? </Typography>
 						</Link>
-					</Mui.Grid>
-					<Mui.Grid item xs={12} className={classes.link}>
+					</Grid>
+					<Grid item xs={12} className={classes.link}>
 						<Link to='/signup'>
-							<Mui.Typography> Don&apos;t have an account? Sign Up </Mui.Typography>
+							<Typography> Don&apos;t have an account? Sign Up </Typography>
 						</Link>
-					</Mui.Grid>
-				</Mui.Grid>
+					</Grid>
+				</Grid>
 			</form>
 		</SideViewFormLayout>
 	)

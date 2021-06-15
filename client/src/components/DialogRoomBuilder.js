@@ -1,6 +1,6 @@
 
-import * as Mui from '@material-ui/core'
-import * as MuiLab from '@material-ui/lab'
+import {Avatar, Button, ButtonGroup, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField, Typography} from '@material-ui/core'
+import {Alert, Autocomplete} from '@material-ui/lab'
 import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from 'react'
 import {actionAfterEditRoom, selectRoom} from '../state/roomSlice'
 import {useDispatch, useSelector} from 'react-redux'
@@ -119,7 +119,7 @@ function _InputRoom({init, disabled}, ref) { // init should be a state so it won
 	
 	return (
 		<form noValidate>
-			<Mui.TextField
+			<TextField
 				name='name'
 				label='Name'
 				type='text'
@@ -138,7 +138,7 @@ function _InputRoom({init, disabled}, ref) { // init should be a state so it won
 
 			<br />
 
-			<MuiLab.Autocomplete
+			<Autocomplete
 				fullWidth
 				defaultValue={init.game}
 				getOptionSelected={(option, value) => option.name === value.name}
@@ -158,7 +158,7 @@ function _InputRoom({init, disabled}, ref) { // init should be a state so it won
 					setInputGame(newInputValue)
 				}}
 				renderInput={(params) => (
-					<Mui.TextField
+					<TextField
 						{...params}
 						label="Game"
 						fullWidth
@@ -170,7 +170,7 @@ function _InputRoom({init, disabled}, ref) { // init should be a state so it won
 							...params.InputProps,
 							endAdornment: (
 								<React.Fragment>
-									{gameSelectLoading ? <Mui.CircularProgress color="inherit" size={20} /> : null}
+									{gameSelectLoading ? <CircularProgress color="inherit" size={20} /> : null}
 									{params.InputProps.endAdornment}
 								</React.Fragment>
 							),
@@ -178,34 +178,34 @@ function _InputRoom({init, disabled}, ref) { // init should be a state so it won
 					/>
 				)}
 				renderOption={(option) => (
-					<Mui.Grid container alignItems="center">
-						<Mui.Grid item>
-							<Mui.Avatar variant="rounded" alt="cover" src={option.image} />
-						</Mui.Grid>
-						<Mui.Grid item xs>
-							<Mui.Typography variant="body2">
+					<Grid container alignItems="center">
+						<Grid item>
+							<Avatar variant="rounded" alt="cover" src={option.image} />
+						</Grid>
+						<Grid item xs>
+							<Typography variant="body2">
 								&nbsp; {option.name}
-							</Mui.Typography>
-						</Mui.Grid>
-					</Mui.Grid>
+							</Typography>
+						</Grid>
+					</Grid>
 				)}
 			/>
 
 			<br />
 
-			<Mui.ButtonGroup color="primary" aria-label="outlined primary button group" disabled={disabled}>
+			<ButtonGroup color="primary" aria-label="outlined primary button group" disabled={disabled}>
 				{
 					['Pc', 'Xbox', 'Playstation', 'Android', 'Psp', 'Apple'].map(p => {
 						return (
-							<Mui.Button key={p} variant={clsx({'contained':(platform === p)})} onClick={() => onPlatrormChange(p)}>{p}</Mui.Button>
+							<Button key={p} variant={clsx({'contained':(platform === p)})} onClick={() => onPlatrormChange(p)}>{p}</Button>
 						)
 					})
 				}
-			</Mui.ButtonGroup>
+			</ButtonGroup>
 
 			<br />
 			
-			<Mui.TextField
+			<TextField
 				name='description'
 				label='description'
 				type='text'
@@ -237,7 +237,7 @@ export function DialogEditRoom({open, close}) {
 	const [initInput, setInitInput] = useState(undefined)
 
 	const [loading, setLoading] = useState(false)
-	const [error, setError] = useState(false)
+	const [error, setError] = useState(undefined)
 
 	const input = useRef()
 
@@ -249,6 +249,7 @@ export function DialogEditRoom({open, close}) {
 		if(input.current.validate()) {
 			const {name, game, platform, description} = input.current.data()
 			setLoading(true)
+			setError(undefined)
 			gameEditRoom(roomId, name, game, platform, description)
 				.then(() => {
 					dispatch(actionAfterEditRoom({name, game, platform, description}))
@@ -267,33 +268,33 @@ export function DialogEditRoom({open, close}) {
 	}
 
 	return (
-		<Mui.Dialog
+		<Dialog
 			open={open}
 			onClose={close}
 			aria-labelledby="responsive-dialog-title" >
-			<Mui.DialogTitle id="responsive-dialog-title">Edit Room Properties</Mui.DialogTitle>
-			<Mui.DialogContent>
+			<DialogTitle id="responsive-dialog-title">Edit Room Properties</DialogTitle>
+			<DialogContent>
 				<InputRoom ref={input} init={initInput} disabled={loading} onClick={() => setInputInvalid(false)} />
 				{
 					inputInvalid ?
-						<MuiLab.Alert severity="error">Error: input invalid </MuiLab.Alert>
+						<Alert severity="error">Error: input invalid </Alert>
 						: undefined
 				}
-			</Mui.DialogContent>
+			</DialogContent>
 			{
 				error ?
-					<MuiLab.Alert severity="error">{error}</MuiLab.Alert>
+					<Alert severity="error">{error}</Alert>
 					: undefined
 			}
-			<Mui.DialogActions>
-				<Mui.Button
+			<DialogActions>
+				<Button
 					disabled={loading} 
 					autoFocus 
 					onClick={close} 
 					color="primary">
 					Discard
-				</Mui.Button>
-				<Mui.Button 
+				</Button>
+				<Button 
 					disabled={loading} 
 					onClick={save} 
 					color="primary" 
@@ -301,33 +302,45 @@ export function DialogEditRoom({open, close}) {
 					{
 						loading ?
 							<>
-								<Mui.CircularProgress size={15} color="inherit" />
+								<CircularProgress size={15} color="inherit" />
 								&nbsp;
 								&nbsp;
 							</>
 							: undefined
 					}
 					Save
-				</Mui.Button>
-			</Mui.DialogActions>
-		</Mui.Dialog>
+				</Button>
+			</DialogActions>
+		</Dialog>
 	)
 }
 
 export function DialogCreateRoom({open, close}) {
 
+	const input = useRef()
+
 	const [inputInvalid, setInputInvalid] = useState(false)
 
-	const input = useRef()
+	const [loading, setLoading] = useState(false)
+	const [error, setError] = useState(false)
 
 	function save() {
 		if(input.current.validate()) {
 			const {name, game, platform, description} =  input.current.data()
+			setLoading(true)
+			setError(undefined)
 			createRoom(name, game, platform, description)
 				.then(res => {
 					close()
 					const id = res.data
 					window.open('/room/' + id)
+				})
+				.catch(err => {
+					setError(err.message)
+					console.error(err)
+				})
+				.finally(() => {
+					setLoading(false)
 				})
 		} else {
 			setInputInvalid(true)
@@ -335,24 +348,42 @@ export function DialogCreateRoom({open, close}) {
 	}
 
 	return (
-		<Mui.Dialog
+		<Dialog
 			open={open}
 			onClose={close}
 			aria-labelledby="responsive-dialog-title" >
-			<Mui.DialogTitle id="responsive-dialog-title">Create Room</Mui.DialogTitle>
-			<Mui.DialogContent>
+			<DialogTitle id="responsive-dialog-title">Create Room</DialogTitle>
+			<DialogContent>
 				<InputRoom ref={input} onClick={() => setInputInvalid(false)} />
 				{
 					inputInvalid ?
-						<MuiLab.Alert severity="error">Error: input invalid </MuiLab.Alert>
+						<Alert severity="error">Error: input invalid </Alert>
 						: undefined
 				}
-			</Mui.DialogContent>
-			<Mui.DialogActions>
-				<Mui.Button onClick={save} color="primary" autoFocus>
+			</DialogContent>
+			{
+				error ?
+					<Alert severity="error">{error}</Alert>
+					: undefined
+			}
+			<DialogActions>
+				<Button 
+					disabled={loading} 
+					onClick={save} 
+					color="primary" 
+					autoFocus>
+					{
+						loading ?
+							<>
+								<CircularProgress size={15} color="inherit" />
+								&nbsp;
+								&nbsp;
+							</>
+							: undefined
+					}
 					Create
-				</Mui.Button>
-			</Mui.DialogActions>
-		</Mui.Dialog>
+				</Button>
+			</DialogActions>
+		</Dialog>
 	)
 }

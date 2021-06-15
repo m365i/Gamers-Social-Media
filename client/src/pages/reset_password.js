@@ -5,8 +5,8 @@ import {useState, useEffect} from 'react'
 import {useParams} from 'react-router-dom'
 import clsx from 'clsx'
 import {Link} from 'react-router-dom'
-import * as Mui from '@material-ui/core'
-import * as MuiLab from '@material-ui/lab'
+import {Box, Button, CircularProgress, FormControl, FormHelperText, Grid, TextField, Typography} from '@material-ui/core'
+import {Alert} from '@material-ui/lab'
 import {makeStyles} from '@material-ui/core/styles'
 import SideViewFormLayout from '../components/SideViewFormLayout'
 import Joi from 'joi'
@@ -110,32 +110,32 @@ export default function ResetPassword() {
 
 	if (linkIsValid === undefined) {
 		return (
-			<Mui.Box textAlign='center' m={5}>
-				<Mui.CircularProgress />
-			</Mui.Box>
+			<Box textAlign='center' m={5}>
+				<CircularProgress />
+			</Box>
 		)
 	}
 
 	if (linkIsValid === false) {
 		return (
 			<SideViewFormLayout image={process.env.PUBLIC_URL + '/images/photo-1521725168367-2f46504f075e.webp'}>
-				<Mui.Typography component='h1' variant='h5' className={classes.title}>
+				<Typography component='h1' variant='h5' className={classes.title}>
 					Reset Your Password
-				</Mui.Typography>
+				</Typography>
 
-				<MuiLab.Alert severity='error'>
+				<Alert severity='error'>
 					Link is invalid or has been expired!
 					<br />
 					it can no longer reset any account password
-				</MuiLab.Alert>
+				</Alert>
 
-				<Mui.Grid container direction='column' justify='center' alignItems='center'>
-					<Mui.Grid item xs={12}>
+				<Grid container direction='column' justify='center' alignItems='center'>
+					<Grid item xs={12}>
 						<Link to='/forgot-password' className={classes.link}>
-							<Mui.Typography> Resend a new link? </Mui.Typography>
+							<Typography> Resend a new link? </Typography>
 						</Link>
-					</Mui.Grid>
-				</Mui.Grid>
+					</Grid>
+				</Grid>
 			</SideViewFormLayout>
 		)
 	}
@@ -143,37 +143,37 @@ export default function ResetPassword() {
 	if (success) {
 		return (
 			<SideViewFormLayout image={process.env.PUBLIC_URL + '/images/photo-1521725168367-2f46504f075e.webp'}>
-				<Mui.Typography component='h1' variant='h5' className={classes.title}>
+				<Typography component='h1' variant='h5' className={classes.title}>
 					Change Has Been Saved
-				</Mui.Typography>
+				</Typography>
 
-				<MuiLab.Alert severity='success'>
+				<Alert severity='success'>
 					Your password has been changed
 					<br />
 					now you can log in with the new password
-				</MuiLab.Alert>
+				</Alert>
 
-				<Mui.Grid container direction='column' justify='center' alignItems='center'>
-					<Mui.Grid item xs={12}>
+				<Grid container direction='column' justify='center' alignItems='center'>
+					<Grid item xs={12}>
 						<Link to='/login' className={classes.link}>
-							<Mui.Typography> Go to log in </Mui.Typography>
+							<Typography> Go to log in </Typography>
 						</Link>
-					</Mui.Grid>
-				</Mui.Grid>
+					</Grid>
+				</Grid>
 			</SideViewFormLayout>
 		)
 	}
 
 	return (
 		<SideViewFormLayout image={process.env.PUBLIC_URL + '/images/photo-1521725168367-2f46504f075e.webp'}>
-			<Mui.Typography component='h1' variant='h5' className={classes.title}>
+			<Typography component='h1' variant='h5' className={classes.title}>
 				Reset Your Password
-			</Mui.Typography>
+			</Typography>
 
 			<form noValidate>
 
-				<Mui.FormControl component='fieldset' fullWidth>
-					<Mui.TextField
+				<FormControl component='fieldset' fullWidth>
+					<TextField
 						name='password'
 						label='Password'
 						type='password'
@@ -187,12 +187,12 @@ export default function ResetPassword() {
 						fullWidth
 						margin='normal'
 					/>
-					<Mui.FormHelperText className={classes.password_strength}>
+					<FormHelperText className={classes.password_strength}>
 						{(password && password !== '') ? `strength: ${passwordStrength(password)}` : undefined}
-					</Mui.FormHelperText>
-				</Mui.FormControl>
+					</FormHelperText>
+				</FormControl>
 
-				<Mui.TextField
+				<TextField
 					name='repassword'
 					label='Re Enter Password'
 					type='password'
@@ -207,7 +207,7 @@ export default function ResetPassword() {
 					margin='normal'
 				/>
 
-				<Mui.Button
+				<Button
 					type='submit'
 					fullWidth
 					variant='contained'
@@ -216,14 +216,14 @@ export default function ResetPassword() {
 					onClick={onSubmit}
 					disabled={loading} >
 					{loading ?
-						<Mui.CircularProgress color='inherit' size={20} className={classes.progress} /> : undefined}
+						<CircularProgress color='inherit' size={20} className={classes.progress} /> : undefined}
 					Submit
-				</Mui.Button>
-				<Mui.Box display={clsx({'none': error === undefined})}>
-					<MuiLab.Alert severity='error'>
+				</Button>
+				<Box display={clsx({'none': error === undefined})}>
+					<Alert severity='error'>
 						{error}
-					</MuiLab.Alert>
-				</Mui.Box>
+					</Alert>
+				</Box>
 			</form>
 		</SideViewFormLayout>
 	)

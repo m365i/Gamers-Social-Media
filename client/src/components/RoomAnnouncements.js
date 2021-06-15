@@ -1,7 +1,7 @@
 
 import React, {useState} from 'react'
-import * as Mui from '@material-ui/core'
-import * as MuiLab from '@material-ui/lab'
+import {Box, Dialog, FilledInput, IconButton, List, ListItem, ListItemText, Typography} from '@material-ui/core'
+import {Alert} from '@material-ui/lab'
 import {makeStyles} from '@material-ui/core/styles'
 import Icon from '@material-ui/core/Icon'
 import Picker from 'emoji-picker-react'
@@ -81,36 +81,36 @@ function RoomAnnouncements() {
 	}
 
 	return (
-		<Mui.Box className={classes.container}> 
-			<Mui.Typography variant="h5"> Announcements </Mui.Typography>
+		<Box className={classes.container}> 
+			<Typography variant="h5"> Announcements </Typography>
 			{ 
 				error ?
-					<MuiLab.Alert severity="error" className={classes.error}>
+					<Alert severity="error" className={classes.error}>
 						{ error }
-					</MuiLab.Alert>
+					</Alert>
 					: undefined
 			}
-			<Mui.List className={classes.list}>
+			<List className={classes.list}>
 				{
 					announcements.map((a, i) => (
 						<React.Fragment key={a._id}>
-							<Mui.ListItem>
-								<Mui.ListItemText> 
-									<MuiLab.Alert
+							<ListItem>
+								<ListItemText> 
+									<Alert
 										onClose={isOwner ? () => deleteMessage(i) : undefined}
 										severity="success"
-										icon={<Icon>campaign</Icon>}>{a.message}</MuiLab.Alert>
-								</Mui.ListItemText>
-							</Mui.ListItem>
+										icon={<Icon>campaign</Icon>}>{a.message}</Alert>
+								</ListItemText>
+							</ListItem>
 						</React.Fragment>
 					))
 				}
-			</Mui.List>
+			</List>
 
 			{ 
 				isOwner ?
 					<>
-						<Mui.FilledInput
+						<FilledInput
 							fullWidth
 							variant="filled"
 							multiline
@@ -122,27 +122,27 @@ function RoomAnnouncements() {
 							inputProps={{'aria-label': 'description'}}
 							endAdornment={
 								<>
-									<Mui.IconButton
+									<IconButton
 										aria-label="emoji"
 										onClick={() => setOpenEmojiDialog(true)}
 										disabled={loading}>
 										<Icon> sentiment_satisfied_alt </Icon>
-									</Mui.IconButton>
-									<Mui.IconButton
+									</IconButton>
+									<IconButton
 										aria-label="send"
 										onClick={() => sendMessage()}
 										disabled={loading}>
 										<Icon> send </Icon>
-									</Mui.IconButton>
+									</IconButton>
 								</>
 							} />
-						<Mui.Dialog onClose={onEmojiClick} aria-labelledby="simple-dialog-title" open={openEmojiDialog}>
+						<Dialog onClose={onEmojiClick} aria-labelledby="simple-dialog-title" open={openEmojiDialog}>
 							<Picker style={classes.emoji} onEmojiClick={onEmojiClick} />
-						</Mui.Dialog>
+						</Dialog>
 					</>
 					: undefined
 			}
-		</Mui.Box>
+		</Box>
 	)
 }
 

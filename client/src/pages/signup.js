@@ -5,8 +5,8 @@ import {useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import clsx from 'clsx'
 import {Link} from 'react-router-dom'
-import * as Mui from '@material-ui/core'
-import * as MuiLab from '@material-ui/lab'
+import {Box, Button, Checkbox, CircularProgress, FormControl, FormControlLabel, FormHelperText, Grid, TextField, Typography} from '@material-ui/core'
+import {Alert} from '@material-ui/lab'
 import {makeStyles} from '@material-ui/core/styles'
 import SideViewFormLayout from '../components/SideViewFormLayout'
 import Joi from 'joi'
@@ -149,11 +149,11 @@ export default function Signup() {
 
 	return (
 		<SideViewFormLayout image={process.env.PUBLIC_URL + './images/photo-1513701589220-af816329378c.webp'}>
-			<Mui.Typography component='h1' variant='h5' className={classes.title}>
+			<Typography component='h1' variant='h5' className={classes.title}>
 				Join us
-			</Mui.Typography>
+			</Typography>
 			<form noValidate>
-				<Mui.TextField
+				<TextField
 					name='name'
 					label='Name'
 					type='text'
@@ -169,7 +169,7 @@ export default function Signup() {
 					margin='normal'
 				/>
 
-				<Mui.TextField
+				<TextField
 					name='email'
 					label='Email Address'
 					type='text'
@@ -185,8 +185,8 @@ export default function Signup() {
 				/>
 
 
-				<Mui.FormControl component='fieldset' fullWidth>
-					<Mui.TextField
+				<FormControl component='fieldset' fullWidth>
+					<TextField
 						name='password'
 						label='Password'
 						type='password'
@@ -200,12 +200,12 @@ export default function Signup() {
 						fullWidth
 						margin='normal'
 					/>
-					<Mui.FormHelperText className={classes.password_strength}>
+					<FormHelperText className={classes.password_strength}>
 						{(password && password !== '') ? `strength: ${passwordStrength(password)}` : undefined}
-					</Mui.FormHelperText>
-				</Mui.FormControl>
+					</FormHelperText>
+				</FormControl>
 
-				<Mui.TextField
+				<TextField
 					name='repassword'
 					label='Re Enter Password'
 					type='password'
@@ -220,9 +220,9 @@ export default function Signup() {
 					margin='normal'
 				/>
 
-				<Mui.FormControl required error={agreeToTermsAndConditionsValidation !== undefined} component='fieldset' fullWidth>
-					<Mui.FormControlLabel
-						control={<Mui.Checkbox
+				<FormControl required error={agreeToTermsAndConditionsValidation !== undefined} component='fieldset' fullWidth>
+					<FormControlLabel
+						control={<Checkbox
 							value='remember'
 							color='primary'
 							onChange={onAgreeToTermsAndConditionsChange}
@@ -232,10 +232,10 @@ export default function Signup() {
 						label='Agree to terms and conditions'
 						margin='normal'
 					/>
-					<Mui.FormHelperText>{agreeToTermsAndConditionsValidation}</Mui.FormHelperText>
-				</Mui.FormControl>
+					<FormHelperText>{agreeToTermsAndConditionsValidation}</FormHelperText>
+				</FormControl>
 
-				<Mui.Button
+				<Button
 					type='submit'
 					fullWidth
 					variant='contained'
@@ -244,21 +244,21 @@ export default function Signup() {
 					onClick={onSignup}
 					disabled={loading} >
 					{loading ?
-						<Mui.CircularProgress color='inherit' size={20} className={classes.progress} /> : undefined}
+						<CircularProgress color='inherit' size={20} className={classes.progress} /> : undefined}
 					Sign up
-				</Mui.Button>
-				<Mui.Box display={clsx({'none': error === undefined})}>
-					<MuiLab.Alert severity='error'>
+				</Button>
+				<Box display={clsx({'none': error === undefined})}>
+					<Alert severity='error'>
 						{error}
-					</MuiLab.Alert>
-				</Mui.Box>
-				<Mui.Grid container direction='column' justify='center' alignItems='center'>
-					<Mui.Grid item xs={12}>
+					</Alert>
+				</Box>
+				<Grid container direction='column' justify='center' alignItems='center'>
+					<Grid item xs={12}>
 						<Link to='/login' className={classes.link}>
-							<Mui.Typography> Already have an account? log in now </Mui.Typography>
+							<Typography> Already have an account? log in now </Typography>
 						</Link>
-					</Mui.Grid>
-				</Mui.Grid>
+					</Grid>
+				</Grid>
 			</form>
 		</SideViewFormLayout>
 	)

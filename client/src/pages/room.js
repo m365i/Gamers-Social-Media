@@ -8,8 +8,8 @@ import RoomAnnouncements from '../components/RoomAnnouncements'
 import RoomSchedule from '../components/RoomSchedule'
 import {useDispatch, useSelector} from 'react-redux'
 import {selectUser} from '../state/userSlice'
-import * as Mui from '@material-ui/core'
-import * as MuiLab from '@material-ui/lab'
+import {Avatar, Box, Button, Chip, CircularProgress, Container, Grid, Paper, Typography} from '@material-ui/core'
+import {Alert} from '@material-ui/lab'
 import Icon from '@material-ui/core/Icon'
 import { DialogEditRoom } from '../components/DialogRoomBuilder'
 import {makeStyles} from '@material-ui/core/styles'
@@ -144,52 +144,52 @@ function Room() {
 
 	if(loading) {
 		return (
-			<Mui.Box textAlign="center" m={3}>
-				<Mui.CircularProgress />
-			</Mui.Box>
+			<Box textAlign="center" m={3}>
+				<CircularProgress />
+			</Box>
 		)
 	}
 
 	if(error) {
 		return (
-			<MuiLab.Alert severity="error">Error: fetching data for room &quot;{id}&quot; failed [reson: {error}]</MuiLab.Alert>
+			<Alert severity="error">Error: fetching data for room &quot;{id}&quot; failed [reson: {error}]</Alert>
 		)
 	}
 	
 	return (
-		<Mui.Box className={classes.container}>
-			<Mui.Container maxWidth="md">
+		<Box className={classes.container}>
+			<Container maxWidth="md">
 
-				<Mui.Box className={classes.header}>
-					<Mui.Typography variant="h4"> 
+				<Box className={classes.header}>
+					<Typography variant="h4"> 
 						<Icon>games</Icon> 
 						&nbsp;
 						{name} 
 						&nbsp;
-						<Mui.Chip
+						<Chip
 							size="small"
 							color="primary"
-							avatar={<Mui.Avatar alt="user image" src={creator_info.image} />}
+							avatar={<Avatar alt="user image" src={creator_info.image} />}
 							label={'owner: ' + creator_info.name}
 						/>
-					</Mui.Typography>
-					<Mui.Typography variant="caption"> #id: {id} </Mui.Typography>
-				</Mui.Box>
+					</Typography>
+					<Typography variant="caption"> #id: {id} </Typography>
+				</Box>
 
-				<Mui.Box className={classes.controlls}>
+				<Box className={classes.controlls}>
 					{
 						isOwner ?
 							<>
-								<Mui.Button variant="contained" onClick={editRoom}>
+								<Button variant="contained" onClick={editRoom}>
 									<Icon>edit</Icon> &nbsp; Edit
-								</Mui.Button>
+								</Button>
 								<DialogEditRoom 
 									open={openEditDialog} 
 									close={() => setOpenEditDialog(false)}
 									roomId={id} />
 								&nbsp;
 								&nbsp;
-								<Mui.Button 
+								<Button 
 									disabled={deleteRoomLoading}
 									variant="contained" 
 									color="secondary" 
@@ -197,18 +197,18 @@ function Room() {
 									{
 										deleteRoomLoading ?
 											<>
-												<Mui.CircularProgress size={15} color="inherit" />
+												<CircularProgress size={15} color="inherit" />
 												&nbsp;
 												&nbsp;
 											</>
 											: undefined
 									}
 									<Icon>delete</Icon> &nbsp; Delete
-								</Mui.Button>
+								</Button>
 							</>
 							:
 							isMember ?
-								<Mui.Button 
+								<Button 
 									disabled={changeRoomMembershipLoading}
 									variant="contained" 
 									color="secondary" 
@@ -216,17 +216,17 @@ function Room() {
 									{
 										changeRoomMembershipLoading ?
 											<>
-												<Mui.CircularProgress size={15} color="inherit" />
+												<CircularProgress size={15} color="inherit" />
 												&nbsp;
 												&nbsp;
 											</>
 											: undefined
 									}
 									<Icon>logout</Icon> &nbsp; Leave
-								</Mui.Button>
+								</Button>
 								:
 								user ?
-									<Mui.Button 
+									<Button 
 										disabled={changeRoomMembershipLoading}
 										variant="contained" 
 										color="primary" 
@@ -234,81 +234,81 @@ function Room() {
 										{
 											changeRoomMembershipLoading ?
 												<>
-													<Mui.CircularProgress size={15} color="inherit" />
+													<CircularProgress size={15} color="inherit" />
 													&nbsp;
 													&nbsp;
 												</>
 												: undefined
 										}
 										<Icon>add</Icon> &nbsp; Join
-									</Mui.Button>
+									</Button>
 									:
 									undefined
 					}
-				</Mui.Box>
+				</Box>
 
 				{ (description && description.trim() !== '') ?
-					<Mui.Box className={classes.desc}>
-						<Mui.Typography variant="body1"> description: {description} </Mui.Typography>
-					</Mui.Box>
+					<Box className={classes.desc}>
+						<Typography variant="body1"> description: {description} </Typography>
+					</Box>
 					: undefined
 				}
 
-				<Mui.Box className={classes.stats}>
-					<Mui.Grid container spacing={3}>
-						<Mui.Grid item xs>
-							<Mui.Paper>
-								<Mui.Box className={classes.statItem}>
-									<Mui.Typography variant="h6"> <Icon>sports_basketball</Icon> &nbsp; Game </Mui.Typography>
-									<Mui.Typography variant="subtitle1"> {game} </Mui.Typography>
-								</Mui.Box>
-							</Mui.Paper>
-						</Mui.Grid>
-						<Mui.Grid item xs>
-							<Mui.Paper>
-								<Mui.Box className={classes.statItem}>
-									<Mui.Typography variant="h6"> <Icon>sports_esports</Icon> &nbsp; Platform </Mui.Typography>
-									<Mui.Typography variant="h5"> {platform} </Mui.Typography>
-								</Mui.Box>
-							</Mui.Paper>
-						</Mui.Grid>
-						<Mui.Grid item xs>
-							<Mui.Paper>
-								<Mui.Box className={classes.statItem}>
-									<Mui.Typography variant="h6"> <Icon>groups</Icon> &nbsp; Friends </Mui.Typography>
-									<Mui.Typography variant="h5"> {members.length} </Mui.Typography>
-								</Mui.Box>
-							</Mui.Paper>
-						</Mui.Grid>
-					</Mui.Grid>
-				</Mui.Box>
+				<Box className={classes.stats}>
+					<Grid container spacing={3}>
+						<Grid item xs>
+							<Paper>
+								<Box className={classes.statItem}>
+									<Typography variant="h6"> <Icon>sports_basketball</Icon> &nbsp; Game </Typography>
+									<Typography variant="subtitle1"> {game} </Typography>
+								</Box>
+							</Paper>
+						</Grid>
+						<Grid item xs>
+							<Paper>
+								<Box className={classes.statItem}>
+									<Typography variant="h6"> <Icon>sports_esports</Icon> &nbsp; Platform </Typography>
+									<Typography variant="h5"> {platform} </Typography>
+								</Box>
+							</Paper>
+						</Grid>
+						<Grid item xs>
+							<Paper>
+								<Box className={classes.statItem}>
+									<Typography variant="h6"> <Icon>groups</Icon> &nbsp; Friends </Typography>
+									<Typography variant="h5"> {members.length} </Typography>
+								</Box>
+							</Paper>
+						</Grid>
+					</Grid>
+				</Box>
 
-				<Mui.Paper spacing={3} className={classes.body}>
-					<Mui.Grid container spacing={3}>
-						<Mui.Grid item xs>
+				<Paper spacing={3} className={classes.body}>
+					<Grid container spacing={3}>
+						<Grid item xs>
 							<RoomAnnouncements />
-						</Mui.Grid>
-						<Mui.Grid item xs>
+						</Grid>
+						<Grid item xs>
 							<RoomSchedule />
-						</Mui.Grid>
-					</Mui.Grid>
+						</Grid>
+					</Grid>
 					<br />
-					<Mui.Grid container spacing={3}>
-						<Mui.Grid item xs>
+					<Grid container spacing={3}>
+						<Grid item xs>
 							<RoomChat room={id} />
-						</Mui.Grid>
-						<Mui.Grid item xs>
+						</Grid>
+						<Grid item xs>
 							<RoomMembers />
-						</Mui.Grid>
-					</Mui.Grid>
-				</Mui.Paper>
+						</Grid>
+					</Grid>
+				</Paper>
 
-				<Mui.Box className={classes.footer}>
+				<Box className={classes.footer}>
 					<GameInfo name={game} />
-				</Mui.Box>
+				</Box>
 
-			</Mui.Container>
-		</Mui.Box>
+			</Container>
+		</Box>
 	)
 }
 
