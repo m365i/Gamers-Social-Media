@@ -4,8 +4,8 @@ import {contact} from '../services/contactAPI'
 import {useState} from 'react'
 import clsx from 'clsx'
 import {Link} from 'react-router-dom'
-import * as Mui from '@material-ui/core'
-import * as MuiLab from '@material-ui/lab'
+import {Box, Button, CircularProgress, Grid, TextField, Typography} from '@material-ui/core'
+import {Alert} from '@material-ui/lab'
 import {makeStyles} from '@material-ui/core/styles'
 import SideViewFormLayout from '../components/SideViewFormLayout'
 import Joi from 'joi'
@@ -103,21 +103,21 @@ export default function Contact() {
 	if (success) {
 		return (
 			<SideViewFormLayout image={process.env.PUBLIC_URL + './images/photo-1504716325983-cb91edab7e7d.webp'}>
-				<Mui.Typography component='h1' variant='h5' className={classes.title}>
+				<Typography component='h1' variant='h5' className={classes.title}>
 					Message Has Been Sent!
-				</Mui.Typography>
+				</Typography>
 
-				<MuiLab.Alert severity='success'>
+				<Alert severity='success'>
 					Out team will be looking in to it as fast as possible!
-				</MuiLab.Alert>
+				</Alert>
 
-				<Mui.Grid container direction='column' justify='center' alignItems='center'>
-					<Mui.Grid item xs={12}>
+				<Grid container direction='column' justify='center' alignItems='center'>
+					<Grid item xs={12}>
 						<Link to='/' className={classes.link}>
-							<Mui.Typography> Go back home </Mui.Typography>
+							<Typography> Go back home </Typography>
 						</Link>
-					</Mui.Grid>
-				</Mui.Grid>
+					</Grid>
+				</Grid>
 			</SideViewFormLayout>
 		)
 	}
@@ -125,12 +125,12 @@ export default function Contact() {
 	return (
 		<SideViewFormLayout image={process.env.PUBLIC_URL + './images/photo-1504716325983-cb91edab7e7d.webp'}>
 
-			<Mui.Typography component='h1' variant='h5' className={classes.title}>
+			<Typography component='h1' variant='h5' className={classes.title}>
 				Contact Us
-			</Mui.Typography>
+			</Typography>
 
 			<form noValidate>
-				<Mui.TextField
+				<TextField
 					name='name'
 					label='Name'
 					type='text'
@@ -146,7 +146,7 @@ export default function Contact() {
 					margin='normal'
 				/>
 
-				<Mui.TextField
+				<TextField
 					name='email'
 					label='Email Address'
 					type='text'
@@ -161,7 +161,7 @@ export default function Contact() {
 					margin='normal'
 				/>
 
-				<Mui.TextField
+				<TextField
 					name='message'
 					label='Message'
 					type='text'
@@ -178,7 +178,7 @@ export default function Contact() {
 					margin='normal'
 				/>
 
-				<Mui.Button
+				<Button
 					type='submit'
 					fullWidth
 					variant='contained'
@@ -187,14 +187,14 @@ export default function Contact() {
 					onClick={onSubmit}
 					disabled={loading} >
 					{loading ?
-						<Mui.CircularProgress color='inherit' size={20} className={classes.progress} /> : undefined}
+						<CircularProgress color='inherit' size={20} className={classes.progress} /> : undefined}
 					Submit
-				</Mui.Button>
-				<Mui.Box display={clsx({'none': error === undefined})}>
-					<MuiLab.Alert severity='error'>
+				</Button>
+				<Box display={clsx({'none': error === undefined})}>
+					<Alert severity='error'>
 						{error}
-					</MuiLab.Alert>
-				</Mui.Box>
+					</Alert>
+				</Box>
 			</form>
 
 		</SideViewFormLayout>

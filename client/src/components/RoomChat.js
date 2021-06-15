@@ -1,7 +1,7 @@
 
 import React, {useRef,useEffect, useState} from 'react'
-import * as Mui from '@material-ui/core'
-import * as MuiLab from '@material-ui/lab'
+import {Avatar, Box, Dialog, Divider, FilledInput, IconButton, List, ListItem, ListItemAvatar, ListItemText, Typography} from '@material-ui/core'
+import {Alert} from '@material-ui/lab'
 import Icon from '@material-ui/core/Icon'
 import {makeStyles} from '@material-ui/core/styles'
 import Picker from 'emoji-picker-react'
@@ -164,15 +164,15 @@ function RoomChat({room}) {
 	}
 
 	return (
-		<Mui.Box className={classes.container}>
-			<Mui.Typography variant="h5"> Chat </Mui.Typography>
+		<Box className={classes.container}>
+			<Typography variant="h5"> Chat </Typography>
 			{
 				error ?
-					<Mui.Box className={classes.error}>
-						<MuiLab.Alert severity='error'> {error} </MuiLab.Alert>
-					</Mui.Box>
+					<Box className={classes.error}>
+						<Alert severity='error'> {error} </Alert>
+					</Box>
 					:
-					<Mui.List 
+					<List 
 						dense={true} 
 						className={classes.list} 
 						ref={messagesListRef}>
@@ -180,11 +180,11 @@ function RoomChat({room}) {
 							list.map(m => {
 								return (
 									<React.Fragment key={m.id}>
-										<Mui.ListItem alignItems="flex-start">
-											<Mui.ListItemAvatar>
-												<Mui.Avatar className={classes.messageImageSmall} alt={m.name} src={m.image || '/'} />
-											</Mui.ListItemAvatar>
-											<Mui.ListItemText
+										<ListItem alignItems="flex-start">
+											<ListItemAvatar>
+												<Avatar className={classes.messageImageSmall} alt={m.name} src={m.image || '/'} />
+											</ListItemAvatar>
+											<ListItemText
 												primary={
 													<>
 														<span className={classes.messageInfo}>
@@ -201,8 +201,8 @@ function RoomChat({room}) {
 													</>
 												}
 											/>
-										</Mui.ListItem>
-										<Mui.Divider />
+										</ListItem>
+										<Divider />
 									</React.Fragment>
 								)
 							})
@@ -210,17 +210,17 @@ function RoomChat({room}) {
 						{
 							canLoadMore ?
 								<>
-									<Mui.ListItem alignItems="flex-start" className={classes.loading}>
+									<ListItem alignItems="flex-start" className={classes.loading}>
 										Loading...
-									</Mui.ListItem>
-									<Mui.Divider />
+									</ListItem>
+									<Divider />
 								</>
 								: undefined
 						}
-					</Mui.List>
+					</List>
 			}
 
-			<Mui.FilledInput
+			<FilledInput
 				fullWidth
 				variant="filled"
 				multiline
@@ -232,24 +232,24 @@ function RoomChat({room}) {
 				inputProps={{'aria-label': 'description'}}
 				endAdornment={
 					<>
-						<Mui.IconButton
+						<IconButton
 							aria-label="emoji"
 							onClick={() => setOpenEmojiDialog(true)}
 							disabled={!allowedToChat}>
 							<Icon> sentiment_satisfied_alt </Icon>
-						</Mui.IconButton>
-						<Mui.IconButton
+						</IconButton>
+						<IconButton
 							aria-label="send"
 							onClick={() => sendMessage()}
 							disabled={!allowedToChat}>
 							<Icon> send </Icon>
-						</Mui.IconButton>
+						</IconButton>
 					</>
 				} />
-			<Mui.Dialog onClose={onEmojiClick} aria-labelledby="simple-dialog-title" open={openEmojiDialog}>
+			<Dialog onClose={onEmojiClick} aria-labelledby="simple-dialog-title" open={openEmojiDialog}>
 				<Picker style={classes.emoji} onEmojiClick={onEmojiClick} />
-			</Mui.Dialog>
-		</Mui.Box>
+			</Dialog>
+		</Box>
 	)
 }
 
