@@ -15,7 +15,7 @@ export function signup(name, email, password) {
 }
 
 export function profile() {
-	return axios.get('/auth/profile')
+	return axios.get('/auth/auth_profile')
 }
 
 export function forgotPassword(email) {

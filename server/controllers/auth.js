@@ -61,7 +61,7 @@ exports.signup = async function (req, res, next) {
 		let user = new User({ email })
 		user.setPassword(password)
 		const { _id } = await user.save()
-		let profile = new Profile({ userId: _id, name })
+		let profile = new Profile({ userId: _id,name: name ,image:'../util/avatar/images/Bat.png',birth:'',country:'',status:'',friends:[],rooms:[]})
 		await profile.save()
 		return res.status(StatusCodes.OK).send('signup was successful')
 	} catch (err) {
@@ -121,7 +121,9 @@ exports.logout = function (req, res) {
 	return res.sendStatus(StatusCodes.OK)
 }
 
-exports.profile = async function (req, res, next) {
+
+
+exports.auth_profile = async function (req, res, next) {
 	try {
 		const id = req.user.id,
 			email = req.user.email
