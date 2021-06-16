@@ -225,9 +225,11 @@ exports.listAll = async function (req, res, next) {
 	}
 	// offset sorted list from index
 	if(offset) {
-		if(isNaN(offset = parseInt(offset))) {
-			return res.status(StatusCodes.BAD_REQUEST).send('\'offset\' must be a positive integer')
+		if(isNaN(offset = parseInt(offset)) || offset < 0) {
+			return res.status(StatusCodes.BAD_REQUEST).send('\'offset\' must be a positive integer or 0')
 		}
+	} else {
+		offset = 0
 	}
 	// get list of rooms
 	const rooms = await Room.find({}).sort('createdAt').skip(offset).limit(length).exec()
