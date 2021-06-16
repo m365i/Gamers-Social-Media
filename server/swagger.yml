@@ -398,6 +398,44 @@ paths:
               examples:
                 id missing:
                   value: contact id is missing
+  /games/list:
+    get:
+        summary: get a list of all gamers
+        tags:
+        - games
+        parameters:
+          - in: query
+            description: offset from start
+            name: offset
+            schema:
+              type: number
+            required: false
+          - in: query
+            description: the number of games in the result, maximum is 100, minimum is 1, if not defined will return 10.
+            name: length
+            schema:
+              type: number
+            required: false
+        responses:
+          '200':
+            description: list of games
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/game'
+          '400':
+            description: input error
+            content:
+              text/plain:
+                schema:
+                  type: string
+                examples:
+                  length is invalid:
+                    value: "'length' must be between 1 and 100"
+                  offset is invalid:
+                    value: "'offset' must be a positive integer or 0"
   /games/random:
     get:
       summary: get random games
@@ -581,7 +619,7 @@ paths:
             type: number
           required: false
         - in: query
-          description: the number room in the result, maximum is 100, minimum is 1, if not defined will return 10.
+          description: the number of rooms in the result, maximum is 100, minimum is 1, if not defined will return 10.
           name: length
           schema:
             type: number
@@ -605,7 +643,7 @@ paths:
                 length is invalid:
                   value: "'length' must be between 1 and 100"
                 offset is invalid:
-                  value: "'offset' must be a positive integer"
+                  value: "'offset' must be a positive integer or 0"
   /room/list:
     get:
       summary: get a list of rooms by the user who created them

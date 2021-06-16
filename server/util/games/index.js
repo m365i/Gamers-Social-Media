@@ -60,3 +60,7 @@ exports.gameCover = function(name) {
 	}
 	return undefined
 }
+
+exports.gamesList = function(offset, length) {
+	return steam.slice(offset, offset+length).map(g => placeImageUrl(g))
+}
