@@ -213,6 +213,27 @@ exports.my = async function (req, res, next) {
 	return res.status(StatusCodes.OK).send(rooms.map(r => r.roomId))
 }
 
+exports.listAll = async function (req, res, next) {
+	let { offset, length } = req.query
+	// number of results
+	if(length) {
+		if(isNaN(length = parseInt(length)) || length > 100 || length <= 0) {
+			return res.status(StatusCodes.BAD_REQUEST).send('\'length\' must be between 1 and 100')
+		}
+	} else {
+		length = 10
+	}
+	// offset sorted list from index
+	if(offset) {
+		if(isNaN(offset = parseInt(offset))) {
+			return res.status(StatusCodes.BAD_REQUEST).send('\'offset\' must be a positive integer')
+		}
+	}
+	// get list of rooms
+	const rooms = await Room.find({}).sort('createdAt').skip(offset).limit(length).exec()
+	return res.status(StatusCodes.OK).send(rooms)
+}
+
 exports.list = async function (req, res, next) {
 	let {userId} = req.query
 	if(userId) {

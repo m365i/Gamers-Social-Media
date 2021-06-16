@@ -23,6 +23,8 @@ components:
           type: string
         short_description:
           type: string
+        image:
+          type: string
     room:
       type: object
       properties:
@@ -410,6 +412,37 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/game'
+  /games/cover/{name}:
+    get:
+      summary: get game info
+      tags:
+      - games
+      parameters:
+        - in: path
+          description: name of the game
+          name: name
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: game cover image
+          content:
+            image/jpg:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: missing parameters
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                name missing:
+                  value: game name is missing
+        '404':
+          description: game not found
   /games/info:
     get:
       summary: get game info
@@ -534,6 +567,45 @@ paths:
       responses:
         '200':
           description: connection established
+  /room/list-all:
+    get:
+      summary: get a list of all rooms
+      description: rooms are sorted by the time they where created
+      tags:
+      - rooms
+      parameters:
+        - in: query
+          description: offset from the last room added
+          name: offset
+          schema:
+            type: number
+          required: false
+        - in: query
+          description: the number room in the result, maximum is 100, minimum is 1, if not defined will return 10.
+          name: length
+          schema:
+            type: number
+          required: false
+      responses:
+        '200':
+          description: list of the user rooms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/room"
+        '400':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                length is invalid:
+                  value: "'length' must be between 1 and 100"
+                offset is invalid:
+                  value: "'offset' must be a positive integer"
   /room/list:
     get:
       summary: get a list of rooms by the user who created them
@@ -600,7 +672,7 @@ paths:
                   value: no specified user id
   /room/:
     post:
-      summary: craete a room
+      summary: create a room
       tags:
       - rooms
       requestBody:
@@ -614,15 +686,16 @@ paths:
                   type: string
                 game:
                   type: string
+                  description: room only accept games from the official games list
                 platform:
                   type: string
+                  description: only accept on of *case-sensitive* - Pc, Xbox, Playstation, Android, Apple, Psp
                 description:
                   type: string
               required: 
                 - name
                 - game
                 - platform
-                - description
       responses:
         '200':
           description: room was created
