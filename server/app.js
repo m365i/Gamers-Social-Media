@@ -109,9 +109,11 @@ app.get('/api/404', (req, res, next) => {
 })
 
 // react app
-app.use('/*', (req, res, next) => {
-	return res.sendFile(path.join(__dirname, 'public/index.html'))
-})
+if(process.env.NODE_ENV !== 'development') {
+	app.use('/*', (req, res, next) => {
+		return res.sendFile(path.join(__dirname, 'public/index.html'))
+	})
+}
 
 httpServer.listen(port, function () {
 	console.log('Listening on port %s', port)

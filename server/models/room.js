@@ -13,7 +13,7 @@ const roomSchema = new mongoose.Schema({
 	game: String,
 	platform: String,
 	description: String
-})
+}, { timestamps: true })
 
 const roomMemberSchema = new mongoose.Schema({
 	userId: { 
