@@ -1,0 +1,33 @@
+#add_profile_img_icon {
+  color: white;
+  width: 100px;
+  cursor: pointer;
+}
+
+#current_profile_img {
+  height: 140px;
+  border: 10px solid orange;
+  border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  width: 100px;
+}
+
+#image-preview1 {
+  height: 140px;
+  border: 10px solid orange;
+  border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  width: 100px;
+}
+
+#WhiteLabel {
+  color: white;
+  font-size: 30px;
+
+  font-family: "Open Sans", sans-serif;
+}
+
+#profile_top {
+}

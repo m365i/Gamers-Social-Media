@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import {logout} from '../services/authAPI'
-import {useHistory} from 'react-router-dom'
-import {useDispatch, useSelector} from 'react-redux'
-import {selectUser, removeUser} from '../state/userSlice'
+import { logout } from '../services/authAPI'
+import { useHistory } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectUser, removeUser } from '../state/userSlice'
 import $ from 'jquery'
 import './NavBarComponent.css'
 
@@ -29,15 +29,15 @@ function NavBarComponent() {
 		if (user != null) {
 			$('#login_link').css('display', 'none')
 			setLogged(true)
-			
+
 		}
-		else{
+		else {
 			$('#logout_link').css('display', 'none')
 			setLogged(false)
 			console.log('sssss')
 		}
 		return () => {
-			
+
 		}
 	}, [isLogged])
 
@@ -98,7 +98,7 @@ function NavBarComponent() {
 								</li>
 
 								<li>
-									<Link  id="logout_link" to='#' className="navbar-brand nav-item" onClick={onLogout}>logout</Link>
+									<Link id="logout_link" to='#' className="navbar-brand nav-item" onClick={onLogout}>logout</Link>
 								</li>
 							</ul>
 
@@ -108,6 +108,13 @@ function NavBarComponent() {
 
 				</div>
 			</div>
+
+
+
+
+
+
+
 		</>
 	)
 }
