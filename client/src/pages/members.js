@@ -16,7 +16,7 @@ export default function Members() {
 
 
 	const { user } = useSelector(selectUser)
-	const [userProfile, SetuserProfile] = useState(user)
+	const [userProfile, SetuserProfile] = useState(null)
 	const [dataFetched, SetdataFetch] = useState(false)
 	const fetchData = async () => {
 		await axios.get(`profiles/profile/${user.id}`).then((res) => {
@@ -34,6 +34,9 @@ export default function Members() {
 		fetchData()
 		SetImage_PreView()
 
+		if (dataFetched) {
+			InsertDataToForm()
+		}
 
 	}, [dataFetched])
 
@@ -108,7 +111,14 @@ export default function Members() {
 	}
 
 	function SaveNewName() {
+		userProfile.name = $('#edit_name').val()
+
+		axios.put(`profiles/profile/${user.id}`, userProfile).then(() => {
+			$('#name_lable').text(userProfile.name)
+		})
+
 		$('#name_lable').show()
+
 		$('#edit_name').hide()
 		$('#save_name_icon').hide()
 		$('#close_name_icon').hide()
@@ -130,6 +140,13 @@ export default function Members() {
 	}
 
 	function SaveNewEmail() {
+		userProfile.email = $('#edit_email').val()
+		//maybe add validation
+		axios.put(`profiles/profile/${user.id}`, userProfile).then(() => {
+			$('#email_lable').text('Email: ' + userProfile.email)
+		})
+
+
 		$('#email_lable').show()
 		$('#edit_email').hide()
 		$('#save_email_icon').hide()
@@ -145,20 +162,39 @@ export default function Members() {
 
 	function OpenEditAge() {
 		$('#age_lable').hide()
+		$('#birthdate_label').hide()
 		$('#edit_age').css('display', 'block')
 		$('#edit_age').val(userProfile.birth)
 		$('#save_age_icon').css('display', 'block')
 		$('#close_age_icon').css('display', 'block')
 	}
 
+	function calcAge() {
+		if (userProfile.birth !== null) {
+			//console.log(new Date(userProfile.birth).getFullYear())
+			let curr_year = new Date().getFullYear()
+			let chosen = new Date(userProfile.birth).getFullYear()
+			return (curr_year - chosen)
+		}
+		return 0
+	}
+
 	function SaveNewAge() {
+		//console.log($('#edit_age').val())
+		userProfile.birth = new Date($('#edit_age').val())
+		//console.log(userProfile.birth)
+		//maybe add validation
+		axios.put(`profiles/profile/${user.id}`, userProfile).then(() => {
+			$('#birthdate_label').text('Birthdate: ' + userProfile.birth.toLocaleDateString('he-IL', { timeZone: 'Asia/Jerusalem' }).replace(/\D/g, '/'))
+		})
+
+		$('#age_lable').text('Age: ' + calcAge())
 		$('#age_lable').show()
+		$('#birthdate_label').show()
 		$('#edit_age').hide()
 		$('#save_age_icon').hide()
 		$('#close_age_icon').hide()
-		let curr_year = new Date().getFullYear()
-		let chosen = parseInt($('#edit_age').val().slice(0, 4))
-		console.log(curr_year - chosen)
+
 	}
 
 	function CloseAgeEdit() {
@@ -166,17 +202,28 @@ export default function Members() {
 		$('#edit_age').hide()
 		$('#save_age_icon').hide()
 		$('#close_age_icon').hide()
+		$('#birthdate_label').show()
 	}
 
 	function OpenEditCountry() {
 		$('#Country_lable').hide()
 		$('#edit_Country').css('display', 'block')
+		$('#edit_Country').val(userProfile.country)
 		$('#save_country_icon').css('display', 'block')
 		$('#close_country_icon').css('display', 'block')
 
 	}
 
 	function SaveNewCountry() {
+
+		userProfile.country = $('#edit_Country').val()
+		//console.log(userProfile.birth)
+		//maybe add validation
+		axios.put(`profiles/profile/${user.id}`, userProfile).then(() => {
+			$('#Country_lable').text('Country: ' + userProfile.country)
+		})
+
+
 		$('#Country_lable').show()
 		$('#edit_Country').hide()
 		$('#save_country_icon').hide()
@@ -189,6 +236,18 @@ export default function Members() {
 		$('#save_country_icon').hide()
 		$('#close_country_icon').hide()
 	}
+
+	function InsertDataToForm() {
+
+		$('#name_lable').text(userProfile.name)
+		$('#email_lable').text('Email: ' + userProfile.email)
+		$('#birthdate_label').text('BirthDate: ' + new Date(userProfile.birth).toLocaleDateString('he-IL', { timeZone: 'Asia/Jerusalem' }).replace(/\D/g, '/'))
+		$('#age_lable').text('Age: ' + String(calcAge()))
+		$('#Country_lable').text('Country: ' + userProfile.country)
+
+
+	}
+
 
 	return (
 
@@ -216,7 +275,7 @@ export default function Members() {
 					<div className="row" >
 						<FaEdit className="edit_icon" data-tip="edit" onClick={OpenEditName} />
 						<ReactTooltip />
-						<label className="WhiteLabel" id="name_lable"> {user.name}</label>
+						<label className="WhiteLabel" id="name_lable"> </label>
 						<input id="edit_name" className="hideInput" ></input>
 						<FaSave id="save_name_icon" className="edit_icon hideIcon" data-tip="save"
 							onClick={SaveNewName} />
@@ -225,7 +284,7 @@ export default function Members() {
 					</div>
 					<div className="row" >
 						<FaEdit className="edit_icon" data-tip="edit" onClick={OpenEditEmail} />
-						<label className="SmallLabel" id="email_lable" >Email: {user.email}</label>
+						<label className="SmallLabel" id="email_lable" > </label>
 						<input id="edit_email" className="hideInput"></input>
 						<FaSave id="save_email_icon" className="edit_icon hideIcon" data-tip="save"
 							onClick={SaveNewEmail} />
@@ -234,12 +293,16 @@ export default function Members() {
 					</div>
 					<div className="row" >
 						<FaEdit className="edit_icon" data-tip="edit" onClick={OpenEditAge} />
-						<label className="SmallLabel" id="age_lable">BirthDate: </label>
+						<label className="SmallLabel" id="birthdate_label"> </label>
+
 						<input type="date" id="edit_age" className="hideInput"></input>
 						<FaSave id="save_age_icon" className="edit_icon hideIcon" data-tip="save"
 							onClick={SaveNewAge} />
 						<FaWindowClose id="close_age_icon" className="edit_icon hideIcon" data-tip="close"
 							onClick={CloseAgeEdit} />
+					</div>
+					<div className="row" >
+						<label className="SmallLabel" id="age_lable"> </label>
 					</div>
 					<div className="row" >
 						<FaEdit className="edit_icon" data-tip="edit" onClick={OpenEditCountry} />
