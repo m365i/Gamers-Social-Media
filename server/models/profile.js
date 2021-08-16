@@ -7,7 +7,6 @@ const profileSchema = new mongoose.Schema({
 		ref: 'User'
 	},
 	name: String,
-	image: String,
 	birth: Date,
 	country: String,
 	status: String,

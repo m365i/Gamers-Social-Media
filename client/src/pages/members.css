@@ -2,6 +2,12 @@
   color: white;
   width: 100px;
   cursor: pointer;
+  transition: all 0.8s;
+}
+
+#add_profile_img_icon:hover {
+  color: orange;
+  height: 50px;
 }
 
 #current_profile_img {
@@ -22,12 +28,67 @@
   width: 100px;
 }
 
-#WhiteLabel {
+.WhiteLabel {
   color: white;
   font-size: 30px;
+  text-shadow: 2px 2px 15px #f2f2f2;
+  font-weight: bold;
+  color: orange;
+  font-family: "Open Sans", sans-serif;
+}
 
+.hideInput {
+  display: none;
+  background-color: rgba(122, 122, 122, 0.3);
+  border-radius: 3rem;
+  font-size: 20px;
+  text-shadow: 2px 2px 15px #f2f2f2;
+  font-weight: bold;
+  color: orange;
+  font-family: "Open Sans", sans-serif;
+  width: 200px;
+}
+
+.hideIcon {
+  display: none;
+  margin: 3px;
+}
+
+.SmallLabel {
+  color: white;
+  font-size: 20px;
+  text-shadow: 2px 2px 15px #f2f2f2;
+  font-weight: bold;
+  color: orange;
   font-family: "Open Sans", sans-serif;
 }
 
 #profile_top {
+}
+
+#btn_update_img {
+  border: none;
+  background-color: transparent;
+  color: orange;
+  font-family: "Open Sans", sans-serif;
+  transition: all 0.6s;
+}
+
+#btn_update_img:hover {
+  text-shadow: 2px 2px 15px #f2f2f2;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.edit_icon {
+  width: 20px;
+  height: 50px;
+  transition: all 0.6s;
+  color: orange;
+  cursor: pointer;
+}
+
+.edit_icon:hover {
+  width: 30px;
+  color: rgb(243, 195, 105);
 }

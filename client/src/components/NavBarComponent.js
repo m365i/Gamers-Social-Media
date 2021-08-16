@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectUser, removeUser } from '../state/userSlice'
 import $ from 'jquery'
 import './NavBarComponent.css'
+import { FaBars } from 'react-icons/fa'
 
 function NavBarComponent() {
 	const [isLogged, setLogged] = useState(false)
@@ -54,9 +55,21 @@ function NavBarComponent() {
 	}
 
 
+	function myFunction() {
+		var x = document.getElementById('myTopnav')
+		if (x.className === 'topnav') {
+			x.className += ' responsive'
+		} else {
+			x.className = 'topnav'
+		}
+	}
+
 
 	return (
 		<>
+
+
+
 			<div className="container-md">
 				<div className="container-md  header h-auto w-auto">
 					<div>
@@ -65,28 +78,32 @@ function NavBarComponent() {
 								<img id="main_logo" src="images/logo.png" alt="logo" />
 							</Link>
 
-							{/* <!-- Just an image --> */}
-							<ul className="navbar m-0" style={{ listStyleType: 'none', marginTop: '-15px' }}>
-								<li>
-									<Link className="navbar-brand nav-item" to="/">
+							<div className="topnav" id="myTopnav">
+
+								<li className="my_nav_item"  >
+									<Link className="navbar-brand nav-item" to="/" style={{ textDecoration: 'none' }}>
 										<img src="images/home_icon.png" alt="Home" />
 									</Link>
-									<Link to="/">Home</Link>
+									<Link className="navbar-brand nav-item" to="/" style={{ textDecoration: 'none' }}>Home</Link>
 								</li>
-								<li>
-									<Link className="navbar-brand nav-item" to="/about_us">
+
+								<li className="my_nav_item" >
+									<Link className="navbar-brand nav-item" to="/about_us" style={{ textDecoration: 'none' }}>
 										<img src="images/about_icon.png" alt="About us" />
 										About us
 									</Link>
+
+
 								</li>
-								<li>
-									<Link className="navbar-brand nav-item" to="/search">
+								<li className="my_nav_item" >
+									<Link className="navbar-brand nav-item" to="/search" style={{ textDecoration: 'none' }}>
 										<img src="images/search_icon.png" alt="Search" />
 										Search
 									</Link>
+
 								</li>
-								<li>
-									<Link className="navbar-brand nav-item" to={checkLoggedIn}>
+								<li className="my_nav_item" >
+									<Link className="navbar-brand nav-item" to={checkLoggedIn} style={{ textDecoration: 'none' }}>
 										<img src="images/login_icon.png" alt="Login" />
 										{loading && '...'}
 										{(!loading && user) ? `${user.name}` :
@@ -94,13 +111,18 @@ function NavBarComponent() {
 										}
 									</Link>
 
-									<Link id="login_link" to="/login" > Login </Link>
+									<Link id="login_link" to="/login" style={{ textDecoration: 'none' }} > Login </Link>
+
 								</li>
 
 								<li>
-									<Link id="logout_link" to='#' className="navbar-brand nav-item" onClick={onLogout}>logout</Link>
+									<Link id="logout_link" to='#' style={{ textDecoration: 'none' }} className="navbar-brand nav-item" onClick={onLogout}>logout</Link>
 								</li>
-							</ul>
+								<li className="my_nav_item" id="nav_bar_icon" onClick={myFunction}>
+									<FaBars />
+								</li>
+							</div>
+
 
 						</div>
 						{/* <!-- end container header --> */}
@@ -108,11 +130,6 @@ function NavBarComponent() {
 
 				</div>
 			</div>
-
-
-
-
-
 
 
 		</>
