@@ -9,22 +9,37 @@ import $ from 'jquery'
 import './members.css'
 import NavBarComponent from '../components/NavBarComponent'
 import AddAPhotoIcon from '@material-ui/icons/AddAPhoto'
-import { FaEdit, FaSave, FaWindowClose } from 'react-icons/fa'
+import { FaEdit, FaSave, FaWindowClose, FaUserFriends } from 'react-icons/fa'
 import ReactTooltip from 'react-tooltip'
+import AllUsersModal from '../components/AllUsersModal'
+
+import 'react-responsive-carousel/lib/styles/carousel.min.css' // requires a loader
+import { Carousel } from 'react-responsive-carousel'
+
 //import { get_all_profiles } from '../services/ProfileAPI'
 export default function Members() {
 
 
+	const [Carouselitems, SetCarouselitems] = useState([])
+	const [all_profiles_list, set_profiles_list] = useState([])
 	const { user } = useSelector(selectUser)
 	const [userProfile, SetuserProfile] = useState(null)
+	//const [FriendFocused, SetFriendFocused] = useState(null)
 	const [dataFetched, SetdataFetch] = useState(false)
+	const [isOpen, SetisOpen] = useState(false)
 	const fetchData = async () => {
 		await axios.get(`profiles/profile/${user.id}`).then((res) => {
-			console.log(res.data[0])
+			//console.log(res.data[0])
 			SetuserProfile(res.data[0])
-			SetdataFetch(true)
+
 		})
 
+		await axios.get('/profiles/all_profiles').then((all_profiles) => {
+			set_profiles_list(all_profiles.data)
+			//console.log(all_profiles_list)
+		})
+
+		SetdataFetch(true)
 
 	}
 
@@ -32,12 +47,14 @@ export default function Members() {
 
 	useEffect(() => {
 		fetchData()
-		SetImage_PreView()
+
 
 		if (dataFetched) {
 			InsertDataToForm()
+			SetImage_PreView()
 		}
 
+		// eslint-disable-next-line 
 	}, [dataFetched])
 
 	function SetImage_PreView() {
@@ -246,8 +263,48 @@ export default function Members() {
 		$('#Country_lable').text('Country: ' + userProfile.country)
 
 
+		let friends_names = []
+		//console.log(messages_list)
+		for (let i = 0; i < userProfile.friends.length; i++) {
+			const friend_id = userProfile.friends[i]
+			var friend_profile = all_profiles_list.find(obj => {
+				return obj.userId == friend_id
+			})
+			friends_names.push(friend_profile.name)
+			//console.log(friends_names)
+			axios.get(`/profile/img/get_img/${friend_id}`).then(img => {
+				SetCarouselitems(Carouselitems =>
+					[...Carouselitems, <div key={i}>
+						<label key={i} >{friends_names.pop()}</label>
+						<img src={img.data} />
+					</div>])
+			})
+		}
+
+
 	}
 
+
+
+
+
+
+
+	function ActionFriendClicked(friend_Id, action) {
+		if (action == 1) {
+			axios.put('/friends_profiles/add_friend', { userID: userProfile.userId, FriendID: friend_Id }).then((res) => {
+				console.log(res)
+				window.location.reload()
+			})
+		}
+		if (action == 0) {
+			axios.post('/friends_profiles/delete_friend', { userID: userProfile.userId, friend_id_to_delete: friend_Id }).then((res) => {
+				console.log(res)
+				window.location.reload()
+			})
+		}
+
+	}
 
 	return (
 
@@ -319,16 +376,27 @@ export default function Members() {
 
 			</div>
 
+			<div>
+				<FaUserFriends id="add_friend_icon"
+					data-tip="add friend"
+					onClick={() => SetisOpen(true)} />
+				<AllUsersModal
+					open={isOpen}
+					friendTo={(friend_id, action) => ActionFriendClicked(friend_id, action)}
+					Profiles={all_profiles_list} MyProfile={userProfile}
+					onClose={() => SetisOpen(false)} />
+			</div>
+
+
+			<div id="FriendsComponent" className="row" >
+				<Carousel>
+					{Carouselitems}
+				</Carousel>
+			</div>
 			<div id="RoomsComponent" className="row" >
 				<label className="WhiteLabel">Rooms Component Here</label>
 
 			</div>
-
-			<div id="FriendsComponent" className="row" >
-				<label className="WhiteLabel">Friends Component Here</label>
-
-			</div>
-
 
 		</>
 	)

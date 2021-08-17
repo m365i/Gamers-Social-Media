@@ -46,19 +46,20 @@ exports.findOne = (req, res) => {
 // Update a profile identified by the Id in the request
 exports.update = (req, res) => {
 	// Validate Request
-	if (!req.body.content) {
+	if (!req.body) {
+
 		return res.status(400).send({
 			message: 'Profile content can not be empty'
 		})
 	}
 
-	const { name, image, birth, country, status } = req.body
+	const { name, email, birth, country, status } = req.body
 
 	// Find note and update it with the request body
 	profileModel.findOneAndUpdate({ userId: req.params.profileId }, {
 		name: name,
-		image: image,
 		birth: birth,
+		email: email,
 		country: country,
 		status: status,
 	}, { new: true })
@@ -116,3 +117,6 @@ exports.delete = (req, res) => {
 			})
 		})
 }
+
+
+

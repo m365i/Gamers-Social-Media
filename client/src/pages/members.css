@@ -12,20 +12,20 @@
 
 #current_profile_img {
   height: 140px;
+  width: 100px;
   border: 10px solid orange;
   border-radius: 50%;
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
-  width: 100px;
 }
 
 #image-preview1 {
   height: 140px;
+  width: 100px;
   border: 10px solid orange;
   border-radius: 50%;
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
-  width: 100px;
 }
 
 .WhiteLabel {
@@ -35,6 +35,35 @@
   font-weight: bold;
   color: orange;
   font-family: "Open Sans", sans-serif;
+}
+
+.carousel .slide label {
+  position: absolute;
+  z-index: 5;
+  color: white;
+  font-size: 20px;
+  text-shadow: 0 0 3px #484033, 0 0 8px #484033, 0 0 5px #484033;
+  margin-left: 20px;
+  font-weight: bold;
+  color: orange;
+  font-family: "Open Sans", sans-serif;
+}
+
+.ImageOnCarousel {
+}
+
+.carousel .slide {
+  width: 100px;
+  height: 200px;
+  border: 4px solid orange;
+}
+.carousel .slide selected {
+  width: 100px;
+  height: 200px;
+}
+.carousel .slide img {
+  width: 100px;
+  height: 200px;
 }
 
 .hideInput {
@@ -63,6 +92,17 @@
   font-family: "Open Sans", sans-serif;
 }
 
+#add_friend_icon {
+  cursor: pointer;
+  color: orange;
+  width: 50px;
+  height: 40px;
+  transition: all 0.7s;
+}
+#add_friend_icon:hover {
+  height: 60px;
+  width: 60px;
+}
 #profile_top {
 }
 
