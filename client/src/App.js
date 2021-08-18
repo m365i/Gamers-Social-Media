@@ -5,13 +5,13 @@ import {
 	Switch,
 	Route,
 } from 'react-router-dom'
-import {createBrowserHistory} from 'history'
+import { createBrowserHistory } from 'history'
 
-import {useEffect} from 'react'
+import { useEffect } from 'react'
 
-import {useSelector, useDispatch} from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
-import {fetchUser, selectUser} from './state/userSlice'
+import { fetchUser, selectUser } from './state/userSlice'
 
 import PrivateRoute from './components/PrivateRoute'
 
@@ -24,10 +24,11 @@ import ResetPassword from './pages/reset_password'
 import Contact from './pages/contact'
 import Room from './pages/room'
 
+
 const history = createBrowserHistory()
 
 export default function App() {
-	const {user, loading} = useSelector(selectUser)
+	const { user, loading } = useSelector(selectUser)
 	const dispatch = useDispatch()
 
 	useEffect(() => {
@@ -41,6 +42,7 @@ export default function App() {
 	}
 
 	return (
+
 		<Router history={history}>
 			<Switch>
 				<PrivateRoute access={!isLoggedIn} redirect="/" path="/signup" component={Signup} />

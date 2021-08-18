@@ -19,11 +19,8 @@
         "react"
     ],
     "rules": {
+        "indent": "off",
 		"react/prop-types": 0,
-        "indent": [
-            "error",
-            "tab"
-        ],
         "no-tabs": 0,
 		"require-jsdoc": "off",
 		"max-len": "off",

@@ -8,6 +8,8 @@ var avatarRouter = require('./avatar')
 var roomRouter = require('./room')
 var searchRouter = require('./search')
 var profileRouter = require('./profile_routes')
+var ImageUploadRouter = require('./MongoImages')
+var profile_friends_routes = require('./profile_friends_routes')
 
 router.use('/auth', authRouter)
 router.use('/contact', contactRouter)
@@ -16,5 +18,6 @@ router.use('/avatar', avatarRouter)
 router.use('/room', roomRouter)
 router.use('/search', searchRouter)
 router.use('/profiles', profileRouter)
-
+router.use('/profile/img', ImageUploadRouter)
+router.use('/friends_profiles', profile_friends_routes)
 module.exports = router

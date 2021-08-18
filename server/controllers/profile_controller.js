@@ -19,16 +19,20 @@ exports.findAll = (req, res) => {
 
 // Find a single profile with Id
 exports.findOne = (req, res) => {
-	profileModel.findById(req.params.profileId)
+	profileModel.find({ userId: req.params.profileId })
 		.then(profile => {
 			if (!profile) {
+
 				return res.status(404).send({
 					message: 'Profile not found with id ' + req.params.profileId
 				})
+
 			}
+
 			res.send(profile)
 		}).catch(err => {
 			if (err.kind === 'ObjectId') {
+				console.log(BLAA1)
 				return res.status(404).send({
 					message: 'Profile not found with id ' + req.params.profileId
 				})
@@ -42,19 +46,20 @@ exports.findOne = (req, res) => {
 // Update a profile identified by the Id in the request
 exports.update = (req, res) => {
 	// Validate Request
-	if (!req.body.content) {
+	if (!req.body) {
+
 		return res.status(400).send({
 			message: 'Profile content can not be empty'
 		})
 	}
 
-	const { name, image, birth, country, status } = req.body
+	const { name, email, birth, country, status } = req.body
 
 	// Find note and update it with the request body
-	profileModel.findByIdAndUpdate(req.params.profileId, {
+	profileModel.findOneAndUpdate({ userId: req.params.profileId }, {
 		name: name,
-		image: image,
 		birth: birth,
+		email: email,
 		country: country,
 		status: status,
 	}, { new: true })
@@ -93,22 +98,25 @@ exports.updateFriends = (req, res) => {
  */
 // Delete a profile with the specified Id in the request
 exports.delete = (req, res) => {
-	profileModel.findByIdAndRemove(req.params.profileId)
+	profileModel.findOneAndDelete({ userId: req.params.profileId })
 		.then(profile => {
-			if(!profile) {
+			if (!profile) {
 				return res.status(404).send({
 					message: 'Profile not found with id ' + req.params.profileId
 				})
 			}
-			res.send({message: 'Profile deleted successfully!'})
+			res.send({ message: 'Profile deleted successfully!' })
 		}).catch(err => {
-			if(err.kind === 'ObjectId' || err.name === 'NotFound') {
+			if (err.kind === 'ObjectId' || err.name === 'NotFound') {
 				return res.status(404).send({
 					message: 'Profile not found with id ' + req.params.profileId
-				})                
+				})
 			}
 			return res.status(500).send({
 				message: 'Could not delete profile with id ' + req.params.profileId
 			})
 		})
 }
+
+
+

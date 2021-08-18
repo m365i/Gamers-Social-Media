@@ -7,19 +7,19 @@ const profileSchema = new mongoose.Schema({
 		ref: 'User'
 	},
 	name: String,
-	image: String,
 	birth: Date,
 	country: String,
 	status: String,
+	email: String,
 	friends: [
 		{
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'User'
 		}
 	],
-	rooms:[
-		{ 
-			type: mongoose.Schema.Types.ObjectId, 
+	rooms: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Room'
 		}],
 })

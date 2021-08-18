@@ -8,11 +8,8 @@
         "ecmaVersion": 12
     },
     "rules": {
-		"no-unused-vars": ["error", { "vars": "all", "args": "none" }],
-        "indent": [
-            "error",
-            "tab"
-        ],
+        "no-unused-vars": "off"
+    ,
         "quotes": [
             "error",
             "single"
