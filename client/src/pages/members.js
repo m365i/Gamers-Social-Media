@@ -75,6 +75,7 @@ export default function Members() {
 
 		}
 
+		
 		$('#img_upload_input').on('change', function () {
 			$('div.preview-images').empty()
 			imagesPreview(this, 'div.preview-images')
