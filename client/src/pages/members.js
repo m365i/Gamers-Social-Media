@@ -52,6 +52,7 @@ export default function Members() {
 		if (dataFetched) {
 			InsertDataToForm()
 			SetImage_PreView()
+
 		}
 
 		// eslint-disable-next-line 
@@ -270,21 +271,26 @@ export default function Members() {
 			var friend_profile = all_profiles_list.find(obj => {
 				return obj.userId == friend_id
 			})
-			friends_names.push(friend_profile.name)
+			friends_names[i] = (friend_profile.name)
 			//console.log(friends_names)
 			axios.get(`/profile/img/get_img/${friend_id}`).then(img => {
 				SetCarouselitems(Carouselitems =>
 					[...Carouselitems, <div key={i}>
-						<label key={i} >{friends_names.pop()}</label>
+						<label key={i} >{friends_names[i]}</label>
 						<img src={img.data} />
 					</div>])
 			})
 		}
 
 
+
+
+
 	}
 
-
+	$(document).ready(function () {
+		$('.carousel.carousel-slider .control-arrow').click()
+	})
 
 
 
@@ -376,6 +382,7 @@ export default function Members() {
 
 			</div>
 
+			<label className="WhiteLabel">Friends</label>
 			<div>
 				<FaUserFriends id="add_friend_icon"
 					data-tip="add friend"
@@ -389,7 +396,8 @@ export default function Members() {
 
 
 			<div id="FriendsComponent" className="row" >
-				<Carousel>
+
+				<Carousel infiniteLoop useKeyboardArrows autoPlay>
 					{Carouselitems}
 				</Carousel>
 			</div>
