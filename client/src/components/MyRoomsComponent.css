@@ -1,0 +1,29 @@
+.form-control {
+  text-align: center;
+  color: rgb(255, 189, 67);
+  background-color: rgba(122, 122, 122, 0.3);
+  transition: all 0.6s;
+}
+
+.form-control:focus {
+  background-color: rgba(177, 176, 176, 0.3);
+  color: rgb(255, 189, 67);
+}
+.form-control option {
+  width: 500px;
+  background-color: rgb(100, 97, 97);
+}
+
+.form-group {
+  width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  transition: all 0.6s;
+}
+#my_rooms_comp {
+  float: left;
+  border: 5px solid orange;
+  border-radius: 1rem;
+  height: 247px;
+  cursor: pointer;
+}
