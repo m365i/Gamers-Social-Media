@@ -75,7 +75,7 @@ export default function Members() {
 
 		}
 
-		
+
 		$('#img_upload_input').on('change', function () {
 			$('div.preview-images').empty()
 			imagesPreview(this, 'div.preview-images')
@@ -401,10 +401,6 @@ export default function Members() {
 				<Carousel infiniteLoop useKeyboardArrows autoPlay>
 					{Carouselitems}
 				</Carousel>
-			</div>
-			<div id="RoomsComponent" className="row" >
-				<label className="WhiteLabel">Rooms Component Here</label>
-
 			</div>
 
 		</>

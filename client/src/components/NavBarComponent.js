@@ -102,6 +102,13 @@ function NavBarComponent() {
 									</Link>
 
 								</li>
+
+								<li className="my_nav_item" >
+									<Link className="navbar-brand nav-item" to="/rooms" style={{ textDecoration: 'none' }}>
+										Rooms
+									</Link>
+								</li>
+
 								<li className="my_nav_item" >
 									<Link className="navbar-brand nav-item" to={checkLoggedIn} style={{ textDecoration: 'none' }}>
 										<img src="images/login_icon.png" alt="Login" />

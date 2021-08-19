@@ -1,0 +1,41 @@
+#btn_modal_no {
+  height: 60px;
+  width: 80px;
+  color: white;
+  font-size: 20px;
+  background-color: red;
+  border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  transition: all 0.7s;
+}
+
+#btn_modal_no:hover {
+  height: 70px;
+  width: 90px;
+}
+
+#btn_modal_ye {
+  height: 60px;
+  width: 80px;
+  color: white;
+  font-size: 20px;
+  background-color: green;
+  border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  transition: all 0.7s;
+}
+
+#btn_modal_ye:hover {
+  height: 70px;
+  width: 90px;
+}
+
+#openlabel_ {
+  font-size: 20px;
+  text-shadow: 0 0 3px #484033, 0 0 8px #484033, 0 0 5px #484033;
+  margin-left: 20px;
+  font-weight: bold;
+  color: orange;
+}
