@@ -31,16 +31,24 @@ function GameInfo({name}) {
 	const [game, setGame] = useState(undefined)
 
 	useEffect(() => {
+		let relevant = true
 		setLoading(true)
 		axios.get('/games/info', { params: { name }})
 			.then(({data}) => {
-				setGame(data)
-				setLoading(false)
+				if(relevant) {
+					setGame(data)
+					setLoading(false)
+				}
 			})
 			.catch((err) => {
-				setError(err.message)
-				setLoading(false)
+				if(relevant) {
+					setError(err.message)
+					setLoading(false)
+				}
 			})
+		return () => {
+			relevant = false
+		}
 	}, [name])
 
 	if(loading) {

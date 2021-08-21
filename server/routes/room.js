@@ -4,13 +4,12 @@ var router = express.Router()
 var {ensureLoggedIn} = require('../util/ensureAuth')
 
 var { 
-	my, list, listAll, select, create, edit, remove, 
+	list, listAll, select, create, edit, remove, 
 	isMember, listMembers, addMember, removeMember, roomExistMiddleware, userIsRoomMemberMiddleware, userIsNotRoomMemberMiddleware, 
 	listAnnouncements, addAnnouncement, removeAnnouncement, userIsRoomOwnerMiddleware, userIsNotRoomOwnerMiddleware, 
 	listSchedules, addSchedule, removeSchedule 
 } = require('../controllers/room')
 
-router.get('/my', my)
 router.get('/list-all', listAll)
 router.get('/list', list)
 router.get('/', select)
