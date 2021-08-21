@@ -20,3 +20,19 @@
   margin-right: auto;
   transition: all 0.6s;
 }
+#new_room_form_error {
+  color: red;
+  font-size: 25px;
+  font-weight: bold;
+  text-align: center;
+}
+
+#new_room_form {
+  background-image: linear-gradient(
+    rgba(90, 40, 255, 0.2),
+    rgba(177, 176, 176, 0.3)
+  );
+  border-radius: 2rem;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}

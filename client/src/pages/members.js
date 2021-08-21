@@ -319,7 +319,7 @@ export default function Members() {
 			<NavBarComponent />
 
 			<div id="profile_top" className="row" >
-				<div id="profile_top" className="col" >
+				<div className="col" >
 					<img id="current_profile_img" alt="" />
 					<input
 						type="file"
@@ -382,27 +382,27 @@ export default function Members() {
 				</div>
 
 			</div>
+			<div id="member_bot_part">
+				<label className="WhiteLabel">Friends</label>
+				<div>
+					<FaUserFriends id="add_friend_icon"
+						data-tip="add friend"
+						onClick={() => SetisOpen(true)} />
+					<AllUsersModal
+						open={isOpen}
+						friendTo={(friend_id, action) => ActionFriendClicked(friend_id, action)}
+						Profiles={all_profiles_list} MyProfile={userProfile}
+						onClose={() => SetisOpen(false)} />
+				</div>
 
-			<label className="WhiteLabel">Friends</label>
-			<div>
-				<FaUserFriends id="add_friend_icon"
-					data-tip="add friend"
-					onClick={() => SetisOpen(true)} />
-				<AllUsersModal
-					open={isOpen}
-					friendTo={(friend_id, action) => ActionFriendClicked(friend_id, action)}
-					Profiles={all_profiles_list} MyProfile={userProfile}
-					onClose={() => SetisOpen(false)} />
+
+				<div id="FriendsComponent" className="row" >
+
+					<Carousel infiniteLoop useKeyboardArrows autoPlay>
+						{Carouselitems}
+					</Carousel>
+				</div>
 			</div>
-
-
-			<div id="FriendsComponent" className="row" >
-
-				<Carousel infiniteLoop useKeyboardArrows autoPlay>
-					{Carouselitems}
-				</Carousel>
-			</div>
-
 		</>
 	)
 }

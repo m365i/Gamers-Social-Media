@@ -23,7 +23,12 @@
 #my_rooms_comp {
   float: left;
   border: 5px solid orange;
-  border-radius: 1rem;
   height: 247px;
   cursor: pointer;
+  background-image: linear-gradient(
+    rgba(90, 40, 255, 0.2),
+    rgba(177, 176, 176, 0.3)
+  );
+  padding-top: 20px;
+  padding-bottom: 236px;
 }

@@ -7,6 +7,10 @@ export default function NewRoomForm() {
 
     const [AllGamesList, SetAllGamesList] = useState([])
     function CreateRoomclicked() {
+
+
+
+
         const new_room = {
             name: $('#room_name').val(),
             game: $('select[name=gameSelector] option').filter(':selected').val(),
@@ -18,6 +22,13 @@ export default function NewRoomForm() {
         axios.post('/room/', new_room).then((res) => {
             // return ReactDOM.createPortal(`/room/${res.data}`, this.containerEl)
             window.open(`/room/${res.data}`, '_blank')
+            $('#new_room_form_error').text('')
+        }).catch(() => {
+            if (new_room.name == '') {
+                $('#new_room_form_error').text('Room Name is Missing \n Please Enter Room Name')
+            }
+
+
         })
 
 
@@ -51,7 +62,7 @@ export default function NewRoomForm() {
 
     return (
         <div>
-            <div className="container-md">
+            <div className="container-md" id="new_room_form">
                 <div className="col form-group" id="newRoomFormdiv">
                     <input id="room_name" className="form-control" type="text" placeholder="room name" />
                     <div>
@@ -73,6 +84,7 @@ export default function NewRoomForm() {
                     <textarea className="form-control" id="game_desc_ta" />
                     <br />
                     <button className="btn-outline-success form-control" onClick={CreateRoomclicked}>Create Room</button>
+                    <div id="new_room_form_error"></div>
                 </div>
 
             </div>
