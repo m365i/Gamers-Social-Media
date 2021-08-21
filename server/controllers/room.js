@@ -188,7 +188,7 @@ exports.removeMember = async function (req, res, next) {
 	return res.sendStatus(StatusCodes.OK)
 }
 
-exports.my = async function (req, res, next) {
+exports.list = async function (req, res, next) {
 	let { userId } = req.query
 	if (userId) {
 		// check if user exist
@@ -233,31 +233,6 @@ exports.listAll = async function (req, res, next) {
 	}
 	// get list of rooms
 	const rooms = await Room.find({}).sort('createdAt').skip(offset).limit(length).exec()
-	return res.status(StatusCodes.OK).send(rooms)
-}
-
-exports.list = async function (req, res, next) {
-	let { userId } = req.query
-	if (userId) {
-		// check if user exist
-		let exist
-		try {
-			exist = await User.exists({ _id: new mongoose.Types.ObjectId(userId) })
-		} catch (err) {
-			exist = false
-		}
-		if (!exist) {
-			return res.status(StatusCodes.BAD_REQUEST).send('user not found')
-		}
-	} else {
-		userId = req.user ? req.user.id : undefined
-		// check if user logged in
-		if (!userId) {
-			return res.status(StatusCodes.BAD_REQUEST).send('no specified user id')
-		}
-	}
-	// get list of rooms
-	const rooms = await Room.find({ creator: new mongoose.Types.ObjectId(userId) }).exec()
 	return res.status(StatusCodes.OK).send(rooms)
 }
 

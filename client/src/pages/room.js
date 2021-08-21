@@ -14,6 +14,7 @@ import Icon from '@material-ui/core/Icon'
 import { DialogEditRoom } from '../components/DialogRoomBuilder'
 import {makeStyles} from '@material-ui/core/styles'
 import {actionChangeRoomMembership, fetchRoom, selectRoom} from '../state/roomSlice'
+import NavBarComponent from '../components/NavBarComponent'
 import {
 	deleteRoom as gameDeleteRoom,
 	leave as gameLeaveRoom,
@@ -22,7 +23,6 @@ import {
 
 const useStyles = makeStyles(() => ({
 	container: {
-		backgroundImage: `url(${process.env.PUBLIC_URL + '/images/photo-1556816214-6d16c62fbbf6.webp'})`,
 		backgroundPosition: 'center center',
 		backgroundRepeat: 'no-repeat',
 		padding: '30px 0px'
@@ -38,7 +38,7 @@ const useStyles = makeStyles(() => ({
 		width: '100%',
 		display: 'flex',
 		flexDirection: 'row',
-		justifyContent: 'end'
+		justifyContent: 'flex-end'
 	},
 	desc: {
 		padding: '10px 0px',
@@ -144,93 +144,86 @@ function Room() {
 
 	if(loading) {
 		return (
-			<Box textAlign="center" m={3}>
-				<CircularProgress />
-			</Box>
+			<>
+				<NavBarComponent />
+				<Box textAlign="center" m={3}>
+					<CircularProgress />
+				</Box>
+			</>
 		)
 	}
 
 	if(error) {
 		return (
-			<Alert severity="error">Error: fetching data for room &quot;{id}&quot; failed [reson: {error}]</Alert>
+			<>
+				<NavBarComponent />
+				<Alert severity="error">Error: fetching data for room &quot;{id}&quot; failed [reson: {error}]</Alert>
+			</>
 		)
 	}
 	
 	return (
-		<Box className={classes.container}>
-			<Container maxWidth="md">
+		<>
+			<NavBarComponent />
+			<Box className={classes.container}>
+				<Container maxWidth="md">
 
-				<Box className={classes.header}>
-					<Typography variant="h4"> 
-						<Icon>games</Icon> 
-						&nbsp;
-						{name} 
-						&nbsp;
-						<Chip
-							size="small"
-							color="primary"
-							avatar={<Avatar alt="user image" src={creator_info.image} />}
-							label={'owner: ' + creator_info.name}
-						/>
-					</Typography>
-					<Typography variant="caption"> #id: {id} </Typography>
-				</Box>
+					<Box className={classes.header}>
+						<Typography variant="h4"> 
+							<Icon>games</Icon> 
+							&nbsp;
+							{name} 
+							&nbsp;
+							<Chip
+								size="small"
+								color="primary"
+								avatar={<Avatar alt="user image" src={creator_info.image} />}
+								label={'owner: ' + creator_info.name}
+							/>
+						</Typography>
+						<Typography variant="caption"> #id: {id} </Typography>
+					</Box>
 
-				<Box className={classes.controlls}>
-					{
-						isOwner ?
-							<>
-								<Button variant="contained" onClick={editRoom}>
-									<Icon>edit</Icon> &nbsp; Edit
-								</Button>
-								<DialogEditRoom 
-									open={openEditDialog} 
-									close={() => setOpenEditDialog(false)}
-									roomId={id} />
-								&nbsp;
-								&nbsp;
-								<Button 
-									disabled={deleteRoomLoading}
-									variant="contained" 
-									color="secondary" 
-									onClick={deleteRoom}>
-									{
-										deleteRoomLoading ?
-											<>
-												<CircularProgress size={15} color="inherit" />
-												&nbsp;
-												&nbsp;
-											</>
-											: undefined
-									}
-									<Icon>delete</Icon> &nbsp; Delete
-								</Button>
-							</>
-							:
-							isMember ?
-								<Button 
-									disabled={changeRoomMembershipLoading}
-									variant="contained" 
-									color="secondary" 
-									onClick={leaveRoom}>
-									{
-										changeRoomMembershipLoading ?
-											<>
-												<CircularProgress size={15} color="inherit" />
-												&nbsp;
-												&nbsp;
-											</>
-											: undefined
-									}
-									<Icon>logout</Icon> &nbsp; Leave
-								</Button>
+					<Box className={classes.controlls} color="white">
+						{
+							isOwner ?
+								<>
+									<Button 
+										variant="text" 
+										color="inherit" 
+										onClick={editRoom}>
+										<Icon>edit</Icon> &nbsp; Edit
+									</Button>
+									<DialogEditRoom 
+										open={openEditDialog} 
+										close={() => setOpenEditDialog(false)}
+										roomId={id} />
+									&nbsp;
+									&nbsp;
+									<Button 
+										disabled={deleteRoomLoading}
+										variant="text" 
+										color="secondary" 
+										onClick={deleteRoom}>
+										{
+											deleteRoomLoading ?
+												<>
+													<CircularProgress size={15} color="inherit" />
+													&nbsp;
+													&nbsp;
+												</>
+												: undefined
+										}
+										<Icon>delete</Icon> &nbsp; Delete
+									</Button>
+								</>
 								:
-								user ?
+								isMember ?
 									<Button 
 										disabled={changeRoomMembershipLoading}
-										variant="contained" 
-										color="primary" 
-										onClick={joinRoom}>
+										variant="text" 
+										color="inherit" 
+										onClick={leaveRoom}>
 										{
 											changeRoomMembershipLoading ?
 												<>
@@ -240,75 +233,94 @@ function Room() {
 												</>
 												: undefined
 										}
-										<Icon>add</Icon> &nbsp; Join
+										<Icon>logout</Icon> &nbsp; Leave
 									</Button>
 									:
-									undefined
-					}
-				</Box>
-
-				{ (description && description.trim() !== '') ?
-					<Box className={classes.desc}>
-						<Typography variant="body1"> description: {description} </Typography>
+									user ?
+										<Button 
+											disabled={changeRoomMembershipLoading}
+											variant="text" 
+											color="inherit" 
+											onClick={joinRoom}>
+											{
+												changeRoomMembershipLoading ?
+													<>
+														<CircularProgress size={15} color="inherit" />
+														&nbsp;
+														&nbsp;
+													</>
+													: undefined
+											}
+											<Icon>add</Icon> &nbsp; Join
+										</Button>
+										:
+										undefined
+						}
 					</Box>
-					: undefined
-				}
 
-				<Box className={classes.stats}>
-					<Grid container spacing={3}>
-						<Grid item xs>
-							<Paper>
-								<Box className={classes.statItem}>
-									<Typography variant="h6"> <Icon>sports_basketball</Icon> &nbsp; Game </Typography>
-									<Typography variant="subtitle1"> {game} </Typography>
-								</Box>
-							</Paper>
-						</Grid>
-						<Grid item xs>
-							<Paper>
-								<Box className={classes.statItem}>
-									<Typography variant="h6"> <Icon>sports_esports</Icon> &nbsp; Platform </Typography>
-									<Typography variant="h5"> {platform} </Typography>
-								</Box>
-							</Paper>
-						</Grid>
-						<Grid item xs>
-							<Paper>
-								<Box className={classes.statItem}>
-									<Typography variant="h6"> <Icon>groups</Icon> &nbsp; Friends </Typography>
-									<Typography variant="h5"> {members.length} </Typography>
-								</Box>
-							</Paper>
-						</Grid>
-					</Grid>
-				</Box>
+					{ (description && description.trim() !== '') ?
+						<Box className={classes.desc}>
+							<Typography variant="body1"> description: {description} </Typography>
+						</Box>
+						: undefined
+					}
 
-				<Paper spacing={3} className={classes.body}>
-					<Grid container spacing={3}>
-						<Grid item xs>
-							<RoomAnnouncements />
+					<Box className={classes.stats}>
+						<Grid container spacing={3}>
+							<Grid item xs>
+								<Paper>
+									<Box className={classes.statItem}>
+										<Typography variant="h6"> <Icon>sports_basketball</Icon> &nbsp; Game </Typography>
+										<Typography variant="subtitle1"> {game} </Typography>
+									</Box>
+								</Paper>
+							</Grid>
+							<Grid item xs>
+								<Paper>
+									<Box className={classes.statItem}>
+										<Typography variant="h6"> <Icon>sports_esports</Icon> &nbsp; Platform </Typography>
+										<Typography variant="h5"> {platform} </Typography>
+									</Box>
+								</Paper>
+							</Grid>
+							<Grid item xs>
+								<Paper>
+									<Box className={classes.statItem}>
+										<Typography variant="h6"> <Icon>groups</Icon> &nbsp; Friends </Typography>
+										<Typography variant="h5"> {members.length} </Typography>
+									</Box>
+								</Paper>
+							</Grid>
 						</Grid>
-						<Grid item xs>
-							<RoomSchedule />
-						</Grid>
-					</Grid>
-					<br />
-					<Grid container spacing={3}>
-						<Grid item xs>
-							<RoomChat room={id} />
-						</Grid>
-						<Grid item xs>
-							<RoomMembers />
-						</Grid>
-					</Grid>
-				</Paper>
+					</Box>
 
-				<Box className={classes.footer}>
-					<GameInfo name={game} />
-				</Box>
+					<Paper spacing={3} className={classes.body}>
+						<Grid container spacing={3}>
+							<Grid item xs>
+								<RoomAnnouncements />
+							</Grid>
+							<Grid item xs>
+								<RoomSchedule />
+							</Grid>
+						</Grid>
+						<br />
+						<Grid container spacing={3}>
+							<Grid item xs>
+								<RoomChat room={id} />
+							</Grid>
+							<Grid item xs>
+								<RoomMembers />
+							</Grid>
+						</Grid>
+					</Paper>
 
-			</Container>
-		</Box>
+					<Box className={classes.footer}>
+						<GameInfo name={game} />
+					</Box>
+
+				</Container>
+			</Box>
+		</>
 	)
 }
 
