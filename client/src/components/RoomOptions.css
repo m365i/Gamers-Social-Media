@@ -8,6 +8,7 @@
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
   transition: all 0.7s;
+  margin-left: 20px;
 }
 
 #btn_modal_no:hover {

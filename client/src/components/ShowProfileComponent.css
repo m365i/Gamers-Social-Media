@@ -1,0 +1,11 @@
+#profile_data {
+  color: orange;
+}
+
+#profile_data tr {
+  font-weight: bold;
+}
+
+#profile_data td {
+  font-weight: normal;
+}

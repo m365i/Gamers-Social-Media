@@ -1,10 +1,16 @@
-import React from 'react'
+import { React, useState } from 'react'
 import $ from 'jquery'
 import ReactDom from 'react-dom'
 import './AllUsersModal.css'
 import axios from '../services/axios.config'
 import { IoIosAddCircle, IoIosRemoveCircle } from 'react-icons/io'
+import { CgMoreO } from 'react-icons/cg'
+import ReactTooltip from 'react-tooltip'
+import ShowProfileComponent from './ShowProfileComponent'
 export default function AllUsersModal({ open, onClose, Profiles, MyProfile, friendTo }) {
+
+    const [SelectedProfile, SetSeletedProfile] = useState()
+
     const MODAL_STYLES = {
         position: 'fixed',
         top: '50%',
@@ -65,16 +71,20 @@ export default function AllUsersModal({ open, onClose, Profiles, MyProfile, frie
                 items.push(<div key={i}>
                     <img className="friend_img" id={s} alt="" />
                     <label className="friend_img_label">{Profiles[i].name}</label>
-                    <IoIosRemoveCircle className="Circle_icon"
-                        onClick={() => { friendTo(Profiles[i].userId, 0); onClose() }} /></div>)
+                    <IoIosRemoveCircle className="Circle_icon" data-tip="remove friend"
+                        onClick={() => { friendTo(Profiles[i].userId, 0); onClose() }} />
+                    <CgMoreO className="Circle_icon" data-tip="more info" onClick={() => SetSeletedProfile(Profiles[i])} />
+                </div>)
             }
 
             else {
                 items.push(<div key={i}>
                     <img className="friend_img" id={s} alt="" />
                     <label className="friend_img_label">{Profiles[i].name}</label>
-                    <IoIosAddCircle className="Circle_icon"
-                        onClick={() => { friendTo(Profiles[i].userId, 1); onClose() }} /></div>)
+                    <IoIosAddCircle className="Circle_icon" data-tip="add friend"
+                        onClick={() => { friendTo(Profiles[i].userId, 1); onClose() }} />
+                    <CgMoreO className="Circle_icon" data-tip="more info" onClick={() => SetSeletedProfile(Profiles[i])} />
+                </div>)
             }
 
         }
@@ -107,7 +117,8 @@ export default function AllUsersModal({ open, onClose, Profiles, MyProfile, frie
         <>
             <div style={OVERLAY_STYLES} />
             <div className="container-md align-content-center " style={MODAL_STYLES}>
-
+                {SelectedProfile ? <ShowProfileComponent ShowProfile={SelectedProfile} /> : null}
+                <ReactTooltip />
                 {GetAllUserProfiles()}
                 {load_friend_images()}
 
