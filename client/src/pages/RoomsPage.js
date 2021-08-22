@@ -1,6 +1,5 @@
 
 import { React, useState } from 'react'
-import NavBarComponent from '../components/NavBarComponent'
 import './RoomsPage.css'
 import NewRoomForm from '../components/NewRoomForm'
 import { RiChatNewLine } from 'react-icons/ri'
@@ -17,8 +16,7 @@ export default function RoomsPage() {
     /* Pc|Xbox|Playstation|Android|Apple|Psp */
 
     return (
-        <div>
-            <NavBarComponent />
+        <div style={{height: '100vh'}}>
             <div className="container-md">
                 <RiChatNewLine id="newRoomForm_btn" data-tip="Create New Room" onClick={() => setShownewRoomForm(!shownewRoomFormResults)}>Create New Room</RiChatNewLine>
                 <ReactTooltip />

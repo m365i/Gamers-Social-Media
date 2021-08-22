@@ -4,6 +4,10 @@
   background: rgb(22, 32, 45, 0.45);
 }
 
+li a img {
+	padding-right: 10px;
+}
+
 ul li a {
   color: #ff9100;
   margin-left: 10px;
@@ -140,7 +144,7 @@ hr {
   display: none;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 800px) {
   .topnav li:not(:first-child) {
     display: none;
   }
@@ -150,7 +154,7 @@ hr {
   }
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 800px) {
   #main_logo {
     display: block;
   }

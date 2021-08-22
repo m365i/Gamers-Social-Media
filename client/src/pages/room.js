@@ -14,7 +14,6 @@ import Icon from '@material-ui/core/Icon'
 import { DialogEditRoom } from '../components/DialogRoomBuilder'
 import {makeStyles} from '@material-ui/core/styles'
 import {actionChangeRoomMembership, fetchRoom, selectRoom} from '../state/roomSlice'
-import NavBarComponent from '../components/NavBarComponent'
 import {
 	deleteRoom as gameDeleteRoom,
 	leave as gameLeaveRoom,
@@ -34,7 +33,7 @@ const useStyles = makeStyles(() => ({
 			backgroundColor: 'red'
 		}
 	},
-	controlls: {
+	controls: {
 		width: '100%',
 		display: 'flex',
 		flexDirection: 'row',
@@ -145,7 +144,6 @@ function Room() {
 	if(loading) {
 		return (
 			<>
-				<NavBarComponent />
 				<Box textAlign="center" m={3}>
 					<CircularProgress />
 				</Box>
@@ -156,7 +154,6 @@ function Room() {
 	if(error) {
 		return (
 			<>
-				<NavBarComponent />
 				<Alert severity="error">Error: fetching data for room &quot;{id}&quot; failed [reson: {error}]</Alert>
 			</>
 		)
@@ -164,7 +161,6 @@ function Room() {
 	
 	return (
 		<>
-			<NavBarComponent />
 			<Box className={classes.container}>
 				<Container maxWidth="md">
 
@@ -184,7 +180,7 @@ function Room() {
 						<Typography variant="caption"> #id: {id} </Typography>
 					</Box>
 
-					<Box className={classes.controlls} color="white">
+					<Box className={classes.controls} color="white">
 						{
 							isOwner ?
 								<>

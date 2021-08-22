@@ -128,7 +128,7 @@ exports.auth_profile = async function (req, res, next) {
 		const id = req.user.id,
 			email = req.user.email
 		const profile = await Profile.findOne({ userId: new mongoose.Types.ObjectId(id) }).exec()
-		return res.status(StatusCodes.OK).send({ id, name: profile.name, email, country: profile.country, birth: profile.birth, status: profile.status })
+		return res.status(StatusCodes.OK).send({ id, name: profile.name, email, country: profile.country, birth: profile.birth, status: profile.status, image: profile.image })
 	} catch (err) {
 		next(err)
 	}
