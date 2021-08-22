@@ -1,16 +1,16 @@
 
 import React from 'react'
-import {login} from '../services/authAPI'
-import {useState} from 'react'
-import {useHistory} from 'react-router-dom'
+import { login } from '../services/authAPI'
+import { useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import clsx from 'clsx'
-import {Link} from 'react-router-dom'
-import {Box, Button, Checkbox, CircularProgress, FormControlLabel, Grid, TextField, Typography} from '@material-ui/core'
-import {Alert} from '@material-ui/lab'
-import {makeStyles} from '@material-ui/core/styles'
+import { Link } from 'react-router-dom'
+import { Box, Button, Checkbox, CircularProgress, FormControlLabel, Grid, TextField, Typography } from '@material-ui/core'
+import { Alert } from '@material-ui/lab'
+import { makeStyles } from '@material-ui/core/styles'
 import SideViewFormLayout from '../components/SideViewFormLayout'
-import {fetchUser} from '../state/userSlice'
-import {useDispatch} from 'react-redux'
+import { fetchUser } from '../state/userSlice'
+import { useDispatch } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
 	link: {
@@ -97,7 +97,7 @@ export default function Login(props) {
 	}
 
 	return (
-		<SideViewFormLayout image={process.env.PUBLIC_URL + './images/photo-1511193311914-0346f16efe90.webp'}>
+		<SideViewFormLayout image={process.env.PUBLIC_URL + './images/LoginBig.png'}>
 			<Typography component='h1' variant='h5' className={classes.title}>
 				Welcome back!
 			</Typography>
@@ -169,7 +169,7 @@ export default function Login(props) {
 						<CircularProgress color='inherit' size={20} className={classes.progress} /> : undefined}
 					Sign in
 				</Button>
-				<Box display={clsx({'none': error === undefined})}>
+				<Box display={clsx({ 'none': error === undefined })}>
 					<Alert severity='error'>
 						{error}
 					</Alert>

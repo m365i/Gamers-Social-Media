@@ -92,21 +92,21 @@ function NavBarComponent() {
 										<img src={process.env.PUBLIC_URL + '/images/about_icon.png'} alt="About us" />
 										About us
 									</Link>
-
+ 
 
 								</li>
 								<li className="my_nav_item" >
-									<Link className="navbar-brand nav-item" to="/search" style={{ textDecoration: 'none' }}>
+									{user ? <Link className="navbar-brand nav-item" to="/search" style={{ textDecoration: 'none' }}>
 										<img src={process.env.PUBLIC_URL + '/images/search_icon.png'} alt="Search" />
 										Search
-									</Link>
+									</Link> : null}
 
 								</li>
 
 								<li className="my_nav_item" >
-									<Link className="navbar-brand nav-item" to="/rooms" style={{ textDecoration: 'none' }}>
+									{user ? <Link className="navbar-brand nav-item" to="/rooms" style={{ textDecoration: 'none' }}>
 										Rooms
-									</Link>
+									</Link> : null}
 								</li>
 
 								<li className="my_nav_item" >
@@ -114,11 +114,9 @@ function NavBarComponent() {
 										<img src={process.env.PUBLIC_URL + '/images/login_icon.png'} alt="Login" />
 										{loading && '...'}
 										{(!loading && user) ? `${user.name}` :
-											'not logged in'
+											'Click Here To Log in'
 										}
 									</Link>
-
-									<Link id="login_link" to="/login" style={{ textDecoration: 'none' }} > Login </Link>
 
 								</li>
 

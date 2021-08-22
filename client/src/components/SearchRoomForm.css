@@ -1,0 +1,38 @@
+.form-control {
+  text-align: center;
+  color: rgb(255, 189, 67);
+  background-color: rgba(122, 122, 122, 0.3);
+  transition: all 0.6s;
+}
+
+.form-control:focus {
+  background-color: rgba(177, 176, 176, 0.3);
+  color: rgb(255, 189, 67);
+}
+.form-control option {
+  width: 500px;
+  background-color: rgb(100, 97, 97);
+}
+
+.form-group {
+  width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  transition: all 0.6s;
+}
+#new_room_form_error {
+  color: red;
+  font-size: 25px;
+  font-weight: bold;
+  text-align: center;
+}
+
+#new_room_form {
+  background-image: linear-gradient(
+    rgba(90, 40, 255, 0.2),
+    rgba(177, 176, 176, 0.3)
+  );
+  border-radius: 2rem;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
