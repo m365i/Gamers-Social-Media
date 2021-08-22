@@ -646,44 +646,12 @@ paths:
                   value: "'offset' must be a positive integer or 0"
   /room/list:
     get:
-      summary: get a list of rooms by the user who created them
+      summary: get a list of rooms that the user created or joined
       tags:
       - rooms
       parameters:
         - in: query
-          description: user id of the user who created the room, if none specified the logged user id will be used
-          name: userId
-          schema:
-            type: string
-          required: false
-      responses:
-        '200':
-          description: list of the user rooms
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/room"
-        '400':
-          description: input error
-          content:
-            text/plain:
-              schema:
-                type: string
-              examples:
-                the specified user not found:
-                  value: user not found
-                user id was not specified and no user is logged in:
-                  value: no specified user id
-  /room/my:
-    get:
-      summary: get the list of rooms that the user is registered in 
-      tags:
-      - rooms
-      parameters:
-        - in: query
-          description: user id of the user who created the room, if none specified the logged user id will be used
+          description: user id, if none specified the logged user id will be used
           name: userId
           schema:
             type: string
