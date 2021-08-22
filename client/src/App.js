@@ -25,6 +25,8 @@ import Contact from './pages/contact'
 import Room from './pages/room'
 import RoomsPage from './pages/RoomsPage'
 import RoomsSearchPage from './pages/RoomsSearchPage'
+import About from './pages/about'
+import NavBarComponent from './components/NavBarComponent'
 
 const history = createBrowserHistory()
 
@@ -43,20 +45,22 @@ export default function App() {
 	}
 
 	return (
-
 		<Router history={history}>
-			<Switch>
-				<PrivateRoute access={!isLoggedIn} redirect="/" path="/signup" component={Signup} />
-				<PrivateRoute access={!isLoggedIn} redirect="/" path="/login" component={Login} />
-				<PrivateRoute access={!isLoggedIn} redirect="/" path="/reset-password/:code" component={ResetPassword} />
-				<PrivateRoute access={!isLoggedIn} redirect="/" path="/forgot-password" component={ForgotPassword} />
-				<Route path="/contact" component={Contact} />
-				<Route path="/room/:id" component={Room} />
-				<Route path="/rooms" component={RoomsPage} />
-				<Route path="/search" component={RoomsSearchPage} />
-				<PrivateRoute access={isLoggedIn} redirect="/login" path="/members" component={Members} />
-				<Route path="/" component={Home} />
-			</Switch>
+			<NavBarComponent>
+				<Switch>
+					<PrivateRoute access={!isLoggedIn} redirect="/" path="/signup" component={Signup} />
+					<PrivateRoute access={!isLoggedIn} redirect="/" path="/login" component={Login} />
+					<PrivateRoute access={!isLoggedIn} redirect="/" path="/reset-password/:code" component={ResetPassword} />
+					<PrivateRoute access={!isLoggedIn} redirect="/" path="/forgot-password" component={ForgotPassword} />
+					<Route path="/contact" component={Contact} />
+					<Route path="/room/:id" component={Room} />
+					<Route path="/rooms" component={RoomsPage} />
+					<Route path="/search" component={RoomsSearchPage} />
+					<PrivateRoute access={isLoggedIn} redirect="/login" path="/members" component={Members} />
+					<Route path="/about_us" component={About} />
+					<Route path="/" component={Home} />
+				</Switch>
+			</NavBarComponent>
 		</Router>
 	)
 }
