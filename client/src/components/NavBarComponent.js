@@ -92,7 +92,7 @@ function NavBarComponent() {
 										<img src={process.env.PUBLIC_URL + '/images/about_icon.png'} alt="About us" />
 										About us
 									</Link>
- 
+
 
 								</li>
 								<li className="my_nav_item" >

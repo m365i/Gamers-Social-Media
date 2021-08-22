@@ -28,7 +28,7 @@ export default function MyRoomsComponent() {
 
     function GetAllGamesOption() {
 
-        axios.get('/room/my').then((res) => {
+        axios.get('/room/list').then((res) => {
             //console.log(res.data)
             for (let i = 0; i < res.data.length; i++) {
                 const room = res.data[i]
