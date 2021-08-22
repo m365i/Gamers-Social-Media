@@ -14,19 +14,11 @@ export default function SearchRoomForm() {
     const [MyRooms, SetMyRoomsList] = useState([])
     async function SearchRoomclicked() {
 
-        /*      const room_to_search = {
-                 name: $('#room_name').val(),
-                 game: $('select[name=gameSelector] option').filter(':selected').val(),
-                 platform: $('select[name=PlatformSelector] option').filter(':selected').val(),
-                 description: $('#game_desc_ta').val()
-             } */
-        // console.log(new_room)
-
         const filtered_list = ResultList.filter(obj =>
             obj.game == $('select[name=gameSelector] option').filter(':selected').val() &&
             obj.platform == $('select[name=PlatformSelector] option').filter(':selected').val()
         )
-
+        SetMyRoomsList([])
 
         for (let i = 0; i < filtered_list.length; i++) {
             const room = filtered_list[i]
