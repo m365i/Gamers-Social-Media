@@ -1,13 +1,13 @@
 
 import React from 'react'
-import {signup} from '../services/authAPI'
-import {useState} from 'react'
-import {useHistory} from 'react-router-dom'
+import { signup } from '../services/authAPI'
+import { useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import clsx from 'clsx'
-import {Link} from 'react-router-dom'
-import {Box, Button, Checkbox, CircularProgress, FormControl, FormControlLabel, FormHelperText, Grid, TextField, Typography} from '@material-ui/core'
-import {Alert} from '@material-ui/lab'
-import {makeStyles} from '@material-ui/core/styles'
+import { Link } from 'react-router-dom'
+import { Box, Button, Checkbox, CircularProgress, FormControl, FormControlLabel, FormHelperText, Grid, TextField, Typography } from '@material-ui/core'
+import { Alert } from '@material-ui/lab'
+import { makeStyles } from '@material-ui/core/styles'
 import SideViewFormLayout from '../components/SideViewFormLayout'
 import Joi from 'joi'
 import passwordStrength from '../util/passwordStrength'
@@ -100,7 +100,7 @@ export default function Signup() {
 		if (email === '') {
 			setEmailValidation('this field is reqired')
 			valid = false
-		} else if (Joi.string().email({tlds: {allow: false}}).validate(email).error) {
+		} else if (Joi.string().email({ tlds: { allow: false } }).validate(email).error) {
 			setEmailValidation('this is not a valid email address')
 			valid = false
 		}
@@ -148,7 +148,7 @@ export default function Signup() {
 
 
 	return (
-		<SideViewFormLayout image={process.env.PUBLIC_URL + './images/photo-1513701589220-af816329378c.webp'}>
+		<SideViewFormLayout image={process.env.PUBLIC_URL + './images/LoginBig.png'}>
 			<Typography component='h1' variant='h5' className={classes.title}>
 				Join us
 			</Typography>
@@ -247,7 +247,7 @@ export default function Signup() {
 						<CircularProgress color='inherit' size={20} className={classes.progress} /> : undefined}
 					Sign up
 				</Button>
-				<Box display={clsx({'none': error === undefined})}>
+				<Box display={clsx({ 'none': error === undefined })}>
 					<Alert severity='error'>
 						{error}
 					</Alert>

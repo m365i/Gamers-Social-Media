@@ -24,7 +24,7 @@ import ResetPassword from './pages/reset_password'
 import Contact from './pages/contact'
 import Room from './pages/room'
 import RoomsPage from './pages/RoomsPage'
-
+import RoomsSearchPage from './pages/RoomsSearchPage'
 
 const history = createBrowserHistory()
 
@@ -53,6 +53,7 @@ export default function App() {
 				<Route path="/contact" component={Contact} />
 				<Route path="/room/:id" component={Room} />
 				<Route path="/rooms" component={RoomsPage} />
+				<Route path="/search" component={RoomsSearchPage} />
 				<PrivateRoute access={isLoggedIn} redirect="/login" path="/members" component={Members} />
 				<Route path="/" component={Home} />
 			</Switch>
