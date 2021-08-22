@@ -75,21 +75,21 @@ function NavBarComponent() {
 					<div>
 						<div className="container-md ">
 							<Link to='/'>
-								<img id="main_logo" src="images/logo.png" alt="logo" />
+								<img id="main_logo" src={process.env.PUBLIC_URL + '/images/logo.png'} alt="logo" />
 							</Link>
 
 							<div className="topnav" id="myTopnav">
 
 								<li className="my_nav_item"  >
 									<Link className="navbar-brand nav-item" to="/" style={{ textDecoration: 'none' }}>
-										<img src="images/home_icon.png" alt="Home" />
+										<img src={process.env.PUBLIC_URL + '/images/home_icon.png'} alt="Home" />
 									</Link>
 									<Link className="navbar-brand nav-item" to="/" style={{ textDecoration: 'none' }}>Home</Link>
 								</li>
 
 								<li className="my_nav_item" >
 									<Link className="navbar-brand nav-item" to="/about_us" style={{ textDecoration: 'none' }}>
-										<img src="images/about_icon.png" alt="About us" />
+										<img src={process.env.PUBLIC_URL + '/images/about_icon.png'} alt="About us" />
 										About us
 									</Link>
 
@@ -97,7 +97,7 @@ function NavBarComponent() {
 								</li>
 								<li className="my_nav_item" >
 									{user ? <Link className="navbar-brand nav-item" to="/search" style={{ textDecoration: 'none' }}>
-										<img src="images/search_icon.png" alt="Search" />
+										<img src={process.env.PUBLIC_URL + '/images/search_icon.png'} alt="Search" />
 										Search
 									</Link> : null}
 
@@ -111,7 +111,7 @@ function NavBarComponent() {
 
 								<li className="my_nav_item" >
 									<Link className="navbar-brand nav-item" to={checkLoggedIn} style={{ textDecoration: 'none' }}>
-										<img src="images/login_icon.png" alt="Login" />
+										<img src={process.env.PUBLIC_URL + '/images/login_icon.png'} alt="Login" />
 										{loading && '...'}
 										{(!loading && user) ? `${user.name}` :
 											'Click Here To Log in'
