@@ -1,7 +1,6 @@
 import React from 'react'
 import './home.css'
 import RoomCard from '../components/RoomCard'
-import NavBarComponent from '../components/NavBarComponent'
 import { Link } from 'react-router-dom'
 
 export default function Home() {
@@ -9,7 +8,6 @@ export default function Home() {
 	return (
 		<>
 			{/* <!-- end header --> */}
-			<NavBarComponent/>
 			<div className="bar container-md h-auto">
 				<div className="container">
 					<div className="row">
@@ -106,25 +104,6 @@ export default function Home() {
 								</ul>
 							</div>
 							<img src="images/GETAMEMBER.png" />
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div className="container-md footer h-auto">
-				<div className="container">
-					<div className="row">
-						<div className=" my-4">
-							<span style={{ 'color': '#ffa800', fontWeight: 'bold' }}>PlayTogether</span> is a free LFG app for finding
-								gamer friends,<br />
-								getting personal game recommendations,<br />
-								and coordinating gameplay sessions with non-toxic people.
-						</div>
-
-						<div className="my-auto h-auto">
-							<img src="images/logo.png" height="20px" />
-							<br />© 2021 All rights reserved. <br />
-							<span style={{ 'color': '#ffa800', fontWeight: 'bold' }}> Terms & Conditions | Privacy Policy</span>
 						</div>
 					</div>
 				</div>

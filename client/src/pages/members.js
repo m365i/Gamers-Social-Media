@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux'
 import axios from '../services/axios.config'
 import $ from 'jquery'
 import './members.css'
-import NavBarComponent from '../components/NavBarComponent'
 import AddAPhotoIcon from '@material-ui/icons/AddAPhoto'
 import { FaEdit, FaSave, FaWindowClose, FaUserFriends } from 'react-icons/fa'
 import ReactTooltip from 'react-tooltip'
@@ -314,9 +313,7 @@ export default function Members() {
 	}
 
 	return (
-
 		<>
-			<NavBarComponent />
 
 			<div id="profile_top" className="row" >
 				<div className="col" >
