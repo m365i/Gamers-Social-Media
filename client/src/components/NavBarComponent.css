@@ -5,7 +5,7 @@
 }
 
 li a img {
-	padding-right: 10px;
+  padding-right: 10px;
 }
 
 ul li a {
@@ -69,6 +69,7 @@ hr {
 #white_btn:hover {
   background-color: #f5cb78;
 }
+
 
 .room_info p {
   margin-top: 40px;

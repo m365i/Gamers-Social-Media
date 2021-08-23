@@ -7,8 +7,10 @@ import { selectUser, removeUser } from '../state/userSlice'
 import $ from 'jquery'
 import './NavBarComponent.css'
 import { FaBars } from 'react-icons/fa'
+import NotificationComponent from './NotificationComponent'
 
-function NavBarComponent({children}) {
+
+function NavBarComponent({ children }) {
 	const [isLogged, setLogged] = useState(false)
 
 	const history = useHistory()
@@ -71,7 +73,7 @@ function NavBarComponent({children}) {
 				<div className="container-md  header h-auto w-auto">
 					<div>
 						<div className="container-md mt-4">
-							<img style={{maxWidth: '90%'}} id="main_logo" src={process.env.PUBLIC_URL + '/images/logo.png'} alt="logo" />
+							<img style={{ maxWidth: '90%' }} id="main_logo" src={process.env.PUBLIC_URL + '/images/logo.png'} alt="logo" />
 
 							<div className="topnav" id="myTopnav">
 
@@ -82,6 +84,8 @@ function NavBarComponent({children}) {
 									</Link>
 								</li>
 
+
+
 								<li className="my_nav_item" >
 									<Link className="navbar-brand nav-item" to="/about_us" style={{ textDecoration: 'none' }}>
 										<img src={process.env.PUBLIC_URL + '/images/about_icon.png'} alt="About us" />
@@ -90,22 +94,22 @@ function NavBarComponent({children}) {
 
 
 								</li>
-								{user ? 
+								{user ?
 									<>
-									<li className="my_nav_item" >
-										<Link className="navbar-brand nav-item" to="/search" style={{ textDecoration: 'none' }}>
-											<img src={process.env.PUBLIC_URL + '/images/search_icon.png'} alt="Search" />
-											Search
-										</Link>
-									</li>
+										<li className="my_nav_item" >
+											<Link className="navbar-brand nav-item" to="/search" style={{ textDecoration: 'none' }}>
+												<img src={process.env.PUBLIC_URL + '/images/search_icon.png'} alt="Search" />
+												Search
+											</Link>
+										</li>
 
-									<li className="my_nav_item" >
-										<Link className="navbar-brand nav-item" to="/rooms" style={{ textDecoration: 'none' }}>
-											Rooms
-										</Link>
-									</li>
+										<li className="my_nav_item" >
+											<Link className="navbar-brand nav-item" to="/rooms" style={{ textDecoration: 'none' }}>
+												Rooms
+											</Link>
+										</li>
 									</>
-								: null}
+									: null}
 
 								<li className="my_nav_item" >
 									<Link className="navbar-brand nav-item" to={checkLoggedIn} style={{ textDecoration: 'none' }}>
@@ -124,6 +128,9 @@ function NavBarComponent({children}) {
 								<li className="my_nav_item" id="nav_bar_icon" onClick={myFunction}>
 									<FaBars />
 								</li>
+								<li>
+									{user ? <NotificationComponent /> : null}
+								</li>
 							</div>
 
 
@@ -141,9 +148,9 @@ function NavBarComponent({children}) {
 					<div className="row">
 						<div className="mx-auto mb-4 mr-4">
 							<span style={{ 'color': '#ffa800', fontWeight: 'bold' }}>PlayTogether</span> is a free LFG app for finding
-								gamer friends,<br />
-								getting personal game recommendations,<br />
-								and coordinating gameplay sessions with non-toxic people.
+							gamer friends,<br />
+							getting personal game recommendations,<br />
+							and coordinating gameplay sessions with non-toxic people.
 						</div>
 
 						<div className="mx-auto my-auto h-auto">

@@ -26,6 +26,8 @@ export default function Members() {
 	//const [FriendFocused, SetFriendFocused] = useState(null)
 	const [dataFetched, SetdataFetch] = useState(false)
 	const [isOpen, SetisOpen] = useState(false)
+
+	
 	const fetchData = async () => {
 		await axios.get(`profiles/profile/${user.id}`).then((res) => {
 			//console.log(res.data[0])

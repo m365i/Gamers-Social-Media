@@ -66,12 +66,12 @@ export default function NewRoomForm() {
                 <div className="col form-group" id="newRoomFormdiv">
                     <input id="room_name" className="form-control" type="text" placeholder="room name" />
                     <div>
-                        <select name="gameSelector" className="form-control">
+                        <select name="gameSelector" id="game_selector_id" className="form-control">
                             {AllGamesList}
                         </select>
                     </div>
                     <div>
-                        <select name="PlatformSelector" className="form-control">
+                        <select name="PlatformSelector" id="platform_selector" className="form-control">
                             <option className="form-control" value={'Pc'} >Pc</option>
                             <option className="form-control" value={'Xbox'} >Xbox</option>
                             <option className="form-control" value={'Playstation'} >Playstation</option>
