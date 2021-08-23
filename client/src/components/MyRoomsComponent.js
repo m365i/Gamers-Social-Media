@@ -3,12 +3,18 @@ import { React, useEffect, useState } from 'react'
 import './MyRoomsComponent.css'
 import { Carousel } from 'react-responsive-carousel'
 import RoomOptions from '../components/RoomOptions'
-export default function MyRoomsComponent() {
+import { ImUserPlus } from 'react-icons/im'
+import InviteUsersModal from './InviteUsersModal'
+//import $ from 'jquery'
+export default function MyRoomsComponent({ Profiles_RC, MyProfile_RC }) {
 
 
     const [MyRooms, SetMyRoomsList] = useState([])
+    const [OBJMyRooms, SetOBJMyRoomsList] = useState([])
+    const [RoomIndex, SetRoomIndex] = useState(0)
     const [OpenRoomOptions, SetOpenRoomOptions] = useState(false)
     const [FocusedRoom, SetFocusedRoom] = useState(null)
+    const [isOpen, SetisOpen] = useState(false)
     /*     function CreateRoomclicked() {
             const new_room = {
                 name: $('#room_name').val(),
@@ -30,6 +36,7 @@ export default function MyRoomsComponent() {
 
         axios.get('/room/list').then((res) => {
             //console.log(res.data)
+            SetOBJMyRoomsList(res.data)
             for (let i = 0; i < res.data.length; i++) {
                 const room = res.data[i]
                 axios.get(`/games/info?name=${room.game}`).then((info) => {
@@ -40,7 +47,7 @@ export default function MyRoomsComponent() {
                         [...MyRooms, <div key={i} onClick={() => { SetFocusedRoom(room); SetOpenRoomOptions(true) }}>
                             <label key={i} >{room.name}</label>
                             <img src={info.data.image} />
-                        </div>])
+                        </div >])
                 })
 
 
@@ -50,6 +57,20 @@ export default function MyRoomsComponent() {
 
     }
 
+    function ActionFriendInviteClicked(friend_id) {
+        axios.post('/notifications/new_note',
+            {
+                from_id: MyProfile_RC.userId,
+                to_id: friend_id,
+                update: `You Have Received new invitation From ${MyProfile_RC.name} <br>
+                        <a href=${'/room/' + OBJMyRooms[RoomIndex]._id} >Link To Join The Room</a> `,
+                timestamp: new Date().now
+            }).then(() => {
+
+                console.log('invitetion Sent')
+            })
+
+    }
 
 
     useEffect(() => {
@@ -63,7 +84,16 @@ export default function MyRoomsComponent() {
         <div>
             <div className="container-md" id="my_rooms_comp">
                 <label id="rooms_lable">My ROOMS</label>
-                <Carousel infiniteLoop useKeyboardArrows >
+                <ImUserPlus id="invite_friend_icon" data-tip="Invite Friend To Room"
+                    onClick={() => SetisOpen(true)} />
+                <InviteUsersModal open={isOpen}
+                    friendTo={(friend_id) => ActionFriendInviteClicked(friend_id)}
+                    Profiles={Profiles_RC} MyProfile={MyProfile_RC}
+                    onClose={() => SetisOpen(false)}
+                />
+                <Carousel infiniteLoop useKeyboardArrows onChange={(index, obj) => {
+                    SetRoomIndex(parseInt(obj.key.slice(2, 3)))
+                }} >
                     {MyRooms}
                 </Carousel>
             </div>
@@ -71,6 +101,8 @@ export default function MyRoomsComponent() {
                 Room={FocusedRoom}
                 onClose={() => SetOpenRoomOptions(false)} />
 
-        </div>
+
+        </div >
+
     )
 }
