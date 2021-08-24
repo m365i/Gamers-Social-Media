@@ -6,15 +6,14 @@ const profileModel = require('../models/profile')
 
 
 // Retrieve and return all  from the database.
-exports.findAll = (req, res) => {
-	profileModel.find()
-		.then(profiles => {
-			res.send(profiles)
-		}).catch(err => {
+exports.findAll = async (req, res) => {
+	const profiles = await profileModel.find()
+		.catch(err => {
 			res.status(500).send({
 				message: err.message || 'Some error occurred while retrieving profiles.'
 			})
 		})
+	res.send(profiles)
 }
 
 // Find a single profile with Id

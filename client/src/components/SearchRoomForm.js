@@ -4,20 +4,55 @@ import './SearchRoomForm.css'
 import $ from 'jquery'
 import RoomOptions from '../components/RoomOptions'
 import { Carousel } from 'react-responsive-carousel'
-export default function SearchRoomForm() {
+export default function SearchRoomForm({ Profiles }) {
 
 
     const [AllGamesList, SetAllGamesList] = useState([])
+    const [AllOwnersList, SetAllOwnersList] = useState([])
+
     const [ResultList, SetResultList] = useState([])
     const [FocusedRoom, SetFocusedRoom] = useState(null)
     const [OpenRoomOptions, SetOpenRoomOptions] = useState(false)
     const [MyRooms, SetMyRoomsList] = useState([])
-    async function SearchRoomclicked() {
 
-        const filtered_list = ResultList.filter(obj =>
-            obj.game == $('select[name=gameSelector] option').filter(':selected').val() &&
-            obj.platform == $('select[name=PlatformSelector] option').filter(':selected').val()
-        )
+
+    const [ShowSearchByGame, SetShowSearchByGame] = useState(false)
+    const [ShowSearchByPlatform, SetShowSearchByPlatform] = useState(false)
+    const [ShowSearchRoomName, SetShowSearchByRooName] = useState(false)
+    const [ShowSearchRoomOwner, SetShowSearchRoomOwner] = useState(false)
+
+    async function SearchRoomclicked() {
+        let filtered_list = ResultList
+        // console.log(filtered_list)
+        if (ShowSearchByGame) {
+            filtered_list = filtered_list.filter(obj =>
+                obj.game == $('select[name=gameSelector] option').filter(':selected').val()
+            )
+
+        }
+
+        if (ShowSearchByPlatform) {
+            filtered_list = filtered_list.filter(obj =>
+                obj.platform == $('select[name=PlatformSelector] option').filter(':selected').val()
+            )
+
+        }
+
+        if (ShowSearchRoomName) {
+            filtered_list = filtered_list.filter(obj =>
+                obj.name == $('#room_name_input').val() ||
+                obj.name.startsWith($('#room_name_input').val())
+            )
+
+        }
+
+        if (ShowSearchRoomOwner) {
+            filtered_list = filtered_list.filter(obj =>
+                obj.creator == $('select[name=CreatorSelector] option').filter(':selected').val()
+            )
+
+        }
+
         SetMyRoomsList([])
 
         for (let i = 0; i < filtered_list.length; i++) {
@@ -39,7 +74,18 @@ export default function SearchRoomForm() {
 
     }
 
+
+
     function GetAllSearchOption() {
+        //console.log(Profiles)
+        for (let i = 0; i < Profiles.length; i++) {
+            const profile = Profiles[i]
+            let s = 'dd' + String(i)
+
+            SetAllOwnersList(AllOwnersList =>
+                [...AllOwnersList, <option key={s} className="form-control" value={profile.userId} >{profile.name}</option>])
+
+        }
 
 
         axios.get('room/list-all?offset=0&length=100').then((res) => {
@@ -60,6 +106,8 @@ export default function SearchRoomForm() {
 
         })
 
+
+
     }
 
 
@@ -71,9 +119,7 @@ export default function SearchRoomForm() {
 
 
     useEffect(() => {
-
         GetAllSearchOption()
-
     }, [])
 
     /* Pc|Xbox|Playstation|Android|Apple|Psp */
@@ -81,12 +127,50 @@ export default function SearchRoomForm() {
     return (
         <div className="container-md" id="new_room_form">
             <div className="col form-group" id="newRoomFormdiv">
-                <div>
+
+                <div className="form-check">
+                    <div className="custom-control custom-checkbox">
+                        <input type="checkbox" className="custom-control-input" id="customSearchByGamelID" onClick={() => SetShowSearchByGame(!ShowSearchByGame)} />
+                        <label className="custom-control-label" htmlFor="customSearchByGamelID">Search By Game</label>
+                    </div>
+                </div>
+
+                <div className="form-check">
+                    <div className="custom-control custom-checkbox">
+                        <input type="checkbox" className="custom-control-input" id="customSearchByPlatformlID" onClick={() => SetShowSearchByPlatform(!ShowSearchByPlatform)} />
+                        <label className="custom-control-label" htmlFor="customSearchByPlatformlID">Search By Platform</label>
+                    </div>
+                </div>
+
+                <div className="form-check">
+                    <div className="custom-control custom-checkbox">
+                        <input type="checkbox" className="custom-control-input" id="customSearchByRoomNamelID" onClick={() => SetShowSearchByRooName(!ShowSearchRoomName)} />
+                        <label className="custom-control-label" htmlFor="customSearchByRoomNamelID">Search By Room Name</label>
+                    </div>
+                </div>
+
+
+                <div className="form-check">
+                    <div className="custom-control custom-checkbox">
+                        <input type="checkbox" className="custom-control-input" id="customSearchByRoomOwnerlID" onClick={() => SetShowSearchRoomOwner(!ShowSearchRoomOwner)} />
+                        <label className="custom-control-label" htmlFor="customSearchByRoomOwnerlID">Search By Room Owner</label>
+                    </div>
+                </div>
+
+                {ShowSearchByGame ? <div>
                     <select name="gameSelector" className="form-control">
                         {AllGamesList}
                     </select>
-                </div>
-                <div>
+                </div> : null}
+
+                {ShowSearchRoomOwner ? <div>
+                    <select name="CreatorSelector" className="form-control">
+                        {AllOwnersList}
+                    </select>
+                </div> : null}
+
+
+                {ShowSearchByPlatform ? <div>
                     <select name="PlatformSelector" className="form-control">
                         <option className="form-control" value={'Pc'} >Pc</option>
                         <option className="form-control" value={'Xbox'} >Xbox</option>
@@ -96,12 +180,19 @@ export default function SearchRoomForm() {
                         <option className="form-control" value={'linux'} >linux</option>
                         <option className="form-control" value={'Psp'} >Psp</option>
                     </select>
+                </div> : null}
 
-                    <button className="btn-outline-success form-control" onClick={SearchRoomclicked}>Search Rooms</button>
-                    <div id="new_room_form_error"></div>
-                    <br />
-                    <button className="btn-outline-success form-control" onClick={ClearSearchClicked}>Clear Search</button>
-                </div>
+
+                {ShowSearchRoomName ? <input type="text" id="room_name_input" className="form-control" placeholder="Room Name" /> : null}
+
+
+
+
+                <button className="btn-outline-success form-control" onClick={SearchRoomclicked}>Search Rooms</button>
+                <div id="new_room_form_error"></div>
+                <br />
+                <button className="btn-outline-success form-control" onClick={ClearSearchClicked}>Clear Search</button>
+
             </div>
 
             <Carousel infiniteLoop useKeyboardArrows >

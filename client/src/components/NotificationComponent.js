@@ -32,7 +32,7 @@ export default function NotificationComponent() {
             }
 
         })
-        console.log(notifications)
+        // console.log(notifications)
 
 
 
