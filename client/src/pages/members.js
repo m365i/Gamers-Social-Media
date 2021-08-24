@@ -27,7 +27,7 @@ export default function Members() {
 	const [dataFetched, SetdataFetch] = useState(false)
 	const [isOpen, SetisOpen] = useState(false)
 
-	
+
 	const fetchData = async () => {
 		await axios.get(`profiles/profile/${user.id}`).then((res) => {
 			//console.log(res.data[0])
@@ -100,7 +100,7 @@ export default function Members() {
 		var formData = new FormData()
 		var imagefile = document.querySelector('#img_upload_input')
 		formData.append('file', imagefile.files[0])
-		console.log(formData.get('file'))
+		//console.log(formData.get('file'))
 		axios.post(`/profile/img/upload_img/${user.id}`, formData, {
 			headers: {
 				'Content-Type': 'multipart/form-data'

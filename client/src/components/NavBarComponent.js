@@ -37,7 +37,7 @@ function NavBarComponent({ children }) {
 		else {
 			$('#logout_link').css('display', 'none')
 			setLogged(false)
-			console.log('sssss')
+			//console.log('sssss')
 		}
 		return () => {
 

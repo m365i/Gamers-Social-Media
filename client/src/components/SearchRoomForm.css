@@ -5,6 +5,18 @@
   transition: all 0.6s;
 }
 
+.form-control {
+  animation: opac 0.8s;
+}
+@keyframes opac {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .form-control:focus {
   background-color: rgba(177, 176, 176, 0.3);
   color: rgb(255, 189, 67);
@@ -35,4 +47,27 @@
   border-radius: 2rem;
   padding-top: 20px;
   padding-bottom: 20px;
+}
+
+.form-check .custom-control-label {
+  color: orange;
+  font-size: 20px;
+  line-height: 2;
+  padding-left: 15px;
+  text-transform: uppercase;
+}
+.form-check .custom-control-label::after,
+.form-check .custom-control-label::before {
+  height: 30px;
+  width: 30px;
+}
+.form-check .custom-control-label::before {
+  background-color: #fff;
+  border: 1px solid #2c2b2c;
+  border-radius: 50%;
+}
+
+/* When I remove background the icon goes back to that default size */
+.custom-control-input:checked ~ .custom-control-label::before {
+  background-color: orange !important;
 }
