@@ -539,48 +539,6 @@ paths:
               examples:
                 name missing:
                   value: game name is missing
-  /avatar/username/{user}:
-    get:
-      summary: get animal avatar by user name
-      tags:
-      - avatar
-      parameters:
-        - in: path
-          description: name of a user
-          name: user
-          schema:
-            type: string
-          required: true
-      responses:
-        '200':
-          description: animal avatar image for the user
-          content:
-            application/png:
-              schema:
-                type: string
-                format: binary
-  /avatar/animal/{name}:
-    get:
-      summary: get animal avatar by its name
-      tags:
-      - avatar
-      parameters:
-        - in: path
-          description: name of an animal
-          name: name
-          schema:
-            type: string
-          required: true
-      responses:
-        '200':
-          description: animal avatar image by this name
-          content:
-            application/png:
-              schema:
-                type: string
-                format: binary
-        '404':
-          description: animal by this name was not found
   /room/chat:
     get:
       summary: socket io server link for the chat service

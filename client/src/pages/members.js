@@ -14,6 +14,7 @@ import AllUsersModal from '../components/AllUsersModal'
 
 import 'react-responsive-carousel/lib/styles/carousel.min.css' // requires a loader
 import { Carousel } from 'react-responsive-carousel'
+import UserAvatar from '../components/UserAvatar'
 
 //import { get_all_profiles } from '../services/ProfileAPI'
 export default function Members() {
@@ -83,14 +84,6 @@ export default function Members() {
 
 		})
 
-		axios.get(`/profile/img/get_img/${user.id}`).then(res => {
-			//console.log("Profile Image Loaded");
-			//console.log(res)
-			$('#current_profile_img').val('<img>')
-				.attr('src', res.data)
-				.css('width', '200px')
-		})
-
 	}
 
 
@@ -119,7 +112,6 @@ export default function Members() {
 
 		$('#img_upload_input').click()
 		$('#image-preview1').show()
-		$('#current_profile_img').hide()
 	}
 
 	function OpenEditName() {
@@ -275,13 +267,19 @@ export default function Members() {
 			})
 			friends_names[i] = (friend_profile.name)
 			//console.log(friends_names)
-			axios.get(`/profile/img/get_img/${friend_id}`).then(img => {
-				SetCarouselitems(Carouselitems =>
-					[...Carouselitems, <div key={i}>
-						<label key={i} >{friends_names[i]}</label>
-						<img src={img.data} />
-					</div>])
-			})
+					
+			SetCarouselitems(Carouselitems =>
+				[...Carouselitems, <div key={i}>
+					<label key={i} >{friends_names[i]}</label>
+					<UserAvatar userId={friend_id} size="160"/>
+				</div>])
+			// axios.get(`/profile/img/get_img/${friend_id}`).then(img => {
+			// 	SetCarouselitems(Carouselitems =>
+			// 		[...Carouselitems, <div key={i}>
+			// 			<label key={i} >{friends_names[i]}</label>
+			// 			<img src={img.data} />
+			// 		</div>])
+			// })
 		}
 
 
@@ -319,7 +317,7 @@ export default function Members() {
 
 			<div id="profile_top" className="row" >
 				<div className="col" >
-					<img id="current_profile_img" alt="" />
+					<UserAvatar userId={user.id} size="160"/>
 					<input
 						type="file"
 						name="file"

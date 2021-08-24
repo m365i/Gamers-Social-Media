@@ -27,6 +27,7 @@
     "react-notification-timeline": "0.0.9",
     "react-redux": "^7.2.4",
     "react-responsive-carousel": "^3.2.20",
+    "react-robohash": "^1.0.9",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "react-tooltip": "^4.2.21",

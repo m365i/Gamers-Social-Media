@@ -8,12 +8,13 @@ import RoomAnnouncements from '../components/RoomAnnouncements'
 import RoomSchedule from '../components/RoomSchedule'
 import {useDispatch, useSelector} from 'react-redux'
 import {selectUser} from '../state/userSlice'
-import {Avatar, Box, Button, Chip, CircularProgress, Container, Grid, Paper, Typography} from '@material-ui/core'
+import { Box, Button, Chip, CircularProgress, Container, Grid, Paper, Typography} from '@material-ui/core'
 import {Alert} from '@material-ui/lab'
 import Icon from '@material-ui/core/Icon'
 import { DialogEditRoom } from '../components/DialogRoomBuilder'
 import {makeStyles} from '@material-ui/core/styles'
 import {actionChangeRoomMembership, fetchRoom, selectRoom} from '../state/roomSlice'
+import UserAvatar from '../components/UserAvatar'
 import {
 	deleteRoom as gameDeleteRoom,
 	leave as gameLeaveRoom,
@@ -28,10 +29,7 @@ const useStyles = makeStyles(() => ({
 	},
 	header: {
 		padding: '10px 0px',
-		color: 'white',
-		'& img': {
-			backgroundColor: 'red'
-		}
+		color: 'white'
 	},
 	controls: {
 		width: '100%',
@@ -173,7 +171,7 @@ function Room() {
 							<Chip
 								size="small"
 								color="primary"
-								avatar={<Avatar alt="user image" src={creator_info.image} />}
+								avatar={<UserAvatar userId={creator_info.userId} circle size="25"/> }
 								label={'owner: ' + creator_info.name}
 							/>
 						</Typography>
