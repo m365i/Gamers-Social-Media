@@ -27,7 +27,7 @@ connect.once('open', () => {
 router.get('/get_img/:user_id', async (req, res) => {
     await gfs.files.findOne({ filename: `${req.params.user_id}-profileIMG` }, (err, file) => {
         if (!file || file.length === 0) {
-            return res.send({ err: 'No File Exists' })
+			return res.sendStatus(404)
         } else {
             // Check if is image
             if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
@@ -45,14 +45,15 @@ router.get('/get_img/:user_id', async (req, res) => {
                 })
                 return read_stream.on('end', function () {
                     file_buff = Buffer.concat(file_buff)
-                    const img = `data:image/png;base64,${Buffer(file_buff).toString('base64')}`
+                    //const img = `data:image/png;base64,${Buffer(file_buff).toString('base64')}`
+					const img = Buffer(file_buff)
+					res.setHeader('content-type', 'image/png')
                     res.send(img)
-
                 })
 
 
             } else {
-                res.send({ err: 'Not and image' })
+				return res.sendStatus(404)
             }
         }
     })
