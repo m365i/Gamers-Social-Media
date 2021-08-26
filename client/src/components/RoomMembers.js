@@ -1,9 +1,10 @@
 
 import React from 'react'
-import {Avatar, Box, Chip, Divider, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Typography} from '@material-ui/core'
+import { Box, Chip, Divider, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/core/styles'
 import {useSelector} from 'react-redux'
 import {selectRoom} from '../state/roomSlice'
+import UserAvatar from './UserAvatar'
 
 const useStyles = makeStyles(() => ({
 	container: {
@@ -14,9 +15,6 @@ const useStyles = makeStyles(() => ({
 	},
 	list: {
 		overflowY: 'auto'
-	},
-	memberImage: {
-		backgroundColor: 'red'
 	}
 }))
 
@@ -34,7 +32,7 @@ function RoomMembers() {
 						<React.Fragment key={m.userId}>
 							<ListItem>
 								<ListItemAvatar>
-									<Avatar className={classes.memberImage} alt={m.name} src={m.image || '/'} />
+									<UserAvatar userId={m.userId} circle size="42" />
 								</ListItemAvatar>
 								<ListItemText 
 									primary={m.name} />
