@@ -9,3 +9,4 @@ jobs:
       - uses: reviewdog/action-eslint@v1
         with:
           workdir: 'client/'
+          fail_on_error: true
