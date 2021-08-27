@@ -62,5 +62,5 @@ export default function App() {
 				</Switch>
 			</NavBarComponent>
 		</Router>
-	)
+	)$
 }
