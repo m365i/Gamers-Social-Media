@@ -61,6 +61,6 @@ export default function App() {
 					<Route path="/" component={Home} />
 				</Switch>
 			</NavBarComponent>
-		</Router>
+		</Router>$
 	)
 }
