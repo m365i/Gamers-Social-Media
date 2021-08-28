@@ -1,6 +1,6 @@
 
 import React, {useRef,useEffect, useState} from 'react'
-import {Avatar, Box, Dialog, Divider, FilledInput, IconButton, List, ListItem, ListItemAvatar, ListItemText, Typography} from '@material-ui/core'
+import { Box, Dialog, Divider, FilledInput, IconButton, List, ListItem, ListItemAvatar, ListItemText, Typography} from '@material-ui/core'
 import {Alert} from '@material-ui/lab'
 import Icon from '@material-ui/core/Icon'
 import {makeStyles} from '@material-ui/core/styles'
@@ -10,6 +10,7 @@ import grey from '@material-ui/core/colors/grey'
 import {ChatSocket} from '../services/chatSocket'
 import {useSelector} from 'react-redux'
 import {selectRoom} from '../state/roomSlice'
+import UserAvatar from './UserAvatar'
 
 const useStyles = makeStyles(() => ({
 	container: {
@@ -39,11 +40,6 @@ const useStyles = makeStyles(() => ({
 	},
 	emoji: {
 		position: 'fixed'
-	},
-	messageImageSmall: {
-		width: '24px',
-		height: '24px',
-		backgroundColor: 'red'
 	},
 	messageText: {
 		color: 'black'
@@ -182,7 +178,7 @@ function RoomChat({room}) {
 									<React.Fragment key={m.id}>
 										<ListItem alignItems="flex-start">
 											<ListItemAvatar>
-												<Avatar className={classes.messageImageSmall} alt={m.name} src={m.image || '/'} />
+												<UserAvatar userId={m.userId} circle size="24" />
 											</ListItemAvatar>
 											<ListItemText
 												primary={

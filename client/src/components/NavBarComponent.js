@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectUser, removeUser } from '../state/userSlice'
 import './NavBarComponent.css'
 import { FaBars } from 'react-icons/fa'
+import NotificationComponent from './NotificationComponent'
 
 function NavBarComponent({ children }) {
 

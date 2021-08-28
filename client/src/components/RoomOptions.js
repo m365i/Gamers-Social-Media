@@ -34,7 +34,6 @@ export default function RoomOptions({ open, onClose, Room }) {
     if (!open) { return null }
 
 
-
     $('#btn_modal_up').removeAttr('disabled')
     return ReactDom.createPortal(
         <>

@@ -52,6 +52,7 @@
 .carousel .slide {
   height: 200px;
   border: 3px solid orange;
+  cursor: pointer;
 }
 .carousel .slide selected {
   height: 200px;
