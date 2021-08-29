@@ -5,6 +5,15 @@
   transition: all 0.8s;
 }
 
+@keyframes opac {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 #add_profile_img_icon:hover {
   color: orange;
   height: 50px;
@@ -100,6 +109,7 @@
   width: 60px;
 }
 #profile_top {
+  animation: opac 0.8s;
   background-image: linear-gradient(
     rgba(90, 40, 255, 0.2),
     rgba(177, 176, 176, 0.3)

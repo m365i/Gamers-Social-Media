@@ -70,7 +70,6 @@ hr {
   background-color: #f5cb78;
 }
 
-
 .room_info p {
   margin-top: 40px;
 }
@@ -130,6 +129,18 @@ hr {
   border-radius: 5rem;
   height: fit-content;
   text-decoration: none;
+}
+
+.container-md {
+  animation: opac 0.8s;
+}
+@keyframes opac {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .topnav li:hover {

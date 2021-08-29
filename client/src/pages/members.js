@@ -267,11 +267,11 @@ export default function Members() {
 			})
 			friends_names[i] = (friend_profile.name)
 			//console.log(friends_names)
-					
+
 			SetCarouselitems(Carouselitems =>
 				[...Carouselitems, <div key={i}>
 					<label key={i} >{friends_names[i]}</label>
-					<UserAvatar userId={friend_id} size="160"/>
+					<UserAvatar userId={friend_id} size="160" />
 				</div>])
 			// axios.get(`/profile/img/get_img/${friend_id}`).then(img => {
 			// 	SetCarouselitems(Carouselitems =>
@@ -298,16 +298,47 @@ export default function Members() {
 
 	function ActionFriendClicked(friend_Id, action) {
 		if (action == 1) {
+
+			axios.post('/notifications/new_note',
+				{
+					from_id: userProfile.userId,
+					to_id: friend_Id,
+					update: `<h5>You Have new Friend ${userProfile.name}<h5/>`,
+					timestamp: new Date().now
+				}).then(() => {
+
+					//console.log('invitetion Sent')
+				})
+
+
+
 			axios.put('/friends_profiles/add_friend', { userID: userProfile.userId, FriendID: friend_Id }).then((res) => {
 				console.log(res)
 				window.location.reload()
 			})
+
+
+
+
 		}
 		if (action == 0) {
 			axios.post('/friends_profiles/delete_friend', { userID: userProfile.userId, friend_id_to_delete: friend_Id }).then((res) => {
 				console.log(res)
 				window.location.reload()
 			})
+
+			axios.post('/notifications/new_note',
+				{
+					from_id: userProfile.userId,
+					to_id: friend_Id,
+					update: `<h5>You And ${userProfile.name} Are No Longer Friends<h5/>`,
+					timestamp: new Date().now
+				}).then(() => {
+
+					//console.log('invitetion Sent')
+				})
+
+
 		}
 
 	}
@@ -317,7 +348,7 @@ export default function Members() {
 
 			<div id="profile_top" className="row" >
 				<div className="col" >
-					<UserAvatar userId={user.id} size="160"/>
+					<UserAvatar userId={user.id} size="160" />
 					<input
 						type="file"
 						name="file"
