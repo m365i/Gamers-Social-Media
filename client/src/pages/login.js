@@ -97,7 +97,7 @@ export default function Login(props) {
 	}
 
 	return (
-		<SideViewFormLayout image={process.env.PUBLIC_URL + './images/LoginBig.png'}>
+		<SideViewFormLayout image={process.env.PUBLIC_URL + './images/photo-1511193311914-0346f16efe90.webp'}>
 			<Typography component='h1' variant='h5' className={classes.title}>
 				Welcome back!
 			</Typography>

@@ -148,7 +148,7 @@ export default function Signup() {
 
 
 	return (
-		<SideViewFormLayout image={process.env.PUBLIC_URL + './images/LoginBig.png'}>
+		<SideViewFormLayout image={process.env.PUBLIC_URL + './images/photo-1513701589220-af816329378c.webp'}>
 			<Typography component='h1' variant='h5' className={classes.title}>
 				Join us
 			</Typography>
