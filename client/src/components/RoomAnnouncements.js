@@ -1,6 +1,6 @@
 
 import React, {useState} from 'react'
-import {Box, Dialog, FilledInput, IconButton, List, ListItem, ListItemText, Typography} from '@material-ui/core'
+import {Box, Popover, FilledInput, IconButton, List, ListItem, ListItemText, Typography} from '@material-ui/core'
 import {Alert} from '@material-ui/lab'
 import {makeStyles} from '@material-ui/core/styles'
 import Icon from '@material-ui/core/Icon'
@@ -34,17 +34,18 @@ function RoomAnnouncements() {
 	const {isOwner, roomId, announcements} = useSelector(selectRoom)
 	const dispatch = useDispatch()
 
-	const [message, setMessage] = useState(undefined)
+	const [message, setMessage] = useState('')
 
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState(undefined)
 
-	const [openEmojiDialog, setOpenEmojiDialog] = useState(false)
+	const [openEmojiPopover, setOpenEmojiPopover] = useState(false)
+	const [emojiPopoverAnchorEl, setEmojiPopoverAnchorEl] = useState(null)
 	const onEmojiClick = (event, emojiObject) => {
-		if (emojiObject !== undefined) {
+		if (emojiObject !== undefined && emojiObject.emoji !== undefined) {
 			setMessage(message + emojiObject.emoji)
 		}
-		setOpenEmojiDialog(false)
+		setOpenEmojiPopover(false)
 	}
 	
 	function deleteMessage(announcementIndex) {
@@ -124,7 +125,10 @@ function RoomAnnouncements() {
 								<>
 									<IconButton
 										aria-label="emoji"
-										onClick={() => setOpenEmojiDialog(true)}
+										onClick={(event) => {
+											setOpenEmojiPopover(true)
+											setEmojiPopoverAnchorEl(event.currentTarget)
+										}}
 										disabled={loading}>
 										<Icon> sentiment_satisfied_alt </Icon>
 									</IconButton>
@@ -136,9 +140,20 @@ function RoomAnnouncements() {
 									</IconButton>
 								</>
 							} />
-						<Dialog onClose={onEmojiClick} aria-labelledby="simple-dialog-title" open={openEmojiDialog}>
+						<Popover 
+						onClose={onEmojiClick}  
+						open={openEmojiPopover}
+						anchorEl={emojiPopoverAnchorEl}
+						anchorOrigin={{
+							vertical: 'bottom',
+							horizontal: 'center',
+						}}
+						transformOrigin={{
+							vertical: 'top',
+							horizontal: 'center',
+						}} >
 							<Picker style={classes.emoji} onEmojiClick={onEmojiClick} />
-						</Dialog>
+						</Popover>
 					</>
 					: undefined
 			}
