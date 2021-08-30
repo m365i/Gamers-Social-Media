@@ -1,6 +1,6 @@
 
 import React, {useRef,useEffect, useState} from 'react'
-import { Box, Dialog, Divider, FilledInput, IconButton, List, ListItem, ListItemAvatar, ListItemText, Typography} from '@material-ui/core'
+import { Box, Popover, Divider, FilledInput, IconButton, List, ListItem, ListItemAvatar, ListItemText, Typography} from '@material-ui/core'
 import {Alert} from '@material-ui/lab'
 import Icon from '@material-ui/core/Icon'
 import {makeStyles} from '@material-ui/core/styles'
@@ -78,12 +78,13 @@ function RoomChat({room}) {
 		}
 	}, [updateScroll])
 
-	const [openEmojiDialog, setOpenEmojiDialog] = useState(false)
+	const [openEmojiPopover, setOpenEmojiPopover] = useState(false)
+	const [emojiPopoverAnchorEl, setEmojiPopoverAnchorEl] = useState(null)
 	const onEmojiClick = (event, emojiObject) => {
-		if (emojiObject != undefined) {
+		if (emojiObject !== undefined && emojiObject.emoji !== undefined) {
 			setMessage(message + emojiObject.emoji)
 		}
-		setOpenEmojiDialog(false)
+		setOpenEmojiPopover(false)
 	}
 
 	const [newMessage, setNewMessage] = useState(undefined)
@@ -230,7 +231,10 @@ function RoomChat({room}) {
 					<>
 						<IconButton
 							aria-label="emoji"
-							onClick={() => setOpenEmojiDialog(true)}
+							onClick={(event) => {
+								setOpenEmojiPopover(true)
+								setEmojiPopoverAnchorEl(event.currentTarget)
+							}}
 							disabled={!allowedToChat}>
 							<Icon> sentiment_satisfied_alt </Icon>
 						</IconButton>
@@ -242,9 +246,20 @@ function RoomChat({room}) {
 						</IconButton>
 					</>
 				} />
-			<Dialog onClose={onEmojiClick} aria-labelledby="simple-dialog-title" open={openEmojiDialog}>
+			<Popover 
+				onClose={onEmojiClick} 
+				open={openEmojiPopover}
+				anchorEl={emojiPopoverAnchorEl}
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'center',
+				}}
+				transformOrigin={{
+					vertical: 'top',
+					horizontal: 'center',
+				}} >
 				<Picker style={classes.emoji} onEmojiClick={onEmojiClick} />
-			</Dialog>
+			</Popover>
 		</Box>
 	)
 }

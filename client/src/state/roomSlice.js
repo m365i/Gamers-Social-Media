@@ -22,7 +22,7 @@ export const fetchRoom = createAsyncThunk('room/fetchRoom', async ({roomId, user
 			info = (await gameInfo(roomId)).data
 		} catch(e) {
 			console.log(e)
-			window.location = '/404'
+			window.location = '/404.html'
 			return
 		}
 		const members = (await gameMembers(roomId)).data
