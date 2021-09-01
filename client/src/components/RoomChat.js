@@ -179,7 +179,7 @@ function RoomChat({room}) {
 									<React.Fragment key={m.id}>
 										<ListItem alignItems="flex-start">
 											<ListItemAvatar>
-												<UserAvatar userId={m.userId} circle size="24" />
+												<UserAvatar userId={m.userId} circle size="26px" />
 											</ListItemAvatar>
 											<ListItemText
 												primary={

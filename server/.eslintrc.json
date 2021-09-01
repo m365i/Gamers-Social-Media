@@ -8,11 +8,11 @@
         "ecmaVersion": 12
     },
     "rules": {
-        "no-unused-vars": "off"
-    ,
+        "no-unused-vars": "off",
         "quotes": [
             "error",
-            "single"
+            "single",
+            {"allowTemplateLiterals": true}
         ],
         "semi": [
             "error",

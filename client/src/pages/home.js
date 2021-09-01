@@ -1,6 +1,5 @@
 import React from 'react'
 import './home.css'
-import './fontawesome/css/all.css'
 import RoomCard from '../components/RoomCard'
 import { Link } from 'react-router-dom'
 

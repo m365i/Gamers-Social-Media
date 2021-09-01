@@ -1,13 +1,23 @@
 
 var mongoose = require('mongoose')
 var SHA256 = require('crypto-js/sha256')
-const random = require('random')
+var random = require('random')
 random.use(Math.random)
 
 const userSchema = new mongoose.Schema({
-	email: String,
-	password: String,
-	salt: String
+	email: {
+		type: String,
+		require: true,
+		unique: true
+	},
+	password:  {
+		type: String,
+		require: true
+	},
+	salt: {
+		type: String,
+		require: true
+	}
 })
 
 userSchema.methods.validPassword = function (password) {
@@ -17,8 +27,7 @@ userSchema.methods.validPassword = function (password) {
 }
 
 userSchema.methods.setPassword = function (password) {
-	random.see
-	this.salt = SHA256(random.normal()).toString()
+	this.salt = SHA256(String(random.float())).toString()
 	this.password = SHA256(password + this.salt).toString()
 }
 

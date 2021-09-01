@@ -1,8 +1,6 @@
 import { React, useState } from 'react'
 import $ from 'jquery'
-import ReactDom from 'react-dom'
 import './AllUsersModal.css'
-import axios from '../services/axios.config'
 import { IoIosAddCircle, IoIosRemoveCircle } from 'react-icons/io'
 import { CgMoreO } from 'react-icons/cg'
 import ReactTooltip from 'react-tooltip'
@@ -69,7 +67,7 @@ export default function AllUsersModal({ open, onClose, Profiles, MyProfile, frie
             if (IsMyfriend(Profiles[i])) {
 
                 items.push(<div key={i}>
-                    <img className="friend_img" id={s} alt="" />
+					<img className="friend_img" id={s} alt="" src={`/profile/img/get_img/${Profiles[i].userId}`} />
                     <label className="friend_img_label">{Profiles[i].name}</label>
                     <IoIosRemoveCircle className="Circle_icon" data-tip="remove friend"
                         onClick={() => { friendTo(Profiles[i].userId, 0); onClose() }} />
@@ -79,8 +77,7 @@ export default function AllUsersModal({ open, onClose, Profiles, MyProfile, frie
 
             else {
                 items.push(<div key={i}>
-                    <img className="friend_img" id={s} alt="" />
-                    <label className="friend_img_label">{Profiles[i].name}</label>
+					<img className="friend_img" id={s} alt="" src={`/profile/img/get_img/${Profiles[i].userId}`} />
                     <IoIosAddCircle className="Circle_icon" data-tip="add friend"
                         onClick={() => { friendTo(Profiles[i].userId, 1); onClose() }} />
                     <CgMoreO className="Circle_icon" data-tip="more info" onClick={() => SetSeletedProfile(Profiles[i])} />
@@ -97,36 +94,18 @@ export default function AllUsersModal({ open, onClose, Profiles, MyProfile, frie
         )
     }
 
-
-    function load_friend_images() {
-        for (let i = 0; i < Profiles.length; i++) {
-            if (MyProfile.name == Profiles[i].name) {
-                continue
-            }
-            let s = '#friend_img_' + String(i)
-
-            axios.get(`/profile/img/get_img/${Profiles[i].userId}`).then(res => {
-                $(s).attr('src', res.data)
-
-            })
-        }
-    }
-
     $('#btn_modal_up').removeAttr('disabled')
-    return ReactDom.createPortal(
+    return (
         <>
             <div style={OVERLAY_STYLES} />
             <div className="container-md align-content-center " style={MODAL_STYLES}>
                 {SelectedProfile ? <ShowProfileComponent ShowProfile={SelectedProfile} /> : null}
                 <ReactTooltip />
                 {GetAllUserProfiles()}
-                {load_friend_images()}
-
                 <button id="btn_modal_up" className="btn-outline-danger" onClick={() => { onClose() }}>close</button>
             </div>
 
-        </>,
-        document.getElementById('portal')
+        </>
     )
 }
 

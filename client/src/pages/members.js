@@ -19,15 +19,12 @@ import './members.css'
 //import { get_all_profiles } from '../services/ProfileAPI'
 export default function Members() {
 
-
 	const [Carouselitems, SetCarouselitems] = useState([])
 	const [all_profiles_list, set_profiles_list] = useState([])
 	const { user } = useSelector(selectUser)
 	const [userProfile, SetuserProfile] = useState(null)
 	//const [FriendFocused, SetFriendFocused] = useState(null)
-	const [dataFetched, SetdataFetch] = useState(false)
 	const [isOpen, SetisOpen] = useState(false)
-	const [dummy, updateDummy] = useState({})
 
 	const fetchData = async () => {
 		let { data: userProfiles } = await axios.get(`profiles/profile/${user.id}`)
@@ -58,49 +55,6 @@ export default function Members() {
 		// eslint-disable-next-line 
 	}, [])
 
-
-	function SetImage_PreView() {
-		let imagesPreview = function (input, placeToInsertImagePreview) {
-			if (input.files) {
-				let reader = new FileReader()
-				reader.onload = function (event) {
-					$($.parseHTML('<img>'))
-						.attr('src', event.target.result)
-						.attr('id', 'image-preview1')
-						.css('width', '200px')
-						.appendTo(placeToInsertImagePreview)
-				}
-				reader.readAsDataURL(input.files[0])
-				//console.log(input.files);
-			}
-
-		}
-		
-
-
-		$('#img_upload_input').on('change', function () {
-			$('div.preview-images').empty()
-			imagesPreview(this, 'div.preview-images')
-
-		})
-
-	}
-
-
-	function UploadImageClick(event) {
-		event.preventDefault()
-
-		var formData = new FormData()
-		var imagefile = document.querySelector('#img_upload_input')
-		formData.append('file', imagefile.files[0])
-		//console.log(formData.get('file'))
-		axios.post(`/profile/img/upload_img/${user.id}`, formData, {
-			headers: {
-				'Content-Type': 'multipart/form-data'
-			}
-		}).then((res) => console.log(res))
-
-	}
 	function uploadImage(event) {
 		event.preventDefault()
 		var formData = new FormData()
@@ -111,16 +65,8 @@ export default function Members() {
 			headers: {
 				'Content-Type': 'multipart/form-data'
 			}
-		}).then((res) => {
-			//			console.log(res)
-			updateDummy({})
 		})
 
-	}
-
-	function UpdateProfileClicked(e) {
-
-		UploadImageClick(e)
 	}
 
 	function OpenInput() {
@@ -275,7 +221,6 @@ export default function Members() {
 		$('#Country_lable').text('Country: ' + user.country)
 
 
-		let friends_names = []
 		//console.log(messages_list)
 		const friends = user.friends.map(friendId => {
 			const profile = others.find(profile => profile.userId === friendId)
@@ -377,7 +322,7 @@ export default function Members() {
 						<div className="row mx-auto text-center">
 							<div className="col-md-3 my-4">
 
-								<UserAvatar userId={user.id} size="300" dummy={dummy} />
+								<UserAvatar userId={user.id} size="300px" circle />
 								<input
 									type="file"
 									name="file"
@@ -507,7 +452,7 @@ export default function Members() {
 								<div id="FriendsComponent" className="row container" >
 									<ul className="list-group list-group-horizontal-md room-list" style={{ listStyleType: 'none' }}>
 										{Carouselitems.map((item, i) => <div key={i}>
-											<RoomCard game={item.name} img={process.env.REACT_APP_SERVER_URL + '/api/profile/img/get_img/' + item.id} />
+											<RoomCard game={item.name} img={process.env.REACT_APP_SERVER_URL + '/api/profile/img/get_img/' + item.id} fallbackImg={'https://avatars.dicebear.com/api/bottts/' + item.id + '.svg'} />
 										</div>)}
 
 										{/* <Carousel infiniteLoop useKeyboardArrows autoPlay>

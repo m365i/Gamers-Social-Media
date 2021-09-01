@@ -1,10 +1,11 @@
 
-import React from 'react'
-import { Box, Chip, Divider, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Typography} from '@material-ui/core'
+import React, {useState} from 'react'
+import { Box, Chip, Divider, Icon, IconButton, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/core/styles'
-import {useSelector} from 'react-redux'
-import {selectRoom} from '../state/roomSlice'
+import {useSelector, useDispatch} from 'react-redux'
+import {selectRoom, actionKickUser} from '../state/roomSlice'
 import UserAvatar from './UserAvatar'
+import DialogInvite from './DialogInvite'
 
 const useStyles = makeStyles(() => ({
 	container: {
@@ -15,17 +16,40 @@ const useStyles = makeStyles(() => ({
 	},
 	list: {
 		overflowY: 'auto'
+	},
+	title: {
+		display: 'flex',
+		justifyContent: 'space-between',
+		marginRight: '10px'
 	}
 }))
 
 function RoomMembers() {
 	const classes = useStyles()
 
-	const {userId, creator, members} = useSelector(selectRoom)
+	const {userId, creator, members, isOwner, isPrivate} = useSelector(selectRoom)
+	const dispatch = useDispatch()
+
+	const [openInviteDialog, setOpenInviteDialog] = useState(false)
+
+	function kickUser(userId) {
+		dispatch(actionKickUser(userId))
+	}
 
 	return (
 		<Box className={classes.container}> 
-			<Typography variant="h5"> Members </Typography>
+			<Box className={classes.title}>
+				<Typography variant="h5"> Members </Typography>
+				{ isOwner && isPrivate ?
+					<>
+						<IconButton onClick={() => setOpenInviteDialog(true)} aria-label="invite friends">
+							<Icon>person_add</Icon>
+						</IconButton>
+						<DialogInvite open={openInviteDialog} setOpen={setOpenInviteDialog} />
+					</>
+					: undefined
+				}
+			</Box>
 			<List className={classes.list}>
 				{
 					members.map(m => (
@@ -45,6 +69,16 @@ function RoomMembers() {
 									{
 										(m.userId === creator) ?
 											<Chip size="small" label="owner" variant="outlined" />
+											: undefined
+									}
+									{
+										(isPrivate && isOwner && (m.userId !== creator)) ?
+											<>
+												&nbsp;
+												<IconButton edge="end" aria-label="kick" onClick={() => kickUser(m.userId)}>
+													<Icon>remove_circle_outline</Icon>
+												</IconButton>
+											</>
 											: undefined
 									}
 								</ListItemSecondaryAction>
