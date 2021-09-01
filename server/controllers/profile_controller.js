@@ -1,9 +1,18 @@
 /* eslint-disable no-undef */
 const profileModel = require('../models/profile')
+const { StatusCodes } = require('http-status-codes')
 
 // Create and Save a new Note
 // Create and Save a new Note
 
+exports.autoComplete = async function (req, res, next) {
+	const { email } = req.query
+	if(!email) {
+		return res.status(StatusCodes.BAD_REQUEST).send('profile email is missing')
+	}
+	const results = await profileModel.find({email: {$regex: new RegExp(`^${email}`, 'g')}}).limit(5)
+	res.status(StatusCodes.OK).send(results)
+}
 
 // Retrieve and return all  from the database.
 exports.findAll = async (req, res) => {

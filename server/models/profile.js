@@ -4,13 +4,17 @@ var mongoose = require('mongoose')
 const profileSchema = new mongoose.Schema({
 	userId: {
 		type: mongoose.Schema.Types.ObjectId,
-		ref: 'User'
+		ref: 'User',
+		unique: true
 	},
 	name: String,
 	birth: Date,
 	country: String,
 	status: String,
-	email: String,
+	email: {
+		type: String,
+		unique: true
+	},
 	friends: [
 		{
 			type: mongoose.Schema.Types.ObjectId,

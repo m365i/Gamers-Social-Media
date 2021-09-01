@@ -40,6 +40,8 @@ components:
           type: string
         description:
           type: string
+        private:
+          type: string
 paths:
   /auth/is:
     get:
@@ -542,13 +544,13 @@ paths:
   /room/chat:
     get:
       summary: socket io server link for the chat service
-      description: the server will check if the room exist, if not he will close the connection. <br>
-                  a status will be sent to the clinet on port 'status' indicating that the user can or<br>
+      description: the server will check if the room exist and if the user has access rights, if not he will close the connection. <br>
+                  a status will be sent to the client on port 'status' indicating that the user can or<br>
                   cant add messages to this chat - either 'allowed to chat' or 'not allowed to chat'.<br>
-                  after that the server will send to the client some previus messages that where sent in the chat<br>
-                  the client should listen on 'message' and 'more' port to recive messages.<br>
-                  when the clinet want to send a message he need to do it on port 'message', the request should contain a message string.<br>
-                  when the clinet want to recive older messages he need to do it on port 'more', the request should contain an index of the last message(the message 'seq' field).<br>
+                  after that the server will send to the client some previous messages that where sent in the chat<br>
+                  the client should listen on 'message' and 'more' port to receive messages.<br>
+                  when the client want to send a message he need to do it on port 'message', the request should contain a message string.<br>
+                  when the client want to receive older messages he need to do it on port 'more', the request should contain an index of the last message(the message 'seq' field).<br>
                   older messages will be sent on 'more' port, and new + start messages on 'message' port.<br>
                   if on 'more' port you get an empty array of messages, that mean there are no more older messages.<br>
       tags:
@@ -656,6 +658,8 @@ paths:
                   description: only accept on of *case-sensitive* - Pc, Xbox, Playstation, Android, Apple, Psp
                 description:
                   type: string
+                private:
+                  type: boolean
               required: 
                 - name
                 - game
@@ -676,7 +680,7 @@ paths:
                 type: string
               examples:
                 formatting:
-                  value: name, game, platform or description are not formatted correctly
+                  value: name, game, platform, description or private are not formatted correctly
         '404':
           description: user is not logged in
     get:
@@ -723,14 +727,14 @@ paths:
         '200':
           description: the room was deleted
         '403':
-          description: room dose not exist or user has no permisision to delete room
+          description: room dose not exist or user has no permission to delete room
           content:
             text/plain:
               schema:
                 type: string
               examples:
-                exist or permisision:
-                  value: room dose not exist or user have no permisision to delete it
+                exist or permission:
+                  value: room dose not exist or user have no permission to delete it
         '404':
           description: user is not logged in
     put:
@@ -759,18 +763,20 @@ paths:
                   type: string
                 description:
                   type: string
+                private:
+                  type: boolean
       responses:
         '200':
           description: saved changes
         '403':
-          description: room dose not exist or user has no permisision to edit room
+          description: room dose not exist or user has no permission to edit room
           content:
             text/plain:
               schema:
                 type: string
               examples:
-                exist or permisision:
-                  value: room dose not exist or user have no permisision to delete it
+                exist or permission:
+                  value: room dose not exist or user have no permission to delete it
         '400':
           description: input error
           content:
@@ -778,7 +784,7 @@ paths:
               schema:
                 type: string
               examples:
-                formating:
+                formatting:
                   value: name, game, platform or description are not formatted correctly
         '404':
           description: user is not logged in
@@ -806,10 +812,19 @@ paths:
                   properties:
                     userId:
                       type: string
+                    email:
+                      type: string
                     name:
                       type: string
-                    image:
-                      type: string
+        '403':
+          description: user has no access to view this content
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                access:
+                  value: user have no access permissions to this room
         '400':
           description: input error
           content:
@@ -858,7 +873,7 @@ paths:
         '404':
           description: user is not logged in
     delete:
-      summary: remove the currect user as a member from this room, for the creator of the room to leave the room he need to delete it completely.
+      summary: remove the current user as a member from this room, for the creator of the room to leave the room he need to delete it completely.
       tags:
       - rooms
       parameters:
@@ -891,6 +906,54 @@ paths:
                   value: user is not a member of this room
                 user is the owner:
                   value: user is the owner of this room
+        '404':
+          description: user is not logged in
+  /room/members/kick:
+    delete:
+      summary: remove the user from this room, for the creator of the room to leave the room he need to delete it completely.
+      tags:
+      - rooms
+      parameters:
+        - in: query
+          description: room id
+          name: roomId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+      responses:
+        '400':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                no room id:
+                  value: no specified room id
+                room dose not exist:
+                  value: room not found
+                kick room creator:
+                  value: room creator cannot kick himself
+        '403':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                not a member:
+                  value: user is not a member of this room
+                user is not the owner:
+                  value: user is not the owner of this room
         '404':
           description: user is not logged in
   /room/is-member:
@@ -928,6 +991,8 @@ paths:
                   value: no specified room id
                 room dose not exist:
                   value: room not found
+        '404':
+          description: user is not logged in
   /room/announcements:
     get:
       summary: list room announcements
@@ -954,6 +1019,15 @@ paths:
                       type: string
                     message:
                       type: string
+        '403':
+          description: user has no access to view this content
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                access:
+                  value: user have no access permissions to this room
         '400':
           description: input error
           content:
@@ -1091,6 +1165,15 @@ paths:
                       type: string
                     toDate:
                       type: string
+        '403':
+          description: user has no access to view this content
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                access:
+                  value: user have no access permissions to this room
         '400':
           description: input error
           content:
@@ -1201,5 +1284,269 @@ paths:
                   value: no specified room id
                 room dose not exist:
                   value: room not found
+        '404':
+          description: user is not logged in
+  /room/invites:
+    get:
+      summary: check if invite exist
+      tags:
+      - rooms
+      parameters:
+        - in: query
+          description: room id
+          name: roomId
+          schema:
+            type: string
+          required: true
+        - in: query
+          description: invite code
+          name: code
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: invite exist
+        '403':
+          description: user has no access to view this content
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                invite:
+                  value: user have no invite to this room
+        '400':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                no room id:
+                  value: no specified room id
+                room dose not exist:
+                  value: room not found
+        '404':
+          description: user is not logged in
+    post:
+      summary: invite a user to this room, only the owner is allowed to invite other users.
+      tags:
+      - rooms
+      parameters:
+        - in: query
+          description: room id
+          name: roomId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userEmail:
+                  type: string
+              required: 
+                - userEmail
+      responses:
+        '200':
+          description: invite was givin to the user
+        '403':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                not a member:
+                  value: user is not a member of this room
+                not the owner:
+                  value: user is not the owner of this room
+        '400':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                no room id:
+                  value: no specified room id
+                room dose not exist:
+                  value: room not found
+                invalid user email:
+                  value: user with that email not found
+        '404':
+          description: user is not logged in
+    delete:
+      summary: delete invite 
+      tags:
+      - rooms
+      parameters:
+        - in: query
+          description: room id
+          name: roomId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                inviteId:
+                  type: string
+              required: 
+                - inviteId
+      responses:
+        '200':
+          description: invite has been removed
+        '403':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                not a member:
+                  value: user is not a member of this room
+                not the owner:
+                  value: user is not the owner of this room
+        '400':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                no room id:
+                  value: no specified room id
+                room dose not exist:
+                  value: room not found
+                exists:
+                  value: invite dose not exist
+        '404':
+          description: user is not logged in
+    put:
+      summary: change the user invite status
+      tags:
+      - rooms
+      parameters:
+        - in: query
+          description: room id
+          name: roomId
+          schema:
+            type: string
+          required: true
+        - in: query
+          description: invite code
+          name: code
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accepted:
+                  type: boolean
+              required: 
+                - accepted
+      responses:
+        '200':
+          description: invite was givin to the user
+        '403':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                not a member:
+                  value: user is not a member of this room
+                not the owner:
+                  value: user is not the owner of this room
+                invite:
+                  value: user have no invite to this room
+        '400':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                no room id:
+                  value: no specified room id
+                room dose not exist:
+                  value: room not found
+                missing parameters:
+                  value: missing parameters
+        '404':
+          description: user is not logged in
+  /room/invites/list:
+    get:
+      summary: list invites for this room
+      tags:
+      - rooms
+      parameters:
+        - in: query
+          description: room id
+          name: roomId
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: list of room invites
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    userId:
+                      type: string
+                    email:
+                      type: string
+                    name:
+                      type: string
+                    code:
+                      type: string
+                    accepted:
+                      type: boolean
+        '403':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                not a member:
+                  value: user is not a member of this room
+                not the owner:
+                  value: user is not the owner of this room
+        '400':
+          description: input error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                no room id:
+                  value: no specified room id
+                room dose not exist:
+                  value: room not found
+                exists:
+                  value: invite dose not exist
         '404':
           description: user is not logged in

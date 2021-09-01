@@ -74,7 +74,7 @@ function Room() {
 	const {id} = useParams()
 
 	const {user} = useSelector(selectUser)
-	const {name, game, creator_info, platform, description, isMember, isOwner, members, loading, error} = useSelector(selectRoom)
+	const {name, game, creator_info, platform, description, isMember, isOwner, isPrivate, members, loading, error} = useSelector(selectRoom)
 	const dispatch = useDispatch()
 
 	const [deleteRoomLoading, setDeleteRoomLoading] = useState(false)
@@ -171,9 +171,21 @@ function Room() {
 							<Chip
 								size="small"
 								color="primary"
-								avatar={<UserAvatar userId={creator_info.userId} circle size="25"/> }
+								avatar={<UserAvatar userId={creator_info.userId} circle size="25px"/> }
 								label={'owner: ' + creator_info.name}
 							/>
+							{ 
+								isPrivate ?
+									<>
+										&nbsp;
+										<Chip
+											size="small"
+											color="secondary"
+											label={'private'}
+										/>
+									</>
+									: undefined
+							}
 						</Typography>
 						<Typography variant="caption"> #id: {id} </Typography>
 					</Box>

@@ -1,26 +1,22 @@
 
-import Robohash from 'react-robohash'
-import React, {useEffect, useState} from 'react'
+import {Avatar} from '@material-ui/core'
+import React from 'react'
 
 function UserAvatar({userId, size, circle}) {
-
+	return (
+		<Avatar sizes={size} style={{width: size, height: size}} alt="user image" variant={circle ? 'circle' : 'square'}  src={process.env.REACT_APP_SERVER_URL + '/api/profiles/img/get_img/' + userId}>
+			<img height={size} width={size} src={'https://avatars.dicebear.com/api/bottts/' + userId + '.svg'} alt="user image" />
+		</Avatar>
+	)
+/*
 	const [image, setImage] = useState(undefined)
 	const [error, setError] = useState(false)
-
-	//console.log(userId)
 
 	useEffect(() => {
 		setError(false)
 		setImage(undefined)
-		setImage(process.env.REACT_APP_SERVER_URL + '/api/profile/img/get_img/' + userId)
+		setImage(process.env.REACT_APP_SERVER_URL + '/api/profiles/img/get_img/' + userId)
 	}, [userId])
-
-	let img = undefined
-	if(error) {
-		img = <Robohash name={userId} size={size + 'x' + size} alt="user image"/>
-	} else {
-		img = <img style={{display: 'block'}} height={size} width={size} onError={() => setError(true)} src={image} alt="user image" />
-	}
 
 	return (
 		<div style={{
@@ -30,9 +26,9 @@ function UserAvatar({userId, size, circle}) {
 			width: size + 'px', 
 			height: size + 'px'
 			}}>
-			{img}
+			<img style={{display: 'block'}} height={size} width={size} onError={() => setError(true)} src={error ? 'https://avatars.dicebear.com/api/bottts/' + userId + '.svg' : image} alt="user image" />
 		</div>
-	) 
+	) */
 }
 
 export default UserAvatar

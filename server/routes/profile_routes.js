@@ -21,5 +21,6 @@ router.put('/profile/:profileId', profile_control.update)
 // Delete  with Id
 router.delete('/profile/:profileId', profile_control.delete)
 
+router.get('/autoComplete', profile_control.autoComplete)
 
 module.exports = router

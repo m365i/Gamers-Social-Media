@@ -348,7 +348,7 @@ export default function Members() {
 
 			<div id="profile_top" className="row" >
 				<div className="col" >
-					<UserAvatar userId={user.id} size="160" />
+					<UserAvatar userId={user.id} size="160px" />
 					<input
 						type="file"
 						name="file"

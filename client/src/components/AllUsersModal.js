@@ -2,7 +2,6 @@ import { React, useState } from 'react'
 import $ from 'jquery'
 import ReactDom from 'react-dom'
 import './AllUsersModal.css'
-import axios from '../services/axios.config'
 import { IoIosAddCircle, IoIosRemoveCircle } from 'react-icons/io'
 import { CgMoreO } from 'react-icons/cg'
 import ReactTooltip from 'react-tooltip'
@@ -104,11 +103,7 @@ export default function AllUsersModal({ open, onClose, Profiles, MyProfile, frie
                 continue
             }
             let s = '#friend_img_' + String(i)
-
-            axios.get(`/profile/img/get_img/${Profiles[i].userId}`).then(res => {
-                $(s).attr('src', res.data)
-
-            })
+			$(s).attr('src', `/profile/img/get_img/${Profiles[i].userId}`)
         }
     }
 
@@ -121,7 +116,6 @@ export default function AllUsersModal({ open, onClose, Profiles, MyProfile, frie
                 <ReactTooltip />
                 {GetAllUserProfiles()}
                 {load_friend_images()}
-
                 <button id="btn_modal_up" className="btn-outline-danger" onClick={() => { onClose() }}>close</button>
             </div>
 
