@@ -125,6 +125,7 @@ export default function SearchRoomForm({ Profiles }) {
     /* Pc|Xbox|Playstation|Android|Apple|Psp */
 
     return (
+
         <div className="container-md" id="new_room_form">
             <div className="col form-group" id="newRoomFormdiv">
 
