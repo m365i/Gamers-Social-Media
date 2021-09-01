@@ -4,9 +4,9 @@ export default function RoomCard(props) {
 		<li>
 			<div className="room" style={{ backgroundImage: 'url(' + props.img + ')' }}>
 				<div className="room_info">
-					<p><strong>{props.game}</strong><br />something.</p>
+					<p><strong>{props.game}</strong><br /></p>
 				</div>
-			</div>``
+			</div>
 		</li>
 	)
 }

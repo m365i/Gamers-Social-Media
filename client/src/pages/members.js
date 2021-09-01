@@ -75,7 +75,7 @@ export default function Members() {
 			}
 
 		}
-		
+
 
 
 		$('#img_upload_input').on('change', function () {
@@ -198,16 +198,16 @@ export default function Members() {
 	}
 
 
-	function calcAge(birth) {
-		if (birth !== null) {
-			//console.log(new Date(userProfile.birth).getFullYear())
+/* 	function calcAge() {
+		if (userProfile) {
+			console.log(new Date(userProfile.birth).getFullYear())
 			let curr_year = new Date().getFullYear()
 			let chosen = new Date(userProfile.birth).getFullYear()
 			return (curr_year - chosen)
 		}
 		return 0
 	}
-
+ */
 	function SaveNewAge() {
 		//console.log($('#edit_age').val())
 		userProfile.birth = new Date($('#edit_age').val())
@@ -217,7 +217,7 @@ export default function Members() {
 			$('#birthdate_label').text('Birthdate: ' + userProfile.birth.toLocaleDateString('he-IL', { timeZone: 'Asia/Jerusalem' }).replace(/\D/g, '/'))
 		})
 
-		$('#age_lable').text('Age: ' + calcAge())
+	/* 	$('#age_lable').text('Age: ' + calcAge()) */
 		$('#age_lable').show()
 		$('#birthdate_label').show()
 		$('#edit_age').hide()
@@ -271,7 +271,7 @@ export default function Members() {
 		$('#name_lable').text(user.name)
 		$('#email_lable').text('Email: ' + user.email)
 		$('#birthdate_label').text('BirthDate: ' + new Date(user.birth).toLocaleDateString('he-IL', { timeZone: 'Asia/Jerusalem' }).replace(/\D/g, '/'))
-		$('#age_lable').text('Age: ' + String(calcAge(user.birth)))
+	/* 	$('#age_lable').text('Age: ' + String(calcAge())) */
 		$('#Country_lable').text('Country: ' + user.country)
 
 
@@ -400,9 +400,9 @@ export default function Members() {
 								<div className="w-50 mx-auto">
 
 									<div className="row">
-										<FaEdit className="edit_icon float-left" data-tip="edit" onClick={OpenEditName} />
+										{/* <FaEdit className="edit_icon float-left" data-tip="edit" onClick={OpenEditName} /> */}
 										<ReactTooltip />
-										<h1 id="name_lable">{userProfile?.name}</h1>
+										<i className="fas fa-edit mt-3 mx-1" data-tip="edit" onClick={OpenEditName}></i><h1 id="name_lable">{userProfile?.name}</h1>
 										<input id="edit_name" className="hideInput" ></input>
 										<FaSave id="save_name_icon" className="edit_icon hideIcon" data-tip="save"
 											onClick={SaveNewName} />
@@ -411,17 +411,16 @@ export default function Members() {
 									</div>
 
 									<div className="row">
-										<FaEdit className="edit_icon" data-tip="edit" onClick={OpenEditEmail} />
-										<h5 id="email_lable"></h5>
+										<i className="fas fa-edit mt-1 mx-1" data-tip="edit" onClick={OpenEditEmail}></i><h5 id="email_lable"></h5>
 										<input id="edit_email" className="hideInput"></input>
 										<FaSave id="save_email_icon" className="edit_icon hideIcon" data-tip="save"
 											onClick={SaveNewEmail} />
 										<FaWindowClose id="close_email_icon" className="edit_icon hideIcon" data-tip="close"
 											onClick={CloseEmailEdit} />
-									</div>
+									</div> 
 
 									<div className="row">
-										<FaEdit className="edit_icon" data-tip="edit" onClick={OpenEditAge} />
+										<i className="fas fa-edit mt-1 mx-1" data-tip="edit" onClick={OpenEditAge} ></i>
 										<h5 id="birthdate_label"></h5>
 										<input type="date" id="edit_age" className="hideInput"></input>
 										<FaSave id="save_age_icon" className="edit_icon hideIcon" data-tip="save"
@@ -430,20 +429,17 @@ export default function Members() {
 											onClick={CloseAgeEdit} />
 									</div>
 
-									{/*
-									<div className="row">
-										<FaEdit className="edit_icon" data-tip="edit" onClick={OpenEditAge} />
-										<h5 id="age_lable"></h5>
-										<input type="date" id="edit_age" className="hideInput"></input>
-										<FaSave id="save_age_icon" className="edit_icon hideIcon" data-tip="save"
-											onClick={SaveNewAge} />
-										<FaWindowClose id="close_age_icon" className="edit_icon hideIcon" data-tip="close"
-											onClick={CloseAgeEdit} />
-									</div>
-									*/}
 
 									<div className="row">
-										<FaEdit className="edit_icon" data-tip="edit" onClick={OpenEditCountry} />
+
+										<h5 id="age_lable"></h5>
+
+									</div>
+
+
+
+									<div className="row">
+									<i className="fas fa-edit mt-1 mx-1" data-tip="edit" onClick={OpenEditCountry}></i>
 										<h5 id="Country_lable"></h5>
 										<input id="edit_Country" className="hideInput"></input>
 										<FaSave id="save_country_icon" className="edit_icon hideIcon" data-tip="save"

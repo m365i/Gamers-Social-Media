@@ -1,6 +1,8 @@
 import axios from '../services/axios.config'
 import { React, useEffect, useState } from 'react'
 import './MyRoomsComponent.css'
+import NewRoomForm from '../components/NewRoomForm'
+import RoomCard from '../components/RoomCard'
 import { Carousel } from 'react-responsive-carousel'
 import RoomOptions from '../components/RoomOptions'
 import { ImUserPlus } from 'react-icons/im'
@@ -10,6 +12,7 @@ export default function MyRoomsComponent({ Profiles_RC, MyProfile_RC }) {
 
 
     const [MyRooms, SetMyRoomsList] = useState([])
+    const [shownewRoomFormResults, setShownewRoomForm] = useState(false)
     const [OBJMyRooms, SetOBJMyRoomsList] = useState([])
     const [RoomIndex, SetRoomIndex] = useState(0)
     const [OpenRoomOptions, SetOpenRoomOptions] = useState(false)
@@ -45,8 +48,7 @@ export default function MyRoomsComponent({ Profiles_RC, MyProfile_RC }) {
 
                     SetMyRoomsList(MyRooms =>
                         [...MyRooms, <div key={i} onClick={() => { SetFocusedRoom(room); SetOpenRoomOptions(true) }}>
-                            <label key={i} >{room.name}</label>
-                            <img src={info.data.image} />
+                            <RoomCard game={room.name} img={info.data.image} />
                         </div >])
                 })
 
@@ -82,20 +84,36 @@ export default function MyRoomsComponent({ Profiles_RC, MyProfile_RC }) {
     /* Pc|Xbox|Playstation|Android|Apple|Psp */
     return (
         <div>
-            <div className="container-md" id="my_rooms_comp">
-                <label id="rooms_lable">My ROOMS</label>
-                <ImUserPlus id="invite_friend_icon" data-tip="Invite Friend To Room"
-                    onClick={() => SetisOpen(true)} />
-                <InviteUsersModal open={isOpen}
-                    friendTo={(friend_id) => ActionFriendInviteClicked(friend_id)}
-                    Profiles={Profiles_RC} MyProfile={MyProfile_RC}
-                    onClose={() => SetisOpen(false)}
-                />
-                <Carousel infiniteLoop useKeyboardArrows onChange={(index, obj) => {
+            <div className="container-md" id="my_rooms_comp_old">
+                <ul className="list-group list-group-horizontal-md room-list" style={{ listStyleType: 'none' }}>
+
+                    {/* <label id="rooms_lable">My ROOMS</label> */}
+
+
+
+                    {/*      <ImUserPlus id="invite_friend_icon" data-tip="Invite Friend To Room"
+                        onClick={() => SetisOpen(true)} />
+                    <InviteUsersModal open={isOpen}
+                        friendTo={(friend_id) => ActionFriendInviteClicked(friend_id)}
+                        Profiles={Profiles_RC} MyProfile={MyProfile_RC}
+                        onClose={() => SetisOpen(false)}
+                    /> */}
+
+
+
+                    {/*           <Carousel infiniteLoop useKeyboardArrows onChange={(index, obj) => {
                     SetRoomIndex(parseInt(obj.key.slice(2, 3)))
-                }} >
+                }} > */}
                     {MyRooms}
-                </Carousel>
+
+
+                    {/*  </Carousel> */}
+                    
+                    <div id="newRoomForm_btn" data-tip="Create New Room" onClick={() => setShownewRoomForm(!shownewRoomFormResults)}><RoomCard game="" img="images/addnewroom.png" /></div>
+
+                </ul>
+
+                {shownewRoomFormResults ? <NewRoomForm /> : null}
             </div>
             <RoomOptions open={OpenRoomOptions}
                 Room={FocusedRoom}
