@@ -1,17 +1,26 @@
 body {
-	margin: 0;
-	min-height: 100%; 
+  margin: 0;
+  min-height: 100%;
 }
+
 .layout-container {
-	min-height: 100vh; 
-	display: grid;
-	grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
 }
 
 .header {
   height: 75px;
   width: 100%;
   background: rgb(22, 32, 45, 0.45);
+}
+
+.navbar-nav li a {
+  color: orange!important;
+}
+
+.navbar-nav li a:hover {
+  color: #FFD580!important;
 }
 
 li a img {
@@ -26,11 +35,7 @@ ul li a {
 .bar {
   border-top: 1px solid #1e385c;
   background: rgb(26, 67, 98);
-  background: radial-gradient(
-    circle,
-    rgba(26, 67, 98, 0.938813025210084) 28%,
-    rgba(15, 33, 48, 0.6026785714285714) 83%
-  );
+  background: radial-gradient( circle, rgba(26, 67, 98, 0.938813025210084) 28%, rgba(15, 33, 48, 0.6026785714285714) 83%);
   height: 393px;
   color: white;
 }
@@ -55,6 +60,7 @@ hr {
   border: 1px solid #ffa800;
   margin-left: 10px;
 }
+
 .nav-item {
   list-style: none !important;
   text-decoration: inherit !important;
@@ -70,12 +76,15 @@ hr {
 #yellow_btn {
   transition: 0.3s;
 }
+
 #yellow_btn:hover {
   background-color: #f6dba6;
 }
+
 #white_btn {
   transition: 0.3s;
 }
+
 #white_btn:hover {
   background-color: #f5cb78;
 }
@@ -98,12 +107,7 @@ hr {
 .social-bar {
   height: 375px;
   background: rgb(0, 0, 0);
-  background: linear-gradient(
-    163deg,
-    rgba(0, 0, 0, 0.7707457983193278) 0%,
-    rgba(0, 0, 0, 0.7651435574229692) 50%,
-    rgba(80, 16, 8, 0.8267682072829132) 100%
-  );
+  background: linear-gradient( 163deg, rgba(0, 0, 0, 0.7707457983193278) 0%, rgba(0, 0, 0, 0.7651435574229692) 50%, rgba(80, 16, 8, 0.8267682072829132) 100%);
   color: white;
   font-size: 50px;
   border-top: 2px solid #122137;
@@ -112,12 +116,7 @@ hr {
 
 .footer {
   background: rgb(0, 0, 0);
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 1) 12%,
-    rgba(0, 0, 0, 0) 100%
-  );
+  background: linear-gradient( 180deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 12%, rgba(0, 0, 0, 0) 100%);
   height: 140px;
   color: white;
 }
@@ -144,6 +143,7 @@ hr {
 .container-md {
   animation: opac 0.8s;
 }
+
 @keyframes opac {
   from {
     opacity: 0;
@@ -182,7 +182,6 @@ hr {
   }
   .topnav.responsive {
     position: relative;
-
     transition: all 1s;
   }
   .topnav.responsive #nav_bar_icon {

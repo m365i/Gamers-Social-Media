@@ -1,3 +1,5 @@
+
+
 .header {
   height: 75px;
   width: 100%;
@@ -12,11 +14,7 @@ ul li a {
 .bar {
   border-top: 1px solid #1e385c;
   background: rgb(26, 67, 98);
-  background: radial-gradient(
-    circle,
-    rgba(26, 67, 98, 0.938813025210084) 28%,
-    rgba(15, 33, 48, 0.6026785714285714) 83%
-  );
+  background: radial-gradient( circle, rgba(26, 67, 98, 0.938813025210084) 28%, rgba(15, 33, 48, 0.6026785714285714) 83%);
   height: 393px;
   color: white;
 }
@@ -45,12 +43,15 @@ hr {
 #yellow_btn {
   transition: 0.3s;
 }
+
 #yellow_btn:hover {
   background-color: #f6dba6;
 }
+
 #white_btn {
   transition: 0.3s;
 }
+
 #white_btn:hover {
   background-color: #f5cb78;
 }
@@ -73,12 +74,7 @@ hr {
 .social-bar {
   height: 375px;
   background: rgb(0, 0, 0);
-  background: linear-gradient(
-    163deg,
-    rgba(0, 0, 0, 0.7707457983193278) 0%,
-    rgba(0, 0, 0, 0.7651435574229692) 50%,
-    rgba(80, 16, 8, 0.8267682072829132) 100%
-  );
+  background: linear-gradient( 163deg, rgba(0, 0, 0, 0.7707457983193278) 0%, rgba(0, 0, 0, 0.7651435574229692) 50%, rgba(80, 16, 8, 0.8267682072829132) 100%);
   color: white;
   font-size: 50px;
   border-top: 2px solid #122137;
@@ -87,26 +83,19 @@ hr {
 
 .footer {
   background: rgb(0, 0, 0);
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 1) 12%,
-    rgba(0, 0, 0, 0) 100%
-  );
+  background: linear-gradient( 180deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 12%, rgba(0, 0, 0, 0) 100%);
   height: 140px;
   color: white;
 }
 
 @media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
-  #main_logo  {
+  #main_logo {
     width: 300px;
   }
-  #playSation_img{
+  #playSation_img {
     display: none;
   }
-  .navbar-brand{
-      font-size: 15px;
+  .navbar-brand {
+    font-size: 15px;
   }
-
-
 }

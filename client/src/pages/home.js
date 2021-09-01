@@ -8,10 +8,10 @@ export default function Home() {
 	return (
 		<>
 			{/* <!-- end header --> */}
-			<div className="bar container-md h-auto">
-				<div className="container">
+			<div className="bar container-fluid h-auto">
+				<div className="container-md">
 					<div className="row">
-						<div className=" py-5">
+						<div className="col-md-6 py-5">
 							<h1>
 								<span style={{ 'color': '#ffa800', fontWeight: 'bold' }}>Gaming tourment</span> on one place.
 							</h1>
@@ -34,7 +34,7 @@ export default function Home() {
 							</div>
 						</div>
 						
-						<div className=" py-2">
+						<div className="col-md-6 py-2 text-right">
 							<img id="playSation_img" src="images/ps5.png" alt="Playstation 5 Controller" />
 						
 						</div>
@@ -69,8 +69,8 @@ export default function Home() {
 				</div>
 			</div>
 
-			<div className="container-md appBar mt-4 h-auto">
-				<div className="container">
+			<div className="container-fluid appBar mt-4 h-auto">
+				<div className="container-md">
 					<div className="row mx-auto py-5">
 						<div className="col-12 text-center">
 							<h1>
@@ -89,8 +89,8 @@ export default function Home() {
 			</div>
 
 
-			<div className="social-bar container-md h-auto">
-				<div className="container">
+			<div className="social-bar container-fluid h-auto">
+				<div className="container-md">
 					<div className="row mx-auto py-5">
 						<div className="col-12 text-center">
 							<strong>We <span style={{ 'color': 'red' }}>♥</span> new friends!</strong>

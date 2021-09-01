@@ -80,7 +80,7 @@ export default function NotificationComponent() {
                 heading='Notification Alerts'
                 sortedByKey={false}
                 showDate={true}
-                size={32}
+                size={18}
                 color="orange"
                 markAsReadFn={() => MarkReadNote()}
             />
