@@ -232,9 +232,8 @@ exports.userIsRoomMemberMiddleware = async function (req, res, next) {
 	next()
 }
 
-// should be used in conjecture with roomExistMiddleware and ensureLoggedIn
+// should be used in conjecture with roomExistMiddleware
 exports.userAccessToPrivateRoomMiddleware = async function (req, res, next) {
-	const userId = req.user.id
 	const { roomId } = req.query
 	let isPrivate
 	try {
@@ -244,9 +243,9 @@ exports.userAccessToPrivateRoomMiddleware = async function (req, res, next) {
 	}
 	if(isPrivate) {
 		let exist
-		if(userId) {
+		if(req.user) {
 			try {
-				exist = await RoomMember.exists({ userId: new mongoose.Types.ObjectId(userId), roomId: new mongoose.Types.ObjectId(roomId) })
+				exist = await RoomMember.exists({ userId: new mongoose.Types.ObjectId(req.user.id), roomId: new mongoose.Types.ObjectId(roomId) })
 			} catch (err) {
 				exist = false
 			}
