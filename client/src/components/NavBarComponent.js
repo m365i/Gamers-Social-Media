@@ -17,11 +17,11 @@ function NavBarComponent({ children }) {
 	function onLogout() {
 		logout()
 			.then(() => {
+				history.replace('/')
 				dispatch(removeUser())
-				history.replace('/login')
 			})
 			.catch(() => {
-				history.replace('/login')
+				history.replace('/')
 			})
 	}
 

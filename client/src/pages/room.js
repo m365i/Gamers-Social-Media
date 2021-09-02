@@ -312,7 +312,7 @@ function Room() {
 						<br />
 						<Grid container spacing={3}>
 							<Grid item xs>
-								<RoomChat room={id} />
+								<RoomChat roomId={id} />
 							</Grid>
 							<Grid item xs>
 								<RoomMembers />
