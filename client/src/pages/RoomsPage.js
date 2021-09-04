@@ -1,19 +1,16 @@
 
-import { React, useState, useEffect } from 'react'
-import './RoomsPage.css'
-import RoomCard from '../components/RoomCard'
-import NewRoomForm from '../components/NewRoomForm'
-import { RiChatNewLine } from 'react-icons/ri'
-import axios from '../services/axios.config'
+import { React, useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import ReactTooltip from 'react-tooltip'
 import MyRoomsComponent from '../components/MyRoomsComponent'
-import { useSelector } from 'react-redux'
+import NewRoomForm from '../components/NewRoomForm'
+import axios from '../services/axios.config'
 import { selectUser } from '../state/userSlice'
-import { red } from '@material-ui/core/colors'
+import './RoomsPage.css'
 export default function RoomsPage() {
 
 
-    const [shownewRoomFormResults, setShownewRoomForm] = useState(false)
+    const [shownewRoomFormResults, /*setShownewRoomForm*/] = useState(false)
     const [all_profiles_list, set_profiles_list] = useState([])
     const { user } = useSelector(selectUser)
     const [userProfile, SetuserProfile] = useState(null)

@@ -1,25 +1,22 @@
-import axios from '../services/axios.config'
 import { React, useEffect, useState } from 'react'
-import './MyRoomsComponent.css'
 import NewRoomForm from '../components/NewRoomForm'
 import RoomCard from '../components/RoomCard'
-import { Carousel } from 'react-responsive-carousel'
 import RoomOptions from '../components/RoomOptions'
-import { ImUserPlus } from 'react-icons/im'
-import InviteUsersModal from './InviteUsersModal'
+import axios from '../services/axios.config'
+import './MyRoomsComponent.css'
 //import $ from 'jquery'
-export default function MyRoomsComponent({ Profiles_RC, MyProfile_RC }) {
+export default function MyRoomsComponent(/*{ Profiles_RC,MyProfile_RC } */) {
 
 //no
 
 
     const [MyRooms, SetMyRoomsList] = useState([])
     const [shownewRoomFormResults, setShownewRoomForm] = useState(false)
-    const [OBJMyRooms, SetOBJMyRoomsList] = useState([])
-    const [RoomIndex, SetRoomIndex] = useState(0)
+    // const [OBJMyRooms, SetOBJMyRoomsList] = useState([])
+    // const [RoomIndex, SetRoomIndex] = useState(0)
     const [OpenRoomOptions, SetOpenRoomOptions] = useState(false)
     const [FocusedRoom, SetFocusedRoom] = useState(null)
-    const [isOpen, SetisOpen] = useState(false)
+    // const [isOpen, SetisOpen] = useState(false)
     /*     function CreateRoomclicked() {
             const new_room = {
                 name: $('#room_name').val(),
@@ -41,7 +38,7 @@ export default function MyRoomsComponent({ Profiles_RC, MyProfile_RC }) {
 
         axios.get('/room/list').then((res) => {
             //console.log(res.data)
-            SetOBJMyRoomsList(res.data)
+            // SetOBJMyRoomsList(res.data)
             for (let i = 0; i < res.data.length; i++) {
                 const room = res.data[i]
                 axios.get(`/games/info?name=${room.game}`).then((info) => {
@@ -61,20 +58,20 @@ export default function MyRoomsComponent({ Profiles_RC, MyProfile_RC }) {
 
     }
 
-    function ActionFriendInviteClicked(friend_id) {
-        axios.post('/notifications/new_note',
-            {
-                from_id: MyProfile_RC.userId,
-                to_id: friend_id,
-                update: `You Have Received new invitation From ${MyProfile_RC.name} <br>
-                        <a href=${'/room/' + OBJMyRooms[RoomIndex]._id} >Link To Join The Room</a> `,
-                timestamp: new Date().now
-            }).then(() => {
+    // function ActionFriendInviteClicked(friend_id) {
+    //     axios.post('/notifications/new_note',
+    //         {
+    //             from_id: MyProfile_RC.userId,
+    //             to_id: friend_id,
+    //             update: `You Have Received new invitation From ${MyProfile_RC.name} <br>
+    //                     <a href=${'/room/' + OBJMyRooms[RoomIndex]._id} >Link To Join The Room</a> `,
+    //             timestamp: new Date().now
+    //         }).then(() => {
 
-                console.log('invitetion Sent')
-            })
+    //             console.log('invitetion Sent')
+    //         })
 
-    }
+    // }
 
 
     useEffect(() => {

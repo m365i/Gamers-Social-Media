@@ -4,15 +4,15 @@
 import AddAPhotoIcon from '@material-ui/icons/AddAPhoto'
 import $ from 'jquery'
 import React, { useEffect, useState } from 'react'
-import { FaEdit, FaSave, FaUserFriends, FaWindowClose } from 'react-icons/fa'
+import { FaSave, FaUserFriends, FaWindowClose } from 'react-icons/fa'
 import { useSelector } from 'react-redux'
 import 'react-responsive-carousel/lib/styles/carousel.min.css' // requires a loader
 import ReactTooltip from 'react-tooltip'
 import AllUsersModal from '../components/AllUsersModal'
+import RoomCard from '../components/RoomCard'
 import UserAvatar from '../components/UserAvatar'
 import axios from '../services/axios.config'
 import { selectUser } from '../state/userSlice'
-import RoomCard from '../components/RoomCard'
 import './members.css'
 
 
@@ -56,48 +56,49 @@ export default function Members() {
 	}, [])
 
 
-	function SetImage_PreView() {
-		let imagesPreview = function (input, placeToInsertImagePreview) {
-			if (input.files) {
-				let reader = new FileReader()
-				reader.onload = function (event) {
-					$($.parseHTML('<img>'))
-						.attr('src', event.target.result)
-						.attr('id', 'image-preview1')
-						.css('width', '200px')
-						.appendTo(placeToInsertImagePreview)
-				}
-				reader.readAsDataURL(input.files[0])
-				//console.log(input.files);
-			}
+	// function SetImage_PreView() {
+	// 	let imagesPreview = function (input, placeToInsertImagePreview) {
+	// 		if (input.files) {
+	// 			let reader = new FileReader()
+	// 			reader.onload = function (event) {
+	// 				$($.parseHTML('<img>'))
+	// 					.attr('src', event.target.result)
+	// 					.attr('id', 'image-preview1')
+	// 					.css('width', '200px')
+	// 					.appendTo(placeToInsertImagePreview)
+	// 			}
+	// 			reader.readAsDataURL(input.files[0])
+	// 			//console.log(input.files);
+	// 		}
 
-		}
-
-
-
-		$('#img_upload_input').on('change', function () {
-			$('div.preview-images').empty()
-			imagesPreview(this, 'div.preview-images')
-
-		})
-
-	}
+	// 	}
 
 
-	function UploadImageClick(event) {
-		event.preventDefault()
 
-		var formData = new FormData()
-		var imagefile = document.querySelector('#img_upload_input')
-		formData.append('file', imagefile.files[0])
-		//console.log(formData.get('file'))
-		axios.post(`/profile/img/upload_img/${user.id}`, formData, {
-			headers: {
-				'Content-Type': 'multipart/form-data'
-			}
-		}).then((res) => console.log(res))
+	// 	$('#img_upload_input').on('change', function () {
+	// 		$('div.preview-images').empty()
+	// 		imagesPreview(this, 'div.preview-images')
 
-	}
+	// 	})
+
+	// }
+
+
+	// function UploadImageClick(event) {
+	// 	event.preventDefault()
+
+	// 	var formData = new FormData()
+	// 	var imagefile = document.querySelector('#img_upload_input')
+	// 	formData.append('file', imagefile.files[0])
+	// 	//console.log(formData.get('file'))
+	// 	axios.post(`/profile/img/upload_img/${user.id}`, formData, {
+	// 		headers: {
+	// 			'Content-Type': 'multipart/form-data'
+	// 		}
+	// 	}).then((res) => console.log(res))
+
+	// }
+
 	function uploadImage(event) {
 		event.preventDefault()
 		var formData = new FormData()
@@ -301,8 +302,8 @@ export default function Members() {
 
 	}
 
-	$(document).ready(function () {
-		$('.carousel.carousel-slider .control-arrow').click()
+	$(function () {
+		$('.carousel.carousel-slider .control-arrow').trigger('click')
 	})
 
 
