@@ -30,7 +30,6 @@ export default function Home() {
 										Sign Up
 									</button>
 								</Link>
-								<button type="button" id="white_btn" className="btn-lg btn-outline font-weight-bold  px-4 mt-2 mx-2">Learn More</button>
 							</div>
 						</div>
 						
@@ -55,11 +54,11 @@ export default function Home() {
 					</div>
 
 					<ul className="list-group list-group-horizontal-md room-list" style={{ listStyleType: 'none' }}>
-						<RoomCard game="DOTA 2" img="images/dota2_room.png" />
+						<RoomCard game="DOTA 2" img="https://i.pinimg.com/736x/d1/59/e9/d159e9ca272b73f56ef2b770a7c0b17b.jpg" />
+						<RoomCard game="PUBG" img="https://m.media-amazon.com/images/M/MV5BMTRkMjg2NDEtYzIxYi00MzZlLTllNmQtOTE4YWMzNjIwZDNkXkEyXkFqcGdeQXVyNTgyNTA4MjM@._V1_FMjpg_UY480_.jpg" />
+						<RoomCard game="GTA V" img="https://www.rockstargames.com/V/img/global/order/GTAV-PC.jpg" />
+						<RoomCard game="LEFT FOR DEAD 2" img="https://m.media-amazon.com/images/I/91cFzvxFGyS._SY445_.jpg" />
 						<RoomCard game="DOTA 1" img="images/dota2_room.png" />
-						<RoomCard game="PUBG" img="images/dota2_room.png" />
-						<RoomCard game="GTA V" img="images/dota2_room.png" />
-						<RoomCard game="DOTA 2" img="images/dota2_room.png" />
 					</ul>
 					<div className="col d-flex align-items-center">
 						<a href="#">

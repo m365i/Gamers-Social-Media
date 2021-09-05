@@ -15,7 +15,7 @@ function _InputRoom({init, disabled}, ref) { // init should be a state so it won
 
 	const [name, setName] = useState('')
 	const [nameValidation, setNameValidation] = useState(undefined)
-	const [game, setGame] = useState('')
+	const [game, setGame] = useState(null)
 	const [inputGame, setInputGame] = useState('')
 	const [gameValidation, setGameValidation] = useState(undefined)
 	const [platform, setPlatform] = useState('Pc')
@@ -33,7 +33,7 @@ function _InputRoom({init, disabled}, ref) { // init should be a state so it won
 			setDescriptionValidation(undefined)
 			let valid = true
 			if (name === '') {
-				setNameValidation('this field is reqired')
+				setNameValidation('this field is required')
 				valid = false
 			} else if (Joi.string().min(3).max(64).pattern(/^[a-zA-Z0-9][a-zA-Z0-9 -_'+]+$/).validate(name).error) {
 				// eslint-disable-next-line
@@ -143,7 +143,7 @@ function _InputRoom({init, disabled}, ref) { // init should be a state so it won
 
 			<Autocomplete
 				fullWidth
-				defaultValue={init.game}
+				defaultValue={init ? init.game : undefined}
 				getOptionSelected={(option, value) => option.name === value.name}
 				filterOptions={(x) => x}
 				loading={gameSelectLoading}
@@ -334,7 +334,15 @@ export function DialogCreateRoom({open, close}) {
 	const [inputInvalid, setInputInvalid] = useState(false)
 
 	const [loading, setLoading] = useState(false)
-	const [error, setError] = useState(false)
+	const [error, setError] = useState(undefined)
+
+	useEffect(() => {
+		if(!open) {
+			setInputInvalid(false)
+			setLoading(false)
+			setError(undefined)
+		}
+	}, [open])
 
 	function save() {
 		if(input.current.validate()) {
@@ -362,9 +370,8 @@ export function DialogCreateRoom({open, close}) {
 	return (
 		<Dialog
 			open={open}
-			onClose={close}
-			aria-labelledby="responsive-dialog-title" >
-			<DialogTitle id="responsive-dialog-title">Create Room</DialogTitle>
+			onClose={close} >
+			<DialogTitle>Create Room</DialogTitle>
 			<DialogContent>
 				<InputRoom ref={input} onClick={() => setInputInvalid(false)} />
 				{
