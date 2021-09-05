@@ -1,9 +1,10 @@
 import { React, useEffect, useState } from 'react'
-import NewRoomForm from '../components/NewRoomForm'
 import RoomCard from '../components/RoomCard'
-import RoomOptions from '../components/RoomOptions'
 import axios from '../services/axios.config'
 import ReactTooltip from 'react-tooltip'
+
+import {DialogCreateRoom} from './DialogRoomBuilder'
+
 import './MyRoomsComponent.css'
 //import $ from 'jquery'
 export default function MyRoomsComponent(/*{ Profiles_RC,MyProfile_RC } */) {
@@ -15,8 +16,6 @@ export default function MyRoomsComponent(/*{ Profiles_RC,MyProfile_RC } */) {
     const [shownewRoomFormResults, setShownewRoomForm] = useState(false)
     // const [OBJMyRooms, SetOBJMyRoomsList] = useState([])
     // const [RoomIndex, SetRoomIndex] = useState(0)
-    const [OpenRoomOptions, SetOpenRoomOptions] = useState(false)
-    const [FocusedRoom, SetFocusedRoom] = useState(null)
     // const [isOpen, SetisOpen] = useState(false)
     /*     function CreateRoomclicked() {
             const new_room = {
@@ -38,23 +37,17 @@ export default function MyRoomsComponent(/*{ Profiles_RC,MyProfile_RC } */) {
     function GetAllGamesOption() {
 
         axios.get('/room/list').then((res) => {
-            //console.log(res.data)
-            // SetOBJMyRoomsList(res.data)
             for (let i = 0; i < res.data.length; i++) {
                 const room = res.data[i]
                 axios.get(`/games/info?name=${room.game}`).then((info) => {
-                    //console.log(info.data.image)
-
-
                     SetMyRoomsList(MyRooms =>
-                        [...MyRooms, <div key={i} className="room_card_" onClick={() => { SetFocusedRoom(room); SetOpenRoomOptions(true) }}>
+
+                        [...MyRooms, <div key={i} onClick={() => { window.open('/room/' + room._id) }}>
+
                             <RoomCard game={room.name} img={info.data.image} />
                         </div >])
                 })
-
-
             }
-
         })
 
     }
@@ -76,16 +69,23 @@ export default function MyRoomsComponent(/*{ Profiles_RC,MyProfile_RC } */) {
 
 
     useEffect(() => {
-
         GetAllGamesOption()
-
+		return () => {
+			SetMyRoomsList([])
+		}
     }, [])
 
     /* Pc|Xbox|Playstation|Android|Apple|Psp */
     return (
         <div>
             <div className="container-md" id="my_rooms_comp_old">
-                <ul className="list-group list-group-horizontal-md room-list" style={{ listStyleType: 'none' }}>
+                <ul className="list-group list-group-horizontal-md room-list" 
+					style={{ 
+						listStyleType: 'none' ,
+						display: 'flex',
+						flexDirection: 'row',
+						flexWrap: 'wrap'
+					}}>
 
                     {/* <label id="rooms_lable">My ROOMS</label> */}
 
@@ -108,12 +108,8 @@ export default function MyRoomsComponent(/*{ Profiles_RC,MyProfile_RC } */) {
                 </ul>
                 <ReactTooltip />
                 {shownewRoomFormResults ? <NewRoomForm /> : null}
+
             </div>
-            <RoomOptions open={OpenRoomOptions}
-                Room={FocusedRoom}
-                onClose={() => SetOpenRoomOptions(false)} />
-
-
         </div >
 
     )

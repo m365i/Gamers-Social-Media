@@ -77,6 +77,18 @@ function RoomChat({roomId}) {
 
 	const [socket, setSocket] = useState(undefined)
 
+	const [checkForScroll, setCheckForScroll] = useState(0)
+	useEffect(() => {
+		if(messagesListRef && messagesListRef.current) {
+			const scrollTop = messagesListRef.current.scrollTop
+			const top = messagesListRef.current.scrollHeight - messagesListRef.current.clientHeight
+			if(canLoadMore && !isLoadingMore && top+scrollTop < 70 && list.length > 0) {
+				setIsLoadingMore(true)
+				socket.GetMore(list[list.length-1].seq)
+			}
+		}
+	}, [socket, checkForScroll, messagesListRef, list, canLoadMore, isLoadingMore])
+
 	useEffect(() => {
 		// create socket
 		const socket = ChatSocket(roomId)
@@ -114,16 +126,7 @@ function RoomChat({roomId}) {
 			setIsLoadingMore(false)
 		}
 		socket.OnMoreListener(more)
-		const scrollInterval = setInterval(() => {
-			if(messagesListRef.current) {
-				const scrollTop = messagesListRef.current.scrollTop
-				const top = messagesListRef.current.scrollHeight - messagesListRef.current.clientHeight
-				if(canLoadMore && !isLoadingMore && top+scrollTop < 70 && list.length > 0) {
-					setIsLoadingMore(true)
-					socket.GetMore(list[list.length-1].seq)
-				}
-			}
-		}, 2000)
+		const scrollInterval = setInterval(() => setCheckForScroll(Date.now()), 2000)
 		return () => {
 			setAllowedToChat(false)
 			setCanLoadMore(true)
@@ -215,7 +218,10 @@ function RoomChat({roomId}) {
 				rowsMax={6}
 				value={message}
 				onChange={(event) => setMessage(event.target.value)}
-				inputProps={{'aria-label': 'description'}}
+				inputProps={{
+					'aria-label': 'description',
+					onKeyPress: (event) => (event.key === 'Enter' && sendMessage())
+				}}
 				endAdornment={
 					<>
 						<IconButton

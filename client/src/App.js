@@ -25,7 +25,6 @@ import Contact from './pages/contact'
 import Room from './pages/room'
 import RoomsPage from './pages/RoomsPage'
 import RoomsSearchPage from './pages/RoomsSearchPage'
-import About from './pages/about'
 import NavBarComponent from './components/NavBarComponent'
 import Invite from './pages/invite'
 
@@ -58,7 +57,6 @@ export default function App() {
 					<Route path="/rooms" component={RoomsPage} />
 					<Route path="/search" component={RoomsSearchPage} />
 					<PrivateRoute access={isLoggedIn} redirect="/login" path="/members" component={Members} />
-					<Route path="/about_us" component={About} />
 					<Route path="/invite/:roomId/:code" component={Invite} />
 					<Route exact path="/" component={Home} />
 					<Route component={() => (window.location = '/404.html')} />
