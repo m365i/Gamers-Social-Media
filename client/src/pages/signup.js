@@ -184,6 +184,17 @@ export default function Signup() {
 					margin='normal'
 				/>
 
+				{/* <TextField
+					id="date"
+					variant='outlined'
+					label="Birthday"
+					type="date"
+					defaultValue="2017-05-24"
+					InputLabelProps={{
+						shrink: true,
+					}}
+				/> */}
+
 
 				<FormControl component='fieldset' fullWidth>
 					<TextField

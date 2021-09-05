@@ -1,0 +1,148 @@
+#add_profile_img_icon {
+  color: white;
+  cursor: pointer;
+  /*transition: all 0.8s;*/
+}
+
+@keyframes opac {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/*
+#add_profile_img_icon:hover {
+  color: orange;
+  height: 50px;
+}
+*/
+
+.cameraUpdate {
+  background: #666666;
+  padding: 5px;
+  width: 40px;
+  bottom: 20px;
+  left: 220px;
+  position: absolute;
+  border-radius: 250px;
+  border: 2px solid white;
+}
+
+.info_card {
+  width: 200px;
+  background: white;
+  border-radius: 5px;
+  color: black;
+}
+
+#current_profile_img {
+  width: 100px;
+  border: 10px solid orange;
+}
+
+#image-preview1 {
+  width: 100px;
+  border: 10px solid orange;
+}
+
+.WhiteLabel {
+  color: white;
+  font-size: 30px;
+  text-shadow: 2px 2px 15px #f2f2f2;
+  font-weight: bold;
+  color: orange;
+  font-family: "Open Sans", sans-serif;
+}
+
+
+.hideInput {
+  display: none;
+  background-color: rgba(122, 122, 122, 0.3);
+  border-radius: 3rem;
+  font-size: 20px;
+  text-shadow: 2px 2px 15px #f2f2f2;
+  font-weight: bold;
+  color: orange;
+  font-family: "Open Sans", sans-serif;
+  width: 200px;
+}
+
+.hideIcon {
+  display: none;
+  margin: 3px;
+}
+
+.SmallLabel {
+  color: white;
+  font-size: 20px;
+  text-shadow: 2px 2px 15px #f2f2f2;
+  font-weight: bold;
+  color: orange;
+  font-family: "Open Sans", sans-serif;
+}
+
+#add_friend_icon {
+  cursor: pointer;
+  color: orange;
+  width: 50px;
+  height: 40px;
+  transition: all 0.7s;
+}
+
+#add_friend_icon:hover {
+  height: 60px;
+  width: 60px;
+}
+
+#profile_top {
+  animation: opac 0.8s;
+  background-image: linear-gradient(
+    rgba(90, 40, 255, 0.2),
+    rgba(177, 176, 176, 0.3)
+  );
+  width: 100%;
+  padding-top: 20px;
+}
+
+#member_bot_part {
+  margin-top: 20px;
+  padding-bottom: 80px;
+}
+
+#btn_update_img {
+  border: none;
+  background-color: transparent;
+  color: orange;
+  font-family: "Open Sans", sans-serif;
+  transition: all 0.6s;
+}
+
+#btn_update_img:hover {
+  text-shadow: 2px 2px 15px #f2f2f2;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.fa-edit {
+  transition: all 0.6s;
+  color: orange;
+  cursor: pointer;
+}
+.edit_icon {
+  transition: all 0.6s;
+  color: orange;
+  cursor: pointer;
+}
+
+.edit_icon:hover {
+  width: 30px;
+  color: rgb(243, 195, 105);
+}
+
+.fa-edit:hover {
+  width: 30px;
+  color: rgb(243, 195, 105);
+}

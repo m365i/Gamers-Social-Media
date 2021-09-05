@@ -5,6 +5,7 @@ import { IoIosAddCircle, IoIosRemoveCircle } from 'react-icons/io'
 import { CgMoreO } from 'react-icons/cg'
 import ReactTooltip from 'react-tooltip'
 import ShowProfileComponent from './ShowProfileComponent'
+import UserAvatar from './UserAvatar'
 export default function AllUsersModal({ open, onClose, Profiles, MyProfile, friendTo }) {
 
     const [SelectedProfile, SetSeletedProfile] = useState()
@@ -62,11 +63,12 @@ export default function AllUsersModal({ open, onClose, Profiles, MyProfile, frie
                 continue
             }
 
-            let s = 'friend_img_' + String(i)
+
             if (IsMyfriend(Profiles[i])) {
 
                 items.push(<div key={i}>
-                    <img className="friend_img" id={s} alt="" src={process.env.REACT_APP_SERVER_URL + '/api/profile/img/get_img/' + Profiles[i].userId} />
+                    <UserAvatar userId={Profiles[i].userId} circle size="60px" />
+
                     <label className="friend_img_label">{Profiles[i].name}</label>
                     <IoIosRemoveCircle className="Circle_icon" data-tip="remove friend"
                         onClick={() => { friendTo(Profiles[i].userId, 0); onClose() }} />
@@ -76,7 +78,8 @@ export default function AllUsersModal({ open, onClose, Profiles, MyProfile, frie
 
             else {
                 items.push(<div key={i}>
-                    <img className="friend_img" id={s} alt="" src={process.env.REACT_APP_SERVER_URL + '/api/profile/img/get_img/' + Profiles[i].userId} />
+                    <UserAvatar userId={Profiles[i].userId} circle size="60px" />
+
                     <IoIosAddCircle className="Circle_icon" data-tip="add friend"
                         onClick={() => { friendTo(Profiles[i].userId, 1); onClose() }} />
                     <CgMoreO className="Circle_icon" data-tip="more info" onClick={() => SetSeletedProfile(Profiles[i])} />
