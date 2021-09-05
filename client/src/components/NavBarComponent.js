@@ -66,9 +66,6 @@ function NavBarComponent({ children }) {
 							<li className="nav-item active">
 								<Link className="nav-link" to="/"> <i className="fas fa-home"></i> Home <span className="sr-only">(current)</span></Link>
 							</li>
-							<li className="nav-item">
-								<Link className="nav-link" to="/about_us" ><i className="fas fa-info-circle"></i> About Us</Link>
-							</li>
 
 							<li className="nav-item">
 								<Link className="nav-link" to="/search"><i className="fas fa-search"></i> Search</Link>
