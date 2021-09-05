@@ -1,6 +1,6 @@
 
 import React, {useRef,useEffect, useState} from 'react'
-import { Box, Dialog, Divider, FilledInput, IconButton, List, ListItem, ListItemAvatar, ListItemText, Typography} from '@material-ui/core'
+import { Box, Popover, Divider, FilledInput, IconButton, List, ListItem, ListItemAvatar, ListItemText, Typography} from '@material-ui/core'
 import {Alert} from '@material-ui/lab'
 import Icon from '@material-ui/core/Icon'
 import {makeStyles} from '@material-ui/core/styles'
@@ -52,7 +52,7 @@ const useStyles = makeStyles(() => ({
 	}
 }))
 
-function RoomChat({room}) {
+function RoomChat({roomId}) {
 	const classes = useStyles({})
 
 	const {isMember} = useSelector(selectRoom)
@@ -65,38 +65,21 @@ function RoomChat({room}) {
 	const messagesListRef = useRef(undefined)
 	const [canLoadMore, setCanLoadMore] = useState(true)
 	const [isLoadingMore, setIsLoadingMore] = useState(false)
-	const [updateScroll, setUpdateScroll] = useState(0)
-	
-	useEffect(() => {
-		if(messagesListRef.current) {
-			const scrollTop = messagesListRef.current.scrollTop
-			const top = messagesListRef.current.scrollHeight - messagesListRef.current.clientHeight
-			if(canLoadMore && !isLoadingMore && top+scrollTop < 70 && list.length > 0) {
-				setIsLoadingMore(true)
-				socket.GetMore(list[list.length-1].seq)
-			}
-		}
-	}, [updateScroll])
 
-	const [openEmojiDialog, setOpenEmojiDialog] = useState(false)
+	const [openEmojiPopover, setOpenEmojiPopover] = useState(false)
+	const [emojiPopoverAnchorEl, setEmojiPopoverAnchorEl] = useState(null)
 	const onEmojiClick = (event, emojiObject) => {
-		if (emojiObject != undefined) {
+		if (emojiObject !== undefined && emojiObject.emoji !== undefined) {
 			setMessage(message + emojiObject.emoji)
 		}
-		setOpenEmojiDialog(false)
+		setOpenEmojiPopover(false)
 	}
 
-	const [newMessage, setNewMessage] = useState(undefined)
 	const [socket, setSocket] = useState(undefined)
 
 	useEffect(() => {
-		// reset edit options
-		setMessage('')
-		setAllowedToChat(false)
-		setError(undefined)
-		setList([])
 		// create socket
-		const socket = ChatSocket(room)
+		const socket = ChatSocket(roomId)
 		setSocket(socket)
 		const error = (err) => {
 			setError('was unable to establish a connection with the server (' + err.message + ')')
@@ -120,19 +103,34 @@ function RoomChat({room}) {
 			if(msgs.length === 0) {
 				setCanLoadMore(false)
 			}
-			setNewMessage(msgs)
+			setList(list => [...msgs, ...list].sort((a, b) => b.seq - a.seq))
 		}
 		socket.OnMessageListener(message)
 		const more = (msgs) => {
-			setNewMessage(msgs)
+			setList(list => [...msgs, ...list].sort((a, b) => b.seq - a.seq))
 			if (!msgs || msgs.length === 0) {
 				setCanLoadMore(false)
 			}
 			setIsLoadingMore(false)
 		}
 		socket.OnMoreListener(more)
-		const scrollInterval = setInterval(() => setUpdateScroll(Date.now()), 2000)
+		const scrollInterval = setInterval(() => {
+			if(messagesListRef.current) {
+				const scrollTop = messagesListRef.current.scrollTop
+				const top = messagesListRef.current.scrollHeight - messagesListRef.current.clientHeight
+				if(canLoadMore && !isLoadingMore && top+scrollTop < 70 && list.length > 0) {
+					setIsLoadingMore(true)
+					socket.GetMore(list[list.length-1].seq)
+				}
+			}
+		}, 2000)
 		return () => {
+			setAllowedToChat(false)
+			setCanLoadMore(true)
+			setIsLoadingMore(false)
+			setError(undefined)
+			setMessage('')
+			setList([])
 			socket.RemoveOnErrorListener(error)
 			socket.RemoveOnStatusListener(status)
 			socket.RemoveOnDisconnectedListener(disconnect)
@@ -141,15 +139,7 @@ function RoomChat({room}) {
 			socket.Disconnect()
 			clearInterval(scrollInterval)
 		}
-	}, [isMember])
-
-	useEffect(() => {
-		if (newMessage) {
-			let temp = [...newMessage, ...list]
-			temp.sort((a, b) => b.seq - a.seq)
-			setList(temp)
-		}
-	}, [newMessage])
+	}, [roomId, isMember])
 
 	function sendMessage() {
 		if(!message || message.trim() === '') {
@@ -178,7 +168,7 @@ function RoomChat({room}) {
 									<React.Fragment key={m.id}>
 										<ListItem alignItems="flex-start">
 											<ListItemAvatar>
-												<UserAvatar userId={m.userId} circle size="24" />
+												<UserAvatar userId={m.userId} circle size="26px" />
 											</ListItemAvatar>
 											<ListItemText
 												primary={
@@ -204,7 +194,7 @@ function RoomChat({room}) {
 							})
 						}
 						{
-							canLoadMore ?
+							canLoadMore && messagesListRef.current !== undefined && messagesListRef.current.scrollHeight > messagesListRef.current.clientHeight ?
 								<>
 									<ListItem alignItems="flex-start" className={classes.loading}>
 										Loading...
@@ -230,7 +220,10 @@ function RoomChat({room}) {
 					<>
 						<IconButton
 							aria-label="emoji"
-							onClick={() => setOpenEmojiDialog(true)}
+							onClick={(event) => {
+								setOpenEmojiPopover(true)
+								setEmojiPopoverAnchorEl(event.currentTarget)
+							}}
 							disabled={!allowedToChat}>
 							<Icon> sentiment_satisfied_alt </Icon>
 						</IconButton>
@@ -242,9 +235,20 @@ function RoomChat({room}) {
 						</IconButton>
 					</>
 				} />
-			<Dialog onClose={onEmojiClick} aria-labelledby="simple-dialog-title" open={openEmojiDialog}>
+			<Popover 
+				onClose={onEmojiClick} 
+				open={openEmojiPopover}
+				anchorEl={emojiPopoverAnchorEl}
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'center',
+				}}
+				transformOrigin={{
+					vertical: 'top',
+					horizontal: 'center',
+				}} >
 				<Picker style={classes.emoji} onEmojiClick={onEmojiClick} />
-			</Dialog>
+			</Popover>
 		</Box>
 	)
 }

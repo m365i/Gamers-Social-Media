@@ -2,10 +2,114 @@
 const { StatusCodes } = require('http-status-codes')
 var mongoose = require('mongoose')
 var Chat = require('../models/chat')
-var { Room, RoomMember, RoomSchedule, RoomAnnouncement } = require('../models/room')
+var { Room, RoomMember, RoomSchedule, RoomAnnouncement, RoomInvite } = require('../models/room')
 var User = require('../models/user')
+var Notification = require('../models/notifications')
 var Joi = require('joi')
 const { hasGame } = require('../util/games')
+
+exports.listInvite = async function (req, res, next) {
+	const { roomId } = req.query
+	// get list of invites
+	let invites = await RoomInvite.aggregate()
+		.match({
+			roomId: new mongoose.Types.ObjectId(roomId)
+		})
+		.lookup({
+			from: 'profiles',
+			localField: 'userId',
+			foreignField: 'userId',
+			as: 'profile'
+		})
+		.lookup({
+			from: 'users',
+			localField: 'userId',
+			foreignField: '_id',
+			as: 'user'
+		})
+		.sort({ seq: 'desc' })
+		.exec()
+	invites = invites.map(m => {
+		return {
+			id: m._id,
+			userId: m.userId,
+			email: m.user[0].email,
+			name: m.profile[0].name,
+			code: m.code,
+			accepted: m.accepted
+		}
+	})
+	return res.status(StatusCodes.OK).send(invites)
+}
+
+exports.hasInvite = async function (req, res, next) {
+	return res.sendStatus(StatusCodes.OK)
+}
+
+exports.addInvite = async function (req, res, next) {
+	const { roomId } = req.query
+	const { userEmail } = req.body
+	// add invite to room
+	const user = await User.findOne({ email: userEmail }).exec()
+	if(user) {
+		let invite = new RoomInvite({ roomId: new mongoose.Types.ObjectId(roomId), userId: new mongoose.Types.ObjectId(user._id) })
+		invite.generateCode()
+		await invite.save()
+		// send invite notification
+		const notification = new Notification({from_id: req.user.id, to_id: user._id, update: `You are invited to join this room <a href="${'/invite/' + invite.roomId + '/' + invite.code}">Click here to accept</a>`, timestamp: Date.now()})
+		await notification.save()
+		return res.sendStatus(StatusCodes.OK)
+	} else {
+		return res.status(StatusCodes.BAD_REQUEST).send('user with that email not found')
+	}
+}
+
+exports.removeInvite = async function (req, res, next) {
+	const { roomId } = req.query
+	const { inviteId } = req.body
+	// remove invite from room
+	if ((await RoomInvite.deleteOne({ _id: inviteId, roomId }).exec()).n !== 1) {
+		return res.status(StatusCodes.BAD_REQUEST).send('invite dose not exist')
+	}
+	return res.sendStatus(StatusCodes.OK)
+}
+
+exports.ackInvite = async function (req, res, next) {
+	const userId = req.user.id
+	const { roomId, code } = req.query
+	const { accepted } = req.body
+	// update status
+	if(accepted === undefined || (accepted !== true && accepted !== false)) {
+		return res.status(StatusCodes.BAD_REQUEST).send('missing parameters')
+	}
+	await RoomInvite.updateOne({ roomId: new mongoose.Types.ObjectId(roomId), userId: new mongoose.Types.ObjectId(userId), code }, {accepted}).exec()
+	if(accepted) {
+		const member = new RoomMember({ userId: new mongoose.Types.ObjectId(userId), roomId: new mongoose.Types.ObjectId(roomId) })
+		try {
+			await member.save()
+		} catch(err) {
+			// ignore
+			console.log(err)
+		}
+	}
+	return res.sendStatus(StatusCodes.OK)
+}
+
+// should be used in conjecture with roomExistMiddleware and ensureLoggedIn
+exports.userHaveInviteToThisRoomMiddleware = async function (req, res, next) {
+	const userId = req.user.id
+	const { roomId, code } = req.query
+	let exist
+	try {
+		exist = await RoomInvite.exists({ userId: new mongoose.Types.ObjectId(userId), roomId: new mongoose.Types.ObjectId(roomId), code, accepted: {$exists: false} })
+	} catch (err) {
+		exist = false
+	}
+	if(!exist) {
+		return res.status(StatusCodes.FORBIDDEN).send('user have no invite to this room')
+	}
+	next()
+}
 
 exports.listSchedules = async function (req, res, next) {
 	const { roomId } = req.query
@@ -26,9 +130,10 @@ exports.addSchedule = async function (req, res, next) {
 }
 
 exports.removeSchedule = async function (req, res, next) {
+	const { roomId } = req.query
 	const { scheduleId } = req.body
 	// remove schedule from room
-	if ((await RoomSchedule.deleteOne({ _id: scheduleId }).exec()).n !== 1) {
+	if ((await RoomSchedule.deleteOne({ _id: scheduleId, roomId }).exec()).n !== 1) {
 		return res.status(StatusCodes.BAD_REQUEST).send('schedule dose not exist')
 	}
 	return res.sendStatus(StatusCodes.OK)
@@ -85,9 +190,10 @@ exports.addAnnouncement = async function (req, res, next) {
 }
 
 exports.removeAnnouncement = async function (req, res, next) {
+	const { roomId } = req.query
 	const { announcementId } = req.body
 	// remove announcement from room
-	if ((await RoomAnnouncement.deleteOne({ _id: announcementId }).exec()).n !== 1) {
+	if ((await RoomAnnouncement.deleteOne({ _id: announcementId, roomId }).exec()).n !== 1) {
 		return res.status(StatusCodes.BAD_REQUEST).send('announcement dose not exist')
 	}
 	return res.sendStatus(StatusCodes.OK)
@@ -110,7 +216,7 @@ exports.roomExistMiddleware = async function (req, res, next) {
 	next()
 }
 
-// should be used in conjecture with roomExistMiddleware
+// should be used in conjecture with roomExistMiddleware and ensureLoggedIn
 exports.userIsRoomMemberMiddleware = async function (req, res, next) {
 	const userId = req.user.id
 	const { roomId } = req.query
@@ -127,6 +233,31 @@ exports.userIsRoomMemberMiddleware = async function (req, res, next) {
 }
 
 // should be used in conjecture with roomExistMiddleware
+exports.userAccessToPrivateRoomMiddleware = async function (req, res, next) {
+	const { roomId } = req.query
+	let isPrivate
+	try {
+		isPrivate = await Room.exists({ _id: new mongoose.Types.ObjectId(roomId), private: true })
+	} catch (err) {
+		isPrivate = false
+	}
+	if(isPrivate) {
+		let exist
+		if(req.user) {
+			try {
+				exist = await RoomMember.exists({ userId: new mongoose.Types.ObjectId(req.user.id), roomId: new mongoose.Types.ObjectId(roomId) })
+			} catch (err) {
+				exist = false
+			}
+		}
+		if (!exist) {
+			return res.status(StatusCodes.FORBIDDEN).send('user have no access permissions to this room')
+		}
+	}
+	next()
+}
+
+// should be used in conjecture with roomExistMiddleware and ensureLoggedIn
 exports.userIsNotRoomMemberMiddleware = async function (req, res, next) {
 	const userId = req.user.id
 	const { roomId } = req.query
@@ -159,13 +290,19 @@ exports.listMembers = async function (req, res, next) {
 			foreignField: 'userId',
 			as: 'profile'
 		})
+		.lookup({
+			from: 'users',
+			localField: 'userId',
+			foreignField: '_id',
+			as: 'user'
+		})
 		.sort({ seq: 'desc' })
 		.exec()
 	members = members.map(m => {
 		return {
-			name: m.profile[0].name,
-			image: m.profile[0].image || (process.env.SERVER_URL + '/api/avatar/username/' + m.profile[0].name),
-			userId: m.userId
+			userId: m.userId,
+			email: m.user[0].email,
+			name: m.profile[0].name
 		}
 	})
 	return res.status(StatusCodes.OK).send(members)
@@ -185,6 +322,21 @@ exports.removeMember = async function (req, res, next) {
 	const { roomId } = req.query
 	// remove member from room
 	await RoomMember.deleteOne({ userId: new mongoose.Types.ObjectId(userId), roomId: new mongoose.Types.ObjectId(roomId) }).exec()
+	return res.sendStatus(StatusCodes.OK)
+}
+
+exports.kickMember = async function (req, res, next) {
+	const { roomId } = req.query
+	const { userId } = req.body
+	// creator cannot kick himself
+	const room = await Room.findOne({ _id: new mongoose.Types.ObjectId(roomId) })
+	if(room.creator === userId) {
+		res.status(StatusCodes.BAD_REQUEST).send('room creator cannot kick himself')
+	}
+	// remove member from room
+	await RoomMember.deleteOne({ userId: new mongoose.Types.ObjectId(userId), roomId: new mongoose.Types.ObjectId(roomId) }).exec()
+	const notification = new Notification({from_id: req.user.id, to_id: userId, update: `You have been kicked from room ${room.name} [id: ${room._id}]`, timestamp: Date.now()})
+	await notification.save()
 	return res.sendStatus(StatusCodes.OK)
 }
 
@@ -255,7 +407,7 @@ exports.select = async function (req, res, next) {
 
 exports.create = async function (req, res, next) {
 	const userId = req.user.id
-	let { name, game, platform, description } = req.body
+	let { name, game, platform, description, private } = req.body
 	// validate input
 	try {
 		const name_validator = Joi.string().min(3).max(64).pattern(/^[a-zA-Z0-9][a-zA-Z0-9 -_'+]+$/)
@@ -271,12 +423,14 @@ exports.create = async function (req, res, next) {
 			const description_validator = Joi.string().max(256)
 			Joi.attempt(description, description_validator)
 		}
+		if(private !== undefined && private !== true && private !== false) {
+			throw new Error('invalid private field')
+		}
 	} catch (err) {
-
-		return res.status(StatusCodes.BAD_REQUEST).send('name, game, platform or description are not formatted correctly')
+		return res.status(StatusCodes.BAD_REQUEST).send('name, game, platform, description or private are not formatted correctly')
 	}
 	// create room
-	let room = new Room({ name, creator: new mongoose.Types.ObjectId(userId), game, platform, description })
+	let room = new Room({ name, creator: new mongoose.Types.ObjectId(userId), game, platform, description, private: (private === true) })
 	room = await room.save()
 	// add creator as a member to the room
 	const member = new RoomMember({ roomId: room._id, userId: new mongoose.Types.ObjectId(userId) })
@@ -287,7 +441,7 @@ exports.create = async function (req, res, next) {
 exports.edit = async function (req, res, next) {
 	const userId = req.user.id
 	const { roomId } = req.query
-	const { name, game, platform, description } = req.body
+	const { name, game, platform, description, private } = req.body
 	// make sure the user is the owner of the room
 	let exist
 	try {
@@ -296,7 +450,7 @@ exports.edit = async function (req, res, next) {
 		// handle error later
 	}
 	if (!exist) {
-		return res.status(StatusCodes.FORBIDDEN).send('room dose not exist or user have no permisision to delete it')
+		return res.status(StatusCodes.FORBIDDEN).send('room dose not exist or user have no permission to delete it')
 	}
 	// validate input
 	let update = {}
@@ -322,10 +476,20 @@ exports.edit = async function (req, res, next) {
 			Joi.attempt(description, description_validator)
 			update.description = description
 		}
+		if(private !== undefined) {
+			if(private !== true && private !== false) {
+				throw new Error('invalid private field')
+			} else {
+				update.private = (private === true)
+			}
+		}
 	} catch (err) {
-		return res.status(StatusCodes.BAD_REQUEST).send('name, game, platform or description are not formatted correctly')
+		return res.status(StatusCodes.BAD_REQUEST).send('name, game, platform, description or private are not formatted correctly')
 	}
 	// make changes
+	if(update.private === false) {
+		await RoomInvite.deleteMany({ roomId: new mongoose.Types.ObjectId(roomId) }).exec()
+	}
 	await Room.updateOne({ _id: new mongoose.Types.ObjectId(roomId) }, update).exec()
 	return res.sendStatus(StatusCodes.OK)
 }
@@ -341,13 +505,14 @@ exports.remove = async function (req, res, next) {
 		// handle error later
 	}
 	if (!exist) {
-		return res.status(StatusCodes.FORBIDDEN).send('room dose not exist or user have no permisision to delete it')
+		return res.status(StatusCodes.FORBIDDEN).send('room dose not exist or user have no permission to delete it')
 	}
 	// delete room
 	await Room.deleteOne({ _id: new mongoose.Types.ObjectId(roomId) }).exec()
 	await RoomMember.deleteMany({ roomId: new mongoose.Types.ObjectId(roomId) }).exec()
 	await RoomSchedule.deleteMany({ roomId: new mongoose.Types.ObjectId(roomId) }).exec()
 	await RoomAnnouncement.deleteMany({ roomId: new mongoose.Types.ObjectId(roomId) }).exec()
+	await RoomInvite.deleteMany({ roomId: new mongoose.Types.ObjectId(roomId) }).exec()
 	await Chat.deleteMany({ to: new mongoose.Types.ObjectId(roomId) }).exec()
 	return res.sendStatus(StatusCodes.OK)
 }
@@ -361,7 +526,6 @@ exports.chat = (io) => {
 		return msgs.map(m => {
 			return {
 				name: m.profile[0].name,
-				image: m.profile[0].image || (process.env.SERVER_URL + '/api/avatar/username/' + m.profile[0].name),
 				message: m.message,
 				userId: m.from,
 				seq: m.seq,
@@ -375,16 +539,18 @@ exports.chat = (io) => {
 		const userId = socket.request.user ? socket.request.user.id : undefined
 		const roomId = socket.handshake.query.room
 
-		let exist, permisision = false
+		let exist, access = false, permission = false
 		try {
 			// check if room exist
 			exist = await Room.exists({ _id: new mongoose.Types.ObjectId(roomId) })
-			// check if user have permisision to use room
-			permisision = await RoomMember.exists({ userId: new mongoose.Types.ObjectId(userId), roomId: new mongoose.Types.ObjectId(roomId) })
+			// check if room is private
+			access = await Room.exists({ _id: new mongoose.Types.ObjectId(roomId), private: true })
+			// check if user have permission to use room
+			permission = await RoomMember.exists({ userId: new mongoose.Types.ObjectId(userId), roomId: new mongoose.Types.ObjectId(roomId) })
 		} catch (err) {
 			// handle error later
 		}
-		if (!exist) {
+		if (!exist || (access && !permission)) {
 			socket.disconnect()
 			return
 		}
@@ -405,8 +571,8 @@ exports.chat = (io) => {
 			.exec()
 		socket.emit('message', messagesChatInfo(msgs))
 
-		// recive message
-		if (permisision) {
+		// receive message
+		if (permission) {
 			socket.emit('status', 'allowed to chat')
 			socket.on('message', async (msg) => {
 				// save message in database

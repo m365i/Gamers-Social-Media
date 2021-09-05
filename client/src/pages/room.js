@@ -1,19 +1,19 @@
 
-import React, {useEffect, useState} from 'react'
-import {useParams} from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import GameInfo from '../components/GameInfo'
 import RoomChat from '../components/RoomChat'
 import RoomMembers from '../components/RoomMembers'
 import RoomAnnouncements from '../components/RoomAnnouncements'
 import RoomSchedule from '../components/RoomSchedule'
-import {useDispatch, useSelector} from 'react-redux'
-import {selectUser} from '../state/userSlice'
-import { Box, Button, Chip, CircularProgress, Container, Grid, Paper, Typography} from '@material-ui/core'
-import {Alert} from '@material-ui/lab'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectUser } from '../state/userSlice'
+import { Box, Button, Chip, CircularProgress, Container, Grid, Paper, Typography } from '@material-ui/core'
+import { Alert } from '@material-ui/lab'
 import Icon from '@material-ui/core/Icon'
 import { DialogEditRoom } from '../components/DialogRoomBuilder'
-import {makeStyles} from '@material-ui/core/styles'
-import {actionChangeRoomMembership, fetchRoom, selectRoom} from '../state/roomSlice'
+import { makeStyles } from '@material-ui/core/styles'
+import { actionChangeRoomMembership, fetchRoom, selectRoom } from '../state/roomSlice'
 import UserAvatar from '../components/UserAvatar'
 import {
 	deleteRoom as gameDeleteRoom,
@@ -71,10 +71,10 @@ const useStyles = makeStyles(() => ({
 function Room() {
 	const classes = useStyles()
 
-	const {id} = useParams()
+	const { id } = useParams()
 
 	const {user} = useSelector(selectUser)
-	const {name, game, creator_info, platform, description, isMember, isOwner, members, loading, error} = useSelector(selectRoom)
+	const {name, game, creator_info, platform, description, isMember, isOwner, isPrivate, members, loading, error} = useSelector(selectRoom)
 	const dispatch = useDispatch()
 
 	const [deleteRoomLoading, setDeleteRoomLoading] = useState(false)
@@ -83,8 +83,8 @@ function Room() {
 	const [openEditDialog, setOpenEditDialog] = useState(false)
 
 	useEffect(() => {
-		if(id) {
-			dispatch(fetchRoom({roomId: id, userId: (user ? user.id : undefined)}))
+		if (id) {
+			dispatch(fetchRoom({ roomId: id, userId: (user ? user.id : undefined) }))
 		}
 	}, [user, id])
 
@@ -139,7 +139,7 @@ function Room() {
 			})
 	}
 
-	if(loading) {
+	if (loading) {
 		return (
 			<>
 				<Box textAlign="center" m={3}>
@@ -149,31 +149,44 @@ function Room() {
 		)
 	}
 
-	if(error) {
+	if (error) {
 		return (
 			<>
 				<Alert severity="error">Error: fetching data for room &quot;{id}&quot; failed [reson: {error}]</Alert>
 			</>
 		)
 	}
-	
+
 	return (
 		<>
+
+
 			<Box className={classes.container}>
 				<Container maxWidth="md">
-
 					<Box className={classes.header}>
-						<Typography variant="h4"> 
-							<Icon>games</Icon> 
+						<Typography variant="h4">
+							<Icon>games</Icon>
 							&nbsp;
-							{name} 
+							{name}
 							&nbsp;
 							<Chip
 								size="small"
 								color="primary"
-								avatar={<UserAvatar userId={creator_info.userId} circle size="25"/> }
+								avatar={<UserAvatar userId={creator_info.userId} circle size="25px"/> }
 								label={'owner: ' + creator_info.name}
 							/>
+							{ 
+								isPrivate ?
+									<>
+										&nbsp;
+										<Chip
+											size="small"
+											color="secondary"
+											label={'private'}
+										/>
+									</>
+									: undefined
+							}
 						</Typography>
 						<Typography variant="caption"> #id: {id} </Typography>
 					</Box>
@@ -182,22 +195,22 @@ function Room() {
 						{
 							isOwner ?
 								<>
-									<Button 
-										variant="text" 
-										color="inherit" 
+									<Button
+										variant="text"
+										color="inherit"
 										onClick={editRoom}>
 										<Icon>edit</Icon> &nbsp; Edit
 									</Button>
-									<DialogEditRoom 
-										open={openEditDialog} 
+									<DialogEditRoom
+										open={openEditDialog}
 										close={() => setOpenEditDialog(false)}
 										roomId={id} />
 									&nbsp;
 									&nbsp;
-									<Button 
+									<Button
 										disabled={deleteRoomLoading}
-										variant="text" 
-										color="secondary" 
+										variant="text"
+										color="secondary"
 										onClick={deleteRoom}>
 										{
 											deleteRoomLoading ?
@@ -213,10 +226,10 @@ function Room() {
 								</>
 								:
 								isMember ?
-									<Button 
+									<Button
 										disabled={changeRoomMembershipLoading}
-										variant="text" 
-										color="inherit" 
+										variant="text"
+										color="inherit"
 										onClick={leaveRoom}>
 										{
 											changeRoomMembershipLoading ?
@@ -231,10 +244,10 @@ function Room() {
 									</Button>
 									:
 									user ?
-										<Button 
+										<Button
 											disabled={changeRoomMembershipLoading}
-											variant="text" 
-											color="inherit" 
+											variant="text"
+											color="inherit"
 											onClick={joinRoom}>
 											{
 												changeRoomMembershipLoading ?
@@ -252,7 +265,7 @@ function Room() {
 						}
 					</Box>
 
-					{ (description && description.trim() !== '') ?
+					{(description && description.trim() !== '') ?
 						<Box className={classes.desc}>
 							<Typography variant="body1"> description: {description} </Typography>
 						</Box>
@@ -300,7 +313,7 @@ function Room() {
 						<br />
 						<Grid container spacing={3}>
 							<Grid item xs>
-								<RoomChat room={id} />
+								<RoomChat roomId={id} />
 							</Grid>
 							<Grid item xs>
 								<RoomMembers />

@@ -1,31 +1,47 @@
 
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
 import {
-	info as gameInfo, 
-	members as gameMembers, 
-	announcements as gameAnnouncements, 
-	schedules as gameSchedules,
-	deleteRoom as gameDeleteRoom,
-	leave as gameLeaveRoom,
-	join as gameJoinRoom,
-	schedule as gameMakeSchedule,
-	deleteSchedule as gameDeleteSchedule,
-	announce as gameMakeAnnouncement, 
-	deleteAnnouncement as gameDeleteAnnouncement,
-	edit as gameEditRoom
+	info as roomInfo, 
+	members as roomMembers, 
+	isMember as roomIsMember,
+	announcements as roomAnnouncements, 
+	schedules as roomSchedules,
+	deleteRoom as roomDeleteRoom,
+	leave as roomLeaveRoom,
+	join as roomJoinRoom,
+	schedule as roomMakeSchedule,
+	deleteSchedule as roomDeleteSchedule,
+	announce as roomMakeAnnouncement, 
+	deleteAnnouncement as roomDeleteAnnouncement,
+	edit as roomEditRoom,
+	kickUser as roomKickUser,
+	invites as roomGetInvites,
+	invite as roomInvite,
+	deleteInvite as roomDeleteInvite
 } from '../services/roomAPI'
 
 export const fetchRoom = createAsyncThunk('room/fetchRoom', async ({roomId, userId}, thunkApi) => {
 	try {
 		let info
 		try {
-			info = (await gameInfo(roomId)).data
-		} catch(e) {
-			console.log(e)
-			window.location = '/404'
+			info = (await roomInfo(roomId)).data
+		} catch(err) {
+			console.log(err)
+			window.location = '/404.html'
 			return
 		}
-		const members = (await gameMembers(roomId)).data
+		let isPrivate = false
+		if(info.private !== undefined && info.private === true) {
+			isPrivate = true
+			try {
+				await roomIsMember(roomId)
+			} catch(err) {
+				console.log(err)
+				window.location = '/403.html'
+				return
+			}
+		}
+		const members = (await roomMembers(roomId)).data
 		let isOwner = false, isMember = false
 		if(userId) {
 			if(userId === info.creator) {
@@ -38,9 +54,9 @@ export const fetchRoom = createAsyncThunk('room/fetchRoom', async ({roomId, user
 			})
 		}
 		const creator_info = members.filter(m => m.userId === info.creator)[0]
-		const announcements = (await gameAnnouncements(roomId)).data
-		const schedules = (await gameSchedules(roomId)).data
-		return {roomId, userId, info, members, creator_info, isOwner, isMember, announcements, schedules}
+		const announcements = (await roomAnnouncements(roomId)).data
+		const schedules = (await roomSchedules(roomId)).data
+		return {roomId, userId, info, members, creator_info, isOwner, isMember, isPrivate, announcements, schedules}
 	} catch (err) {
 		thunkApi.rejectWithValue(err.response.data)
 	}
@@ -49,7 +65,7 @@ export const fetchRoom = createAsyncThunk('room/fetchRoom', async ({roomId, user
 export const updateSchedule = createAsyncThunk('room/updateSchedule', async (fromDate, thunkApi) => {
 	try {
 		const roomId = thunkApi.getState().room.roomId
-		const schedules = (await gameSchedules(roomId)).data
+		const schedules = (await roomSchedules(roomId)).data
 		return schedules
 	} catch (err) {
 		thunkApi.rejectWithValue(err.response.data)
@@ -59,8 +75,8 @@ export const updateSchedule = createAsyncThunk('room/updateSchedule', async (fro
 export const makeSchedule = createAsyncThunk('room/makeSchedule', async (fromDate, thunkApi) => {
 	try {
 		const roomId = thunkApi.getState().room.roomId
-		await gameMakeSchedule(roomId, fromDate)
-		const schedules = (await gameSchedules(roomId)).data
+		await roomMakeSchedule(roomId, fromDate)
+		const schedules = (await roomSchedules(roomId)).data
 		return schedules
 	} catch (err) {
 		thunkApi.rejectWithValue(err.response.data)
@@ -70,8 +86,8 @@ export const makeSchedule = createAsyncThunk('room/makeSchedule', async (fromDat
 export const deleteSchedule = createAsyncThunk('room/deleteSchedule', async (scheduleId, thunkApi) => {
 	try {
 		const roomId = thunkApi.getState().room.roomId
-		await gameDeleteSchedule(roomId, scheduleId)
-		const schedules = (await gameSchedules(roomId)).data
+		await roomDeleteSchedule(roomId, scheduleId)
+		const schedules = (await roomSchedules(roomId)).data
 		return schedules
 	} catch (err) {
 		thunkApi.rejectWithValue(err.response.data)
@@ -81,7 +97,7 @@ export const deleteSchedule = createAsyncThunk('room/deleteSchedule', async (sch
 export const updateAnnouncement = createAsyncThunk('room/updateAnnouncement', async (message, thunkApi) => {
 	try {
 		const roomId = thunkApi.getState().room.roomId
-		const announcements = (await gameAnnouncements(roomId)).data
+		const announcements = (await roomAnnouncements(roomId)).data
 		return announcements
 	} catch (err) {
 		thunkApi.rejectWithValue(err.response.data)
@@ -91,8 +107,8 @@ export const updateAnnouncement = createAsyncThunk('room/updateAnnouncement', as
 export const makeAnnouncement = createAsyncThunk('room/makeAnnouncement', async (message, thunkApi) => {
 	try {
 		const roomId = thunkApi.getState().room.roomId
-		await gameMakeAnnouncement(roomId, message)
-		const announcements = (await gameAnnouncements(roomId)).data
+		await roomMakeAnnouncement(roomId, message)
+		const announcements = (await roomAnnouncements(roomId)).data
 		return announcements
 	} catch (err) {
 		thunkApi.rejectWithValue(err.response.data)
@@ -102,8 +118,8 @@ export const makeAnnouncement = createAsyncThunk('room/makeAnnouncement', async 
 export const deleteAnnouncement = createAsyncThunk('room/deleteAnnouncement', async (announcementId, thunkApi) => {
 	try {
 		const roomId = thunkApi.getState().room.roomId
-		await gameDeleteAnnouncement(roomId, announcementId)
-		const announcements = (await gameAnnouncements(roomId)).data
+		await roomDeleteAnnouncement(roomId, announcementId)
+		const announcements = (await roomAnnouncements(roomId)).data
 		return announcements
 	} catch (err) {
 		thunkApi.rejectWithValue(err.response.data)
@@ -113,7 +129,7 @@ export const deleteAnnouncement = createAsyncThunk('room/deleteAnnouncement', as
 export const actionChangeRoomMembership = createAsyncThunk('room/actionChangeRoomMembership', async (_, thunkApi) => {
 	try {
 		const roomId = thunkApi.getState().room.roomId
-		const members = (await gameMembers(roomId)).data
+		const members = (await roomMembers(roomId)).data
 		return members
 	} catch (err) {
 		thunkApi.rejectWithValue(err.response.data)
@@ -123,8 +139,8 @@ export const actionChangeRoomMembership = createAsyncThunk('room/actionChangeRoo
 export const actionJoinRoom = createAsyncThunk('room/actionJoinRoom', async (_, thunkApi) => {
 	try {
 		const roomId = thunkApi.getState().room.roomId
-		await gameJoinRoom(roomId)
-		const members = (await gameMembers(roomId)).data
+		await roomJoinRoom(roomId)
+		const members = (await roomMembers(roomId)).data
 		return members
 	} catch (err) {
 		thunkApi.rejectWithValue(err.response.data)
@@ -134,8 +150,19 @@ export const actionJoinRoom = createAsyncThunk('room/actionJoinRoom', async (_, 
 export const actionLeaveRoom = createAsyncThunk('room/actionLeaveRoom', async (_, thunkApi) => {
 	try {
 		const roomId = thunkApi.getState().room.roomId
-		await gameLeaveRoom(roomId)
-		const members = (await gameMembers(roomId)).data
+		await roomLeaveRoom(roomId)
+		const members = (await roomMembers(roomId)).data
+		return members
+	} catch (err) {
+		thunkApi.rejectWithValue(err.response.data)
+	}
+})
+
+export const actionKickUser = createAsyncThunk('room/actionKickUser', async (userId, thunkApi) => {
+	try {
+		const roomId = thunkApi.getState().room.roomId
+		await roomKickUser(roomId, userId)
+		const members = (await roomMembers(roomId)).data
 		return members
 	} catch (err) {
 		thunkApi.rejectWithValue(err.response.data)
@@ -145,17 +172,49 @@ export const actionLeaveRoom = createAsyncThunk('room/actionLeaveRoom', async (_
 export const actionDeleteRoom = createAsyncThunk('room/actionDeleteRoom', async (_, thunkApi) => {
 	try {
 		const roomId = thunkApi.getState().room.roomId
-		await gameDeleteRoom(roomId)
+		await roomDeleteRoom(roomId)
 	} catch (err) {
 		thunkApi.rejectWithValue(err.response.data)
 	}
 })
 
-export const actionEditRoom = createAsyncThunk('room/actionEditRoom', async ({name, game, platform, description}, thunkApi) => {
+export const actionEditRoom = createAsyncThunk('room/actionEditRoom', async ({name, game, platform, description, isPrivate}, thunkApi) => {
 	try {
 		const roomId = thunkApi.getState().room.roomId
-		await gameEditRoom(roomId, name, game, platform, description)
-		return {name, game, platform, description}
+		await roomEditRoom(roomId, name, game, platform, description, isPrivate)
+		return {name, game, platform, description, isPrivate}
+	} catch (err) {
+		thunkApi.rejectWithValue(err.response.data)
+	}
+})
+
+export const loadInvites = createAsyncThunk('room/loadInvites', async (_, thunkApi) => {
+	try {
+		const roomId = thunkApi.getState().room.roomId
+		const invites = (await roomGetInvites(roomId)).data
+		return invites
+	} catch (err) {
+		thunkApi.rejectWithValue(err.response.data)
+	}
+})
+
+export const makeInvite = createAsyncThunk('room/makeInvite', async (userEmail, thunkApi) => {
+	try {
+		const roomId = thunkApi.getState().room.roomId
+		await roomInvite(roomId, userEmail)
+		const invites = (await roomGetInvites(roomId)).data
+		return invites
+	} catch (err) {
+		thunkApi.rejectWithValue(err.response.data)
+	}
+})
+
+export const deleteInvite = createAsyncThunk('room/deleteInvite', async (inviteId, thunkApi) => {
+	try {
+		const roomId = thunkApi.getState().room.roomId
+		await roomDeleteInvite(roomId, inviteId)
+		const invites = (await roomGetInvites(roomId)).data
+		return invites
 	} catch (err) {
 		thunkApi.rejectWithValue(err.response.data)
 	}
@@ -172,9 +231,11 @@ const initialState = {
 	description: undefined,
 	isOwner: undefined,
 	isMember: undefined,
+	isPrivate: undefined,
 	members: undefined,
 	announcements: undefined,
 	schedules: undefined,
+	invites: undefined,
 	loading: true,
 	error: undefined
 }
@@ -184,11 +245,12 @@ const roomSlice = createSlice({
 	initialState,
 	reducers: {
 		afterEditRoom: (state, action) => {
-			const {name, game, platform, description} = action.payload
+			const {name, game, platform, description, isPrivate} = action.payload
 			state.name = name
 			state.game = game
 			state.platform = platform
 			state.description = description
+			state.isPrivate = isPrivate
 			state.loading = false
 		}
 	},
@@ -197,7 +259,7 @@ const roomSlice = createSlice({
 			state.loading = true
 		},
 		[fetchRoom.fulfilled]: (state, action) => {
-			const {roomId, userId, info, members, creator_info, isOwner, isMember, announcements, schedules} = action.payload
+			const {roomId, userId, info, members, creator_info, isOwner, isMember, isPrivate, announcements, schedules} = action.payload
 			state.roomId = roomId
 			state.userId = userId
 			state.name = info.name
@@ -208,6 +270,7 @@ const roomSlice = createSlice({
 			state.description = info.description
 			state.isOwner = isOwner
 			state.isMember = isMember
+			state.isPrivate = isPrivate
 			state.members = members
 			state.announcements = announcements
 			state.schedules = schedules
@@ -266,6 +329,30 @@ const roomSlice = createSlice({
 			state.error = action.payload
 		},
 
+		[loadInvites.fulfilled]: (state, action) => {
+			const invites = action.payload
+			state.invites = invites
+		},
+		[loadInvites.rejected]: (state, action) => {
+			state.error = action.payload
+		},
+
+		[makeInvite.fulfilled]: (state, action) => {
+			const invites = action.payload
+			state.invites = invites
+		},
+		[makeInvite.rejected]: (state, action) => {
+			state.error = action.payload
+		},
+
+		[deleteInvite.fulfilled]: (state, action) => {
+			const invites = action.payload
+			state.invites = invites
+		},
+		[deleteInvite.rejected]: (state, action) => {
+			state.error = action.payload
+		},
+
 		[actionChangeRoomMembership.fulfilled]: (state, action) => {
 			const members = action.payload
 			if(state.userId) {
@@ -300,6 +387,14 @@ const roomSlice = createSlice({
 			state.error = action.payload
 		},
 
+		[actionKickUser.fulfilled]: (state, action) => {
+			const members = action.payload
+			state.members = members
+		},
+		[actionKickUser.rejected]: (state, action) => {
+			state.error = action.payload
+		},
+
 		[actionDeleteRoom.fulfilled]: () => {
 			window.location = '/'
 		},
@@ -311,11 +406,12 @@ const roomSlice = createSlice({
 			state.loading = true
 		},
 		[actionEditRoom.fulfilled]: (state, action) => {
-			const {name, game, platform, description} = action.payload
+			const {name, game, platform, description, isPrivate} = action.payload
 			state.name = name
 			state.game = game
 			state.platform = platform
 			state.description = description
+			state.isPrivate = isPrivate
 			state.loading = false
 		},
 		[actionEditRoom.rejected]: (state, action) => {

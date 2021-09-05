@@ -27,6 +27,7 @@ import RoomsPage from './pages/RoomsPage'
 import RoomsSearchPage from './pages/RoomsSearchPage'
 import About from './pages/about'
 import NavBarComponent from './components/NavBarComponent'
+import Invite from './pages/invite'
 
 const history = createBrowserHistory()
 
@@ -58,7 +59,9 @@ export default function App() {
 					<Route path="/search" component={RoomsSearchPage} />
 					<PrivateRoute access={isLoggedIn} redirect="/login" path="/members" component={Members} />
 					<Route path="/about_us" component={About} />
-					<Route path="/" component={Home} />
+					<Route path="/invite/:roomId/:code" component={Invite} />
+					<Route exact path="/" component={Home} />
+					<Route component={() => (window.location = '/404.html')} />
 				</Switch>
 			</NavBarComponent>
 		</Router>

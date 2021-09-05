@@ -19,3 +19,7 @@ export function delete_profile(user_id) {
 export function get_all_profiles() {
 	return axios.get('/profiles/all_profiles')
 }
+
+export function autoCompleteUser(email) {
+	return axios.get('/profiles/autocomplete', {params: {email}})
+}

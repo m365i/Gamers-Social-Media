@@ -1,17 +1,16 @@
 
-import { React, useState, useEffect } from 'react'
-import './RoomsPage.css'
-import NewRoomForm from '../components/NewRoomForm'
-import { RiChatNewLine } from 'react-icons/ri'
-import axios from '../services/axios.config'
+import { React, useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import ReactTooltip from 'react-tooltip'
 import MyRoomsComponent from '../components/MyRoomsComponent'
-import { useSelector } from 'react-redux'
+import NewRoomForm from '../components/NewRoomForm'
+import axios from '../services/axios.config'
 import { selectUser } from '../state/userSlice'
+import './RoomsPage.css'
 export default function RoomsPage() {
 
 
-    const [shownewRoomFormResults, setShownewRoomForm] = useState(false)
+    const [shownewRoomFormResults, /*setShownewRoomForm*/] = useState(false)
     const [all_profiles_list, set_profiles_list] = useState([])
     const { user } = useSelector(selectUser)
     const [userProfile, SetuserProfile] = useState(null)
@@ -48,21 +47,48 @@ export default function RoomsPage() {
     /* Pc|Xbox|Playstation|Android|Apple|Psp */
 
     return (
-        <div style={{ height: '100vh' }}>
-            <div className="container-md">
-                <RiChatNewLine id="newRoomForm_btn" data-tip="Create New Room" onClick={() => setShownewRoomForm(!shownewRoomFormResults)}>Create New Room</RiChatNewLine>
-                <ReactTooltip />
-                {shownewRoomFormResults ? <NewRoomForm /> : null}
-
+        /*        <div style={{ height: '100vh' }}>
+       
+                   <div className="container-md">
+                       <RiChatNewLine id="newRoomForm_btn" data-tip="Create New Room" onClick={() => setShownewRoomForm(!shownewRoomFormResults)}>Create New Room</RiChatNewLine>
+                       <ReactTooltip />
+                       {shownewRoomFormResults ? <NewRoomForm /> : null}
+       
+                   </div>
+       
+                   <div className="container-md ">
+       
+                       <MyRoomsComponent Profiles_RC={all_profiles_list} MyProfile_RC={userProfile} />
+       
+       
+                   </div>
+       
+               </div > */
+        <div className="OutShell">
+            <div className="container-fluid bar mx-auto text-center">
+                <div style={{ position: 'relative', left: '0', right: '0', zIndex: '999' }} className=""><img src="images/rooms_queen.png" /></div>
             </div>
+            <div className="container">
+                <div className="row mt-5">
+                    <div className="col-12 my-5">
 
-            <div className="container-md ">
+                        <ReactTooltip />
+                        {shownewRoomFormResults ? <NewRoomForm /> : null}
 
-                <MyRoomsComponent Profiles_RC={all_profiles_list} MyProfile_RC={userProfile} />
+                        <MyRoomsComponent Profiles_RC={all_profiles_list} MyProfile_RC={userProfile} />
+
+                        {/*    <RiChatNewLine id="newRoomForm_btn" data-tip="Create New Room" onClick={() => setShownewRoomForm(!shownewRoomFormResults)}>Create New Room</RiChatNewLine> */}
+                       {/*   <div id="newRoomForm_btn" data-tip="Create New Room" onClick={() => setShownewRoomForm(!shownewRoomFormResults)}><RoomCard game="" img="images/addnewroom.png" /></div>
+                        */}  
+                        
+                    </div>
 
 
+
+
+
+                </div>
             </div>
-
-        </div >
+        </div>
     )
 }

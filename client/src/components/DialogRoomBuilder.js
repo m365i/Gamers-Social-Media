@@ -1,5 +1,5 @@
 
-import {Avatar, Button, ButtonGroup, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField, Typography} from '@material-ui/core'
+import {Avatar, Button, ButtonGroup, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Grid, Switch, TextField, Typography} from '@material-ui/core'
 import {Alert, Autocomplete} from '@material-ui/lab'
 import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from 'react'
 import {actionAfterEditRoom, selectRoom} from '../state/roomSlice'
@@ -21,6 +21,7 @@ function _InputRoom({init, disabled}, ref) { // init should be a state so it won
 	const [platform, setPlatform] = useState('Pc')
 	const [description, setDescription] = useState('')
 	const [descriptionValidation, setDescriptionValidation] = useState(undefined)
+	const [isPrivate, setIsPrivate] = useState(false)
 
 	const [gameSelectOptions, setGameSelectOptions] = useState([])
 	const [gameSelectLoading, setGameSelectLoading] = useState(false)
@@ -40,7 +41,7 @@ function _InputRoom({init, disabled}, ref) { // init should be a state so it won
 				valid = false
 			}
 			if (!game) {
-				setGameValidation('this field is reqired')
+				setGameValidation('this field is required')
 				valid = false
 			}
 			if (description !== '' && Joi.string().max(256).validate(description).error) {
@@ -54,7 +55,8 @@ function _InputRoom({init, disabled}, ref) { // init should be a state so it won
 				name,
 				game: game.name,
 				platform,
-				description
+				description,
+				isPrivate
 			}
 		}
 	}))
@@ -66,6 +68,7 @@ function _InputRoom({init, disabled}, ref) { // init should be a state so it won
 			setInputGame({name: init.game})
 			setPlatform(init.platform)
 			setDescription(init.description)
+			setIsPrivate(init.isPrivate)
 		}
 	}, [init])
 
@@ -221,6 +224,15 @@ function _InputRoom({init, disabled}, ref) { // init should be a state so it won
 				fullWidth
 				margin='normal'
 			/>
+
+			<br />
+			
+			<FormControlLabel
+				value="end"
+				control={<Switch color="primary" size="small" checked={isPrivate} onChange={(event) => setIsPrivate(event.target.checked)} />}
+				label="Private"
+				labelPlacement="end"
+			/>
 		</form>
 	)
 }
@@ -229,7 +241,7 @@ export const InputRoom = forwardRef(_InputRoom)
 
 export function DialogEditRoom({open, close}) {
 
-	const {roomId, name, game, platform, description} = useSelector(selectRoom)
+	const {roomId, name, game, platform, description, isPrivate} = useSelector(selectRoom)
 	const dispatch = useDispatch()
 
 	const [inputInvalid, setInputInvalid] = useState(false)
@@ -242,17 +254,17 @@ export function DialogEditRoom({open, close}) {
 	const input = useRef()
 
 	useEffect(() => {
-		setInitInput({name, game, platform, description})
-	}, [name, game, platform, description])
+		setInitInput({name, game, platform, description, isPrivate})
+	}, [name, game, platform, description, isPrivate])
 
 	function save() {
 		if(input.current.validate()) {
-			const {name, game, platform, description} = input.current.data()
+			const {name, game, platform, description, isPrivate} = input.current.data()
 			setLoading(true)
 			setError(undefined)
-			gameEditRoom(roomId, name, game, platform, description)
+			gameEditRoom(roomId, name, game, platform, description, isPrivate)
 				.then(() => {
-					dispatch(actionAfterEditRoom({name, game, platform, description}))
+					dispatch(actionAfterEditRoom({name, game, platform, description, isPrivate}))
 					close()
 				})
 				.catch(err => {
@@ -326,10 +338,10 @@ export function DialogCreateRoom({open, close}) {
 
 	function save() {
 		if(input.current.validate()) {
-			const {name, game, platform, description} =  input.current.data()
+			const {name, game, platform, description, isPrivate} =  input.current.data()
 			setLoading(true)
 			setError(undefined)
-			createRoom(name, game, platform, description)
+			createRoom(name, game, platform, description, isPrivate)
 				.then(res => {
 					close()
 					const id = res.data

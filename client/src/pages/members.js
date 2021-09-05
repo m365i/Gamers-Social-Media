@@ -1,95 +1,106 @@
 
 
 //import React, { useState, useEffect } from 'react'
-import React, { useEffect, useState } from 'react'
-import { selectUser } from '../state/userSlice'
-import { useSelector } from 'react-redux'
-import axios from '../services/axios.config'
-import $ from 'jquery'
-import './members.css'
 import AddAPhotoIcon from '@material-ui/icons/AddAPhoto'
-import { FaEdit, FaSave, FaWindowClose, FaUserFriends } from 'react-icons/fa'
+import $ from 'jquery'
+import React, { useEffect, useState } from 'react'
+import { FaSave, FaUserFriends, FaWindowClose } from 'react-icons/fa'
+import { useSelector } from 'react-redux'
+import 'react-responsive-carousel/lib/styles/carousel.min.css' // requires a loader
 import ReactTooltip from 'react-tooltip'
 import AllUsersModal from '../components/AllUsersModal'
-
-import 'react-responsive-carousel/lib/styles/carousel.min.css' // requires a loader
-import { Carousel } from 'react-responsive-carousel'
+import RoomCard from '../components/RoomCard'
 import UserAvatar from '../components/UserAvatar'
+import axios from '../services/axios.config'
+import { selectUser } from '../state/userSlice'
+import './members.css'
+
 
 //import { get_all_profiles } from '../services/ProfileAPI'
 export default function Members() {
-
 
 	const [Carouselitems, SetCarouselitems] = useState([])
 	const [all_profiles_list, set_profiles_list] = useState([])
 	const { user } = useSelector(selectUser)
 	const [userProfile, SetuserProfile] = useState(null)
 	//const [FriendFocused, SetFriendFocused] = useState(null)
-	const [dataFetched, SetdataFetch] = useState(false)
 	const [isOpen, SetisOpen] = useState(false)
 
-
 	const fetchData = async () => {
-		await axios.get(`profiles/profile/${user.id}`).then((res) => {
-			//console.log(res.data[0])
-			SetuserProfile(res.data[0])
+		let { data: userProfiles } = await axios.get(`profiles/profile/${user.id}`)
+		//console.log(res.data[0])
 
-		})
 
-		await axios.get('/profiles/all_profiles').then((all_profiles) => {
-			set_profiles_list(all_profiles.data)
-			//console.log(all_profiles_list)
-		})
 
-		SetdataFetch(true)
+		const { data: all_profiles } = await axios.get('/profiles/all_profiles')
+
+		//console.log(all_profiles_list)
+
+		return {
+			userProfile: userProfiles[0],
+			allPrfiles: all_profiles
+		}
+
 
 	}
 
 
 
-	useEffect(() => {
-		fetchData()
-
-
-		if (dataFetched) {
-			InsertDataToForm()
-			SetImage_PreView()
-
-		}
-
+	useEffect(async () => {
+		const profiles = await fetchData()
+		SetuserProfile(profiles.userProfile)
+		set_profiles_list(profiles.allPrfiles)
+		InsertDataToForm(profiles.userProfile, profiles.allPrfiles)
+		//SetImage_PreView()
 		// eslint-disable-next-line 
-	}, [dataFetched])
-
-	function SetImage_PreView() {
-		let imagesPreview = function (input, placeToInsertImagePreview) {
-			if (input.files) {
-				let reader = new FileReader()
-				reader.onload = function (event) {
-					$($.parseHTML('<img>'))
-						.attr('src', event.target.result)
-						.attr('id', 'image-preview1')
-						.css('width', '200px')
-						.appendTo(placeToInsertImagePreview)
-				}
-				reader.readAsDataURL(input.files[0])
-				//console.log(input.files);
-			}
-
-		}
+	}, [])
 
 
-		$('#img_upload_input').on('change', function () {
-			$('div.preview-images').empty()
-			imagesPreview(this, 'div.preview-images')
+	// function SetImage_PreView() {
+	// 	let imagesPreview = function (input, placeToInsertImagePreview) {
+	// 		if (input.files) {
+	// 			let reader = new FileReader()
+	// 			reader.onload = function (event) {
+	// 				$($.parseHTML('<img>'))
+	// 					.attr('src', event.target.result)
+	// 					.attr('id', 'image-preview1')
+	// 					.css('width', '200px')
+	// 					.appendTo(placeToInsertImagePreview)
+	// 			}
+	// 			reader.readAsDataURL(input.files[0])
+	// 			//console.log(input.files);
+	// 		}
 
-		})
-
-	}
+	// 	}
 
 
-	function UploadImageClick(event) {
+
+	// 	$('#img_upload_input').on('change', function () {
+	// 		$('div.preview-images').empty()
+	// 		imagesPreview(this, 'div.preview-images')
+
+	// 	})
+
+	// }
+
+
+	// function UploadImageClick(event) {
+	// 	event.preventDefault()
+
+	// 	var formData = new FormData()
+	// 	var imagefile = document.querySelector('#img_upload_input')
+	// 	formData.append('file', imagefile.files[0])
+	// 	//console.log(formData.get('file'))
+	// 	axios.post(`/profile/img/upload_img/${user.id}`, formData, {
+	// 		headers: {
+	// 			'Content-Type': 'multipart/form-data'
+	// 		}
+	// 	}).then((res) => console.log(res))
+
+	// }
+
+	function uploadImage(event) {
 		event.preventDefault()
-
 		var formData = new FormData()
 		var imagefile = document.querySelector('#img_upload_input')
 		formData.append('file', imagefile.files[0])
@@ -98,20 +109,15 @@ export default function Members() {
 			headers: {
 				'Content-Type': 'multipart/form-data'
 			}
-		}).then((res) => console.log(res))
+		})
 
-	}
-
-
-	function UpdateProfileClicked(e) {
-
-		UploadImageClick(e)
 	}
 
 	function OpenInput() {
 
 		$('#img_upload_input').click()
-		$('#image-preview1').show()
+		console.log('open')
+		//$('#image-preview1').show()
 	}
 
 	function OpenEditName() {
@@ -181,16 +187,17 @@ export default function Members() {
 		$('#close_age_icon').css('display', 'block')
 	}
 
-	function calcAge() {
-		if (userProfile.birth !== null) {
-			//console.log(new Date(userProfile.birth).getFullYear())
+
+/* 	function calcAge() {
+		if (userProfile) {
+			console.log(new Date(userProfile.birth).getFullYear())
 			let curr_year = new Date().getFullYear()
 			let chosen = new Date(userProfile.birth).getFullYear()
 			return (curr_year - chosen)
 		}
 		return 0
 	}
-
+ */
 	function SaveNewAge() {
 		//console.log($('#edit_age').val())
 		userProfile.birth = new Date($('#edit_age').val())
@@ -200,7 +207,7 @@ export default function Members() {
 			$('#birthdate_label').text('Birthdate: ' + userProfile.birth.toLocaleDateString('he-IL', { timeZone: 'Asia/Jerusalem' }).replace(/\D/g, '/'))
 		})
 
-		$('#age_lable').text('Age: ' + calcAge())
+	/* 	$('#age_lable').text('Age: ' + calcAge()) */
 		$('#age_lable').show()
 		$('#birthdate_label').show()
 		$('#edit_age').hide()
@@ -249,38 +256,45 @@ export default function Members() {
 		$('#close_country_icon').hide()
 	}
 
-	function InsertDataToForm() {
+	function InsertDataToForm(user, others) {
 
-		$('#name_lable').text(userProfile.name)
-		$('#email_lable').text('Email: ' + userProfile.email)
-		$('#birthdate_label').text('BirthDate: ' + new Date(userProfile.birth).toLocaleDateString('he-IL', { timeZone: 'Asia/Jerusalem' }).replace(/\D/g, '/'))
-		$('#age_lable').text('Age: ' + String(calcAge()))
-		$('#Country_lable').text('Country: ' + userProfile.country)
+		$('#name_lable').text(user.name)
+		$('#email_lable').text('Email: ' + user.email)
+		$('#birthdate_label').text('BirthDate: ' + new Date(user.birth).toLocaleDateString('he-IL', { timeZone: 'Asia/Jerusalem' }).replace(/\D/g, '/'))
+	/* 	$('#age_lable').text('Age: ' + String(calcAge())) */
+		$('#Country_lable').text('Country: ' + user.country)
 
 
-		let friends_names = []
 		//console.log(messages_list)
-		for (let i = 0; i < userProfile.friends.length; i++) {
-			const friend_id = userProfile.friends[i]
-			var friend_profile = all_profiles_list.find(obj => {
-				return obj.userId == friend_id
-			})
-			friends_names[i] = (friend_profile.name)
-			//console.log(friends_names)
+		const friends = user.friends.map(friendId => {
+			const profile = others.find(profile => profile.userId === friendId)
 
-			SetCarouselitems(Carouselitems =>
-				[...Carouselitems, <div key={i}>
-					<label key={i} >{friends_names[i]}</label>
-					<UserAvatar userId={friend_id} size="160" />
-				</div>])
-			// axios.get(`/profile/img/get_img/${friend_id}`).then(img => {
-			// 	SetCarouselitems(Carouselitems =>
-			// 		[...Carouselitems, <div key={i}>
-			// 			<label key={i} >{friends_names[i]}</label>
-			// 			<img src={img.data} />
-			// 		</div>])
-			// })
-		}
+			const name = profile.name
+			const id = friendId
+			return { id, name }
+		})
+		SetCarouselitems(items => [...items, ...friends])
+		// for (let i = 0; i < userProfile.friends.length; i++) {
+		// 	const friend_id = userProfile.friends[i]
+		// 	var friend_profile = all_profiles_list.find(obj => {
+		// 		return obj.userId == friend_id
+		// 	})
+		// 	friends_names[i] = (friend_profile.name)
+		// 	//console.log(friends_names)
+		// 	SetCarouselitems( items = > [...items,userProfile.friends])
+		// 	SetCarouselitems(Carouselitems =>
+		// 		[...Carouselitems, <div key={i}>
+		// 			<label key={i} >{friends_names[i]}</label>
+		// 			<UserAvatar userId={friend_id} size="160" />
+		// 		</div>])
+		// 	// axios.get(`/profile/img/get_img/${friend_id}`).then(img => {
+		// 	// 	SetCarouselitems(Carouselitems =>
+		// 	// 		[...Carouselitems, <div key={i}>
+		// 	// 			<label key={i} >{friends_names[i]}</label>
+		// 	// 			<img src={img.data} />
+		// 	// 		</div>])
+		// 	// })
+		// }
 
 
 
@@ -288,8 +302,8 @@ export default function Members() {
 
 	}
 
-	$(document).ready(function () {
-		$('.carousel.carousel-slider .control-arrow').click()
+	$(function () {
+		$('.carousel.carousel-slider .control-arrow').trigger('click')
 	})
 
 
@@ -346,90 +360,153 @@ export default function Members() {
 	return (
 		<>
 
-			<div id="profile_top" className="row" >
-				<div className="col" >
-					<UserAvatar userId={user.id} size="160" />
-					<input
-						type="file"
-						name="file"
-						placeholder="Profile Image"
-						id="img_upload_input"
-						className="form-control form-group"
-						hidden
+			<div className="">
+				<div className="container-fluid bar">
+					<div className="container">
+						<div className="row mx-auto text-center">
+							<div className="col-md-3 my-4">
 
-					/>
-					<div id="img_preview_div" className="preview-images"></div>
-					<AddAPhotoIcon id="add_profile_img_icon" data-tip="add" onClick={OpenInput} />
-					<button id="btn_update_img" onClick={UpdateProfileClicked}>Update Image</button>
+								<UserAvatar userId={user.id} size="300px" circle />
+								<input
+									type="file"
+									name="file"
+									placeholder="Profile Image"
+									id="img_upload_input"
+									onChange={(e) => uploadImage(e)}
+									className="form-control form-group"
+									hidden
+
+								/>
+								{/* <div id="img_preview_div" className="preview-images"></div> */}
+								<div className="cameraUpdate">
+									<AddAPhotoIcon id="add_profile_img_icon" data-tip="add" onClick={OpenInput} />
+								</div>
+
+
+							</div>
+							<div className="col-md-9 my-5">
+
+								<div className="w-50 mx-auto">
+
+									<div className="row">
+										{/* <FaEdit className="edit_icon float-left" data-tip="edit" onClick={OpenEditName} /> */}
+										<ReactTooltip />
+										<i className="fas fa-edit mt-3 mx-1" data-tip="edit" onClick={OpenEditName}></i><h1 id="name_lable">{userProfile?.name}</h1>
+										<input id="edit_name" className="hideInput" ></input>
+										<FaSave id="save_name_icon" className="edit_icon hideIcon" data-tip="save"
+											onClick={SaveNewName} />
+										<FaWindowClose id="close_name_icon" className="edit_icon hideIcon" data-tip="close"
+											onClick={CloseNameEdit} />
+									</div>
+
+									<div className="row">
+										<i className="fas fa-edit mt-1 mx-1" data-tip="edit" onClick={OpenEditEmail}></i><h5 id="email_lable"></h5>
+										<input id="edit_email" className="hideInput"></input>
+										<FaSave id="save_email_icon" className="edit_icon hideIcon" data-tip="save"
+											onClick={SaveNewEmail} />
+										<FaWindowClose id="close_email_icon" className="edit_icon hideIcon" data-tip="close"
+											onClick={CloseEmailEdit} />
+									</div> 
+
+									<div className="row">
+										<i className="fas fa-edit mt-1 mx-1" data-tip="edit" onClick={OpenEditAge} ></i>
+										<h5 id="birthdate_label"></h5>
+										<input type="date" id="edit_age" className="hideInput"></input>
+										<FaSave id="save_age_icon" className="edit_icon hideIcon" data-tip="save"
+											onClick={SaveNewAge} />
+										<FaWindowClose id="close_age_icon" className="edit_icon hideIcon" data-tip="close"
+											onClick={CloseAgeEdit} />
+									</div>
+
+
+									<div className="row">
+
+										<h5 id="age_lable"></h5>
+
+									</div>
+
+
+
+									<div className="row">
+									<i className="fas fa-edit mt-1 mx-1" data-tip="edit" onClick={OpenEditCountry}></i>
+										<h5 id="Country_lable"></h5>
+										<input id="edit_Country" className="hideInput"></input>
+										<FaSave id="save_country_icon" className="edit_icon hideIcon" data-tip="save"
+											onClick={SaveNewCountry} />
+										<FaWindowClose id="close_country_icon" className="edit_icon hideIcon" data-tip="close"
+											onClick={CloseCountryEdit} />
+									</div>
+
+
+								</div>
+
+								<div className="my-5">
+									<div className="info_card float-right mx-3">
+										<strong><i className="fas fa-basketball-ball"></i> Game:</strong>
+										<div>info_card</div>
+									</div>
+
+									<div className="info_card float-right mx-3">
+										<strong><i className="fas fa-gamepad"></i> Platform:</strong>
+										<div>info_card</div>
+									</div>
+
+									<div className="info_card float-right mx-3">
+										<strong><i className="fas fa-users"></i> Friends:</strong>
+										<div>info_card</div>
+									</div>
+								</div>
+
+
+
+							</div>
+						</div>
+					</div>
 				</div>
 
-				<div className="col" >
-					<div className="row" >
-						<FaEdit className="edit_icon" data-tip="edit" onClick={OpenEditName} />
-						<ReactTooltip />
-						<label className="WhiteLabel" id="name_lable"> </label>
-						<input id="edit_name" className="hideInput" ></input>
-						<FaSave id="save_name_icon" className="edit_icon hideIcon" data-tip="save"
-							onClick={SaveNewName} />
-						<FaWindowClose id="close_name_icon" className="edit_icon hideIcon" data-tip="close"
-							onClick={CloseNameEdit} />
-					</div>
-					<div className="row" >
-						<FaEdit className="edit_icon" data-tip="edit" onClick={OpenEditEmail} />
-						<label className="SmallLabel" id="email_lable" > </label>
-						<input id="edit_email" className="hideInput"></input>
-						<FaSave id="save_email_icon" className="edit_icon hideIcon" data-tip="save"
-							onClick={SaveNewEmail} />
-						<FaWindowClose id="close_email_icon" className="edit_icon hideIcon" data-tip="close"
-							onClick={CloseEmailEdit} />
-					</div>
-					<div className="row" >
-						<FaEdit className="edit_icon" data-tip="edit" onClick={OpenEditAge} />
-						<label className="SmallLabel" id="birthdate_label"> </label>
 
-						<input type="date" id="edit_age" className="hideInput"></input>
-						<FaSave id="save_age_icon" className="edit_icon hideIcon" data-tip="save"
-							onClick={SaveNewAge} />
-						<FaWindowClose id="close_age_icon" className="edit_icon hideIcon" data-tip="close"
-							onClick={CloseAgeEdit} />
-					</div>
-					<div className="row" >
-						<label className="SmallLabel" id="age_lable"> </label>
-					</div>
-					<div className="row" >
-						<FaEdit className="edit_icon" data-tip="edit" onClick={OpenEditCountry} />
-						<label className="SmallLabel" id="Country_lable" >From:</label>
-						<input id="edit_Country" className="hideInput"></input>
-						<FaSave id="save_country_icon" className="edit_icon hideIcon" data-tip="save"
-							onClick={SaveNewCountry} />
-						<FaWindowClose id="close_country_icon" className="edit_icon hideIcon" data-tip="close"
-							onClick={CloseCountryEdit} />
+				<div className="container-md">
+					<div className="row">
+						<div className="col">
+							<div id="member_bot_part">
 
-					</div>
+								<div>
+									<h3 className="float-left">Friends</h3>
 
+									<div className="float-right">
+										<FaUserFriends id="add_friend_icon"
+											data-tip="add friend"
+											onClick={() => SetisOpen(true)} />
+										<AllUsersModal
+											open={isOpen}
+											friendTo={(friend_id, action) => ActionFriendClicked(friend_id, action)}
+											Profiles={all_profiles_list} MyProfile={userProfile}
+											onClose={() => SetisOpen(false)} />
+									</div>
+								</div>
+								<div className="clearfix"></div>
+								<hr />
+
+
+
+								<div id="FriendsComponent" className="row container" >
+									<ul className="list-group list-group-horizontal-md room-list" style={{ listStyleType: 'none' }}>
+										{Carouselitems.map((item, i) => <div key={i}>
+											<RoomCard game={item.name} img={process.env.REACT_APP_SERVER_URL + '/api/profile/img/get_img/' + item.id} fallbackImg={'https://avatars.dicebear.com/api/bottts/' + item.id + '.svg'} />
+										</div>)}
+
+										{/* <Carousel infiniteLoop useKeyboardArrows autoPlay>
+							{Carouselitems}
+						</Carousel> 
+						
+						
+						*/}</ul>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 
-			</div>
-			<div id="member_bot_part">
-				<label className="WhiteLabel">Friends</label>
-				<div>
-					<FaUserFriends id="add_friend_icon"
-						data-tip="add friend"
-						onClick={() => SetisOpen(true)} />
-					<AllUsersModal
-						open={isOpen}
-						friendTo={(friend_id, action) => ActionFriendClicked(friend_id, action)}
-						Profiles={all_profiles_list} MyProfile={userProfile}
-						onClose={() => SetisOpen(false)} />
-				</div>
-
-
-				<div id="FriendsComponent" className="row" >
-
-					<Carousel infiniteLoop useKeyboardArrows autoPlay>
-						{Carouselitems}
-					</Carousel>
-				</div>
 			</div>
 		</>
 	)

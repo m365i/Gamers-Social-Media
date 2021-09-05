@@ -26,7 +26,7 @@ export default function NotificationComponent() {
                 const note = res.data[i]
 
                 if (note.to_id == user.id) {
-                    Setnotifications(notifications => [...notifications, { update: note.update, timestamp: note.timestamp }])
+                    Setnotifications(notifications => [...notifications, { update: note.update, timestamp: (typeof note.timestamp === 'string') ? parseInt(note.timestamp) : note.timestamp }])
                 }
 
             }
@@ -70,7 +70,6 @@ export default function NotificationComponent() {
         window.location.reload()
     }
 
-
     return (
         <>
             <NotifyMe
@@ -81,7 +80,7 @@ export default function NotificationComponent() {
                 heading='Notification Alerts'
                 sortedByKey={false}
                 showDate={true}
-                size={32}
+                size={18}
                 color="orange"
                 markAsReadFn={() => MarkReadNote()}
             />
