@@ -1,19 +1,19 @@
 
 
 //import React, { useState, useEffect } from 'react'
-import AddAPhotoIcon from '@material-ui/icons/AddAPhoto'
 import $ from 'jquery'
 import React, { useEffect, useState } from 'react'
-import { FaSave, FaUserFriends, FaWindowClose } from 'react-icons/fa'
+//import { Link } from 'react-router-dom'
+import { FaSave, FaWindowClose } from 'react-icons/fa'
 import { useSelector } from 'react-redux'
 import 'react-responsive-carousel/lib/styles/carousel.min.css' // requires a loader
-import { Link } from 'react-router-dom'
 import ReactTooltip from 'react-tooltip'
 import AllUsersModal from '../components/AllUsersModal'
 import RoomCard from '../components/RoomCard'
 import UserAvatar from '../components/UserAvatar'
 import axios from '../services/axios.config'
 import { selectUser } from '../state/userSlice'
+import { useParams } from 'react-router-dom'
 import './members.css'
 
 
@@ -27,9 +27,14 @@ export default function Members() {
 	const [NumberOfFriends, SetNumberOfFriends] = useState(0)
 	//const [FriendFocused, SetFriendFocused] = useState(null)
 	const [isOpen, SetisOpen] = useState(false)
-
+	const { id } = useParams()
 	const fetchData = async () => {
-		let { data: userProfiles } = await axios.get(`profiles/profile/${user.id}`)
+
+		if (id == user.id) {
+			window.location = '/members'
+		}
+
+		let { data: userProfiles } = await axios.get(`profiles/profile/${id}`)
 		//console.log(res.data[0])
 
 
@@ -107,7 +112,7 @@ export default function Members() {
 		var imagefile = document.querySelector('#img_upload_input')
 		formData.append('file', imagefile.files[0])
 		//console.log(formData.get('file'))
-		axios.post(`/profile/img/upload_img/${user.id}`, formData, {
+		axios.post(`/profile/img/upload_img/${id}`, formData, {
 			headers: {
 				'Content-Type': 'multipart/form-data'
 			}
@@ -115,21 +120,21 @@ export default function Members() {
 
 	}
 
-	function OpenInput() {
-
-		$('#img_upload_input').click()
-		console.log('open')
-		//$('#image-preview1').show()
-	}
-
-	function OpenEditName() {
-
-		$('#name_lable').hide()
-		$('#edit_name').css('display', 'block')
-		$('#edit_name').val(userProfile.name)
-		$('#save_name_icon').css('display', 'block')
-		$('#close_name_icon').css('display', 'block')
-	}
+	/* 	function OpenInput() {
+	
+			$('#img_upload_input').click()
+			console.log('open')
+			//$('#image-preview1').show()
+		} */
+	/* 
+		function OpenEditName() {
+	
+			$('#name_lable').hide()
+			$('#edit_name').css('display', 'block')
+			$('#edit_name').val(userProfile.name)
+			$('#save_name_icon').css('display', 'block')
+			$('#close_name_icon').css('display', 'block')
+		} */
 
 	function SaveNewName() {
 		userProfile.name = $('#edit_name').val()
@@ -151,14 +156,14 @@ export default function Members() {
 		$('#save_name_icon').hide()
 		$('#close_name_icon').hide()
 	}
-
-	function OpenEditEmail() {
-		$('#email_lable').hide()
-		$('#edit_email').css('display', 'block')
-		$('#edit_email').val(user.email)
-		$('#save_email_icon').css('display', 'block')
-		$('#close_email_icon').css('display', 'block')
-	}
+	/* 
+		function OpenEditEmail() {
+			$('#email_lable').hide()
+			$('#edit_email').css('display', 'block')
+			$('#edit_email').val(user.email)
+			$('#save_email_icon').css('display', 'block')
+			$('#close_email_icon').css('display', 'block')
+		} */
 
 	function SaveNewEmail() {
 		userProfile.email = $('#edit_email').val()
@@ -181,7 +186,7 @@ export default function Members() {
 		$('#close_email_icon').hide()
 	}
 
-	function OpenEditAge() {
+	/* function OpenEditAge() {
 		$('#age_lable').hide()
 		$('#birthdate_label').hide()
 		$('#edit_age').css('display', 'block')
@@ -189,7 +194,7 @@ export default function Members() {
 		$('#save_age_icon').css('display', 'block')
 		$('#close_age_icon').css('display', 'block')
 	}
-
+ */
 
 	function calcAge(birth) {
 		if (birth) {
@@ -227,14 +232,14 @@ export default function Members() {
 		$('#birthdate_label').show()
 	}
 
-	function OpenEditCountry() {
-		$('#Country_lable').hide()
-		$('#edit_Country').css('display', 'block')
-		$('#edit_Country').val(userProfile.country)
-		$('#save_country_icon').css('display', 'block')
-		$('#close_country_icon').css('display', 'block')
-
-	}
+	/* 	function OpenEditCountry() {
+			$('#Country_lable').hide()
+			$('#edit_Country').css('display', 'block')
+			$('#edit_Country').val(userProfile.country)
+			$('#save_country_icon').css('display', 'block')
+			$('#close_country_icon').css('display', 'block')
+	
+		} */
 
 	function SaveNewCountry() {
 
@@ -266,6 +271,7 @@ export default function Members() {
 		$('#birthdate_label').text('BirthDate: ' + new Date(user.birth).toLocaleDateString('he-IL', { timeZone: 'Asia/Jerusalem' }).replace(/\D/g, '/'))
 		$('#age_lable').text('Age: ' + String(calcAge(user.birth)))
 		$('#Country_lable').text('Country: ' + user.country)
+
 
 		//console.log(messages_list)
 		const friends = user.friends.map(friendId => {
@@ -368,7 +374,7 @@ export default function Members() {
 						<div className="row mx-auto text-center">
 							<div className="col-md-3 my-4">
 
-								<UserAvatar userId={user.id} size="300px" circle />
+								<UserAvatar userId={id} size="300px" circle />
 								<input
 									type="file"
 									name="file"
@@ -380,9 +386,9 @@ export default function Members() {
 
 								/>
 								{/* <div id="img_preview_div" className="preview-images"></div> */}
-								<div className="cameraUpdate">
+								{/* 		<div className="cameraUpdate">
 									<AddAPhotoIcon id="add_profile_img_icon" data-tip="add" onClick={OpenInput} />
-								</div>
+								</div> */}
 
 
 							</div>
@@ -393,9 +399,9 @@ export default function Members() {
 									<div className="row">
 										{/* <FaEdit className="edit_icon float-left" data-tip="edit" onClick={OpenEditName} /> */}
 										<ReactTooltip />
-										<div data-tip="edit" onClick={OpenEditName}>
+										{/* 	<div data-tip="edit" onClick={OpenEditName}>
 											<i className="fas fa-edit mt-3 mx-1" />
-										</div>
+										</div> */}
 
 										<h1 id="name_lable">{userProfile?.name}</h1>
 										<input id="edit_name" className="hideInput" ></input>
@@ -406,9 +412,9 @@ export default function Members() {
 									</div>
 
 									<div className="row">
-										<div data-tip="edit" onClick={OpenEditEmail}>
+										{/* 		<div data-tip="edit" onClick={OpenEditEmail}>
 											<i className="fas fa-edit mt-1 mx-1"></i>
-										</div>
+										</div> */}
 										<h5 id="email_lable"></h5>
 										<input id="edit_email" className="hideInput"></input>
 										<FaSave id="save_email_icon" className="edit_icon hideIcon" data-tip="save"
@@ -418,10 +424,10 @@ export default function Members() {
 									</div>
 
 									<div className="row">
-										<div data-tip="edit" onClick={OpenEditAge}>
+										{/* 		<div data-tip="edit" onClick={OpenEditAge}>
 											<i className="fas fa-edit mt-1 mx-1"  ></i>
 										</div>
-
+ */}
 										<h5 id="birthdate_label"></h5>
 										<input type="date" id="edit_age" className="hideInput"></input>
 										<FaSave id="save_age_icon" className="edit_icon hideIcon" data-tip="save"
@@ -440,9 +446,9 @@ export default function Members() {
 
 
 									<div className="row">
-										<div data-tip="edit" onClick={OpenEditCountry}>
+										{/* 		<div data-tip="edit" onClick={OpenEditCountry}>
 											<i className="fas fa-edit mt-1 mx-1"></i>
-										</div>
+										</div> */}
 
 										<h5 id="Country_lable"></h5>
 										<input id="edit_Country" className="hideInput"></input>
@@ -489,9 +495,9 @@ export default function Members() {
 									<h3 className="float-left">Friends</h3>
 
 									<div className="float-right">
-										<FaUserFriends id="add_friend_icon"
+										{/* 	<FaUserFriends id="add_friend_icon"
 											data-tip="add / remove friend"
-											onClick={() => SetisOpen(true)} />
+											onClick={() => SetisOpen(true)} /> */}
 										<AllUsersModal
 											open={isOpen}
 											friendTo={(friend_id, action) => ActionFriendClicked(friend_id, action)}
@@ -507,9 +513,9 @@ export default function Members() {
 								<div id="FriendsComponent" className="row container" >
 									<ul className="list-group list-group-horizontal-md room-list" style={{ listStyleType: 'none' }}>
 										{Carouselitems.map((item, i) => <div key={i}>
-											<Link to={`/friend_profile/${item.id}`}>
+											<a href={`/friend_profile/${item.id}`}>
 												<RoomCard game={item.name} img={process.env.REACT_APP_SERVER_URL + '/api/profile/img/get_img/' + item.id} fallbackImg={'https://avatars.dicebear.com/api/bottts/' + item.id + '.svg'} />
-											</Link>
+											</a>
 										</div>)}
 
 										{/* <Carousel infiniteLoop useKeyboardArrows autoPlay>
