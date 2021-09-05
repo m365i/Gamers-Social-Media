@@ -11,10 +11,12 @@ export default function RoomsPage() {
 
 
     const [shownewRoomFormResults, /*setShownewRoomForm*/] = useState(false)
-    const [all_profiles_list, set_profiles_list] = useState([])
+
     const { user } = useSelector(selectUser)
+    const [all_profiles_list, set_profiles_list] = useState([])
+        //const [FriendFocused, SetFriendFocused] = useState(null)
     const [userProfile, SetuserProfile] = useState(null)
-    //const [FriendFocused, SetFriendFocused] = useState(null)
+
     const [dataFetched, SetdataFetch] = useState(false)
 
 
@@ -78,9 +80,9 @@ export default function RoomsPage() {
                         <MyRoomsComponent Profiles_RC={all_profiles_list} MyProfile_RC={userProfile} />
 
                         {/*    <RiChatNewLine id="newRoomForm_btn" data-tip="Create New Room" onClick={() => setShownewRoomForm(!shownewRoomFormResults)}>Create New Room</RiChatNewLine> */}
-                       {/*   <div id="newRoomForm_btn" data-tip="Create New Room" onClick={() => setShownewRoomForm(!shownewRoomFormResults)}><RoomCard game="" img="images/addnewroom.png" /></div>
-                        */}  
-                        
+                        {/*   <div id="newRoomForm_btn" data-tip="Create New Room" onClick={() => setShownewRoomForm(!shownewRoomFormResults)}><RoomCard game="" img="images/addnewroom.png" /></div>
+                        */}
+
                     </div>
 
 

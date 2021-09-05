@@ -38,19 +38,18 @@ export default function Members() {
 
 		return {
 			userProfile: userProfiles[0],
-			allPrfiles: all_profiles
+			allPrfiles: all_profiles,
 		}
 
 
 	}
 
 
-
 	useEffect(async () => {
-		const profiles = await fetchData()
-		SetuserProfile(profiles.userProfile)
-		set_profiles_list(profiles.allPrfiles)
-		InsertDataToForm(profiles.userProfile, profiles.allPrfiles)
+		const all_data = await fetchData()
+		SetuserProfile(all_data.userProfile)
+		set_profiles_list(all_data.allPrfiles)
+		InsertDataToForm(all_data.userProfile, all_data.allPrfiles)
 		//SetImage_PreView()
 		// eslint-disable-next-line 
 	}, [])
@@ -109,7 +108,7 @@ export default function Members() {
 			headers: {
 				'Content-Type': 'multipart/form-data'
 			}
-		})
+		}).then(() => window.location.reload())
 
 	}
 
@@ -121,6 +120,7 @@ export default function Members() {
 	}
 
 	function OpenEditName() {
+
 		$('#name_lable').hide()
 		$('#edit_name').css('display', 'block')
 		$('#edit_name').val(userProfile.name)
@@ -188,16 +188,16 @@ export default function Members() {
 	}
 
 
-/* 	function calcAge() {
-		if (userProfile) {
-			console.log(new Date(userProfile.birth).getFullYear())
+	function calcAge(birth) {
+		if (birth) {
+			//console.log(new Date(birth).getFullYear())
 			let curr_year = new Date().getFullYear()
-			let chosen = new Date(userProfile.birth).getFullYear()
+			let chosen = new Date(birth).getFullYear()
 			return (curr_year - chosen)
 		}
 		return 0
 	}
- */
+
 	function SaveNewAge() {
 		//console.log($('#edit_age').val())
 		userProfile.birth = new Date($('#edit_age').val())
@@ -207,7 +207,7 @@ export default function Members() {
 			$('#birthdate_label').text('Birthdate: ' + userProfile.birth.toLocaleDateString('he-IL', { timeZone: 'Asia/Jerusalem' }).replace(/\D/g, '/'))
 		})
 
-	/* 	$('#age_lable').text('Age: ' + calcAge()) */
+		$('#age_lable').text('Age: ' + calcAge(new Date($('#edit_age').val())))
 		$('#age_lable').show()
 		$('#birthdate_label').show()
 		$('#edit_age').hide()
@@ -261,7 +261,7 @@ export default function Members() {
 		$('#name_lable').text(user.name)
 		$('#email_lable').text('Email: ' + user.email)
 		$('#birthdate_label').text('BirthDate: ' + new Date(user.birth).toLocaleDateString('he-IL', { timeZone: 'Asia/Jerusalem' }).replace(/\D/g, '/'))
-	/* 	$('#age_lable').text('Age: ' + String(calcAge())) */
+		$('#age_lable').text('Age: ' + String(calcAge(user.birth)))
 		$('#Country_lable').text('Country: ' + user.country)
 
 
@@ -274,27 +274,27 @@ export default function Members() {
 			return { id, name }
 		})
 		SetCarouselitems(items => [...items, ...friends])
-		// for (let i = 0; i < userProfile.friends.length; i++) {
-		// 	const friend_id = userProfile.friends[i]
-		// 	var friend_profile = all_profiles_list.find(obj => {
-		// 		return obj.userId == friend_id
-		// 	})
-		// 	friends_names[i] = (friend_profile.name)
-		// 	//console.log(friends_names)
-		// 	SetCarouselitems( items = > [...items,userProfile.friends])
-		// 	SetCarouselitems(Carouselitems =>
-		// 		[...Carouselitems, <div key={i}>
-		// 			<label key={i} >{friends_names[i]}</label>
-		// 			<UserAvatar userId={friend_id} size="160" />
-		// 		</div>])
-		// 	// axios.get(`/profile/img/get_img/${friend_id}`).then(img => {
-		// 	// 	SetCarouselitems(Carouselitems =>
-		// 	// 		[...Carouselitems, <div key={i}>
-		// 	// 			<label key={i} >{friends_names[i]}</label>
-		// 	// 			<img src={img.data} />
-		// 	// 		</div>])
-		// 	// })
-		// }
+		/* 		 for (let i = 0; i < userProfile.friends.length; i++) {
+					  const friend_id = userProfile.friends[i]
+					  var friend_profile = all_profiles_list.find(obj => {
+							return obj.userId == friend_id
+					  })
+					  friends_names[i] = (friend_profile.name)
+					  //console.log(friends_names)
+					  SetCarouselitems( items = > [...items,userProfile.friends])
+					  SetCarouselitems(Carouselitems =>
+							[...Carouselitems, <div key={i}>
+								<label key={i} >{friends_names[i]}</label>
+								<UserAvatar userId={friend_id} size="160" />
+							</div>])
+					   axios.get(`/profile/img/get_img/${friend_id}`).then(img => {
+							  SetCarouselitems(Carouselitems =>
+									[...Carouselitems, <div key={i}>
+										<label key={i} >{friends_names[i]}</label>
+										<img src={img.data} />
+									</div>])
+					   })
+				 } */
 
 
 
@@ -391,7 +391,11 @@ export default function Members() {
 									<div className="row">
 										{/* <FaEdit className="edit_icon float-left" data-tip="edit" onClick={OpenEditName} /> */}
 										<ReactTooltip />
-										<i className="fas fa-edit mt-3 mx-1" data-tip="edit" onClick={OpenEditName}></i><h1 id="name_lable">{userProfile?.name}</h1>
+										<div data-tip="edit" onClick={OpenEditName}>
+											<i className="fas fa-edit mt-3 mx-1" />
+										</div>
+
+										<h1 id="name_lable">{userProfile?.name}</h1>
 										<input id="edit_name" className="hideInput" ></input>
 										<FaSave id="save_name_icon" className="edit_icon hideIcon" data-tip="save"
 											onClick={SaveNewName} />
@@ -400,16 +404,22 @@ export default function Members() {
 									</div>
 
 									<div className="row">
-										<i className="fas fa-edit mt-1 mx-1" data-tip="edit" onClick={OpenEditEmail}></i><h5 id="email_lable"></h5>
+										<div data-tip="edit" onClick={OpenEditEmail}>
+											<i className="fas fa-edit mt-1 mx-1"></i>
+										</div>
+										<h5 id="email_lable"></h5>
 										<input id="edit_email" className="hideInput"></input>
 										<FaSave id="save_email_icon" className="edit_icon hideIcon" data-tip="save"
 											onClick={SaveNewEmail} />
 										<FaWindowClose id="close_email_icon" className="edit_icon hideIcon" data-tip="close"
 											onClick={CloseEmailEdit} />
-									</div> 
+									</div>
 
 									<div className="row">
-										<i className="fas fa-edit mt-1 mx-1" data-tip="edit" onClick={OpenEditAge} ></i>
+										<div data-tip="edit" onClick={OpenEditAge}>
+											<i className="fas fa-edit mt-1 mx-1"  ></i>
+										</div>
+
 										<h5 id="birthdate_label"></h5>
 										<input type="date" id="edit_age" className="hideInput"></input>
 										<FaSave id="save_age_icon" className="edit_icon hideIcon" data-tip="save"
@@ -428,7 +438,10 @@ export default function Members() {
 
 
 									<div className="row">
-									<i className="fas fa-edit mt-1 mx-1" data-tip="edit" onClick={OpenEditCountry}></i>
+										<div data-tip="edit" onClick={OpenEditCountry}>
+											<i className="fas fa-edit mt-1 mx-1"></i>
+										</div>
+
 										<h5 id="Country_lable"></h5>
 										<input id="edit_Country" className="hideInput"></input>
 										<FaSave id="save_country_icon" className="edit_icon hideIcon" data-tip="save"
@@ -475,7 +488,7 @@ export default function Members() {
 
 									<div className="float-right">
 										<FaUserFriends id="add_friend_icon"
-											data-tip="add friend"
+											data-tip="add / remove friend"
 											onClick={() => SetisOpen(true)} />
 										<AllUsersModal
 											open={isOpen}

@@ -63,11 +63,10 @@ export default function AllUsersModal({ open, onClose, Profiles, MyProfile, frie
             }
 
             let s = 'friend_img_' + String(i)
-
             if (IsMyfriend(Profiles[i])) {
 
                 items.push(<div key={i}>
-					<img className="friend_img" id={s} alt="" src={`/profile/img/get_img/${Profiles[i].userId}`} />
+                    <img className="friend_img" id={s} alt="" src={process.env.REACT_APP_SERVER_URL + '/api/profile/img/get_img/' + Profiles[i].userId} />
                     <label className="friend_img_label">{Profiles[i].name}</label>
                     <IoIosRemoveCircle className="Circle_icon" data-tip="remove friend"
                         onClick={() => { friendTo(Profiles[i].userId, 0); onClose() }} />
@@ -77,7 +76,7 @@ export default function AllUsersModal({ open, onClose, Profiles, MyProfile, frie
 
             else {
                 items.push(<div key={i}>
-					<img className="friend_img" id={s} alt="" src={`/profile/img/get_img/${Profiles[i].userId}`} />
+                    <img className="friend_img" id={s} alt="" src={process.env.REACT_APP_SERVER_URL + '/api/profile/img/get_img/' + Profiles[i].userId} />
                     <IoIosAddCircle className="Circle_icon" data-tip="add friend"
                         onClick={() => { friendTo(Profiles[i].userId, 1); onClose() }} />
                     <CgMoreO className="Circle_icon" data-tip="more info" onClick={() => SetSeletedProfile(Profiles[i])} />
