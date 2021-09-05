@@ -2,7 +2,6 @@ import { React, useState } from 'react'
 import $ from 'jquery'
 import ReactDom from 'react-dom'
 import './AllUsersModal.css'
-import axios from '../services/axios.config'
 import { IoIosAddCircle } from 'react-icons/io'
 import { CgMoreO } from 'react-icons/cg'
 import ReactTooltip from 'react-tooltip'
@@ -67,7 +66,7 @@ export default function InviteUsersModal({ open, onClose, Profiles, MyProfile, f
             if (IsMyfriend(Profiles[i])) {
 
                 items.push(<div key={i}>
-                    <img className="friend_img" id={s} alt="" />
+                    <img className="friend_img" id={s} src={process.env.REACT_APP_SERVER_URL + '/api/profile/img/get_img/' + Profiles[i].userId} alt="" />
                     <label className="friend_img_label">{Profiles[i].name}</label>
                     <IoIosAddCircle className="Circle_icon" data-tip="invite friend to room"
                         onClick={() => { friendTo(Profiles[i].userId); onClose() }} />
@@ -85,21 +84,6 @@ export default function InviteUsersModal({ open, onClose, Profiles, MyProfile, f
     }
 
 
-    function load_friend_images() {
-        for (let i = 0; i < Profiles.length; i++) {
-            if (MyProfile.name == Profiles[i].name) {
-                continue
-            }
-            let s = '#friend_img_' + String(i)
-
-            axios.get(`/profile/img/get_img/${Profiles[i].userId}`).then(res => {
-                $(s).attr('src', res.data)
-
-            })
-        }
-
-
-    }
 
     $('#btn_modal_up').removeAttr('disabled')
     //console.log(Room)
@@ -110,7 +94,7 @@ export default function InviteUsersModal({ open, onClose, Profiles, MyProfile, f
                 {SelectedProfile ? <ShowProfileComponent ShowProfile={SelectedProfile} /> : null}
                 <ReactTooltip />
                 {GetAllUserProfiles()}
-                {load_friend_images()}
+
 
                 <button id="btn_modal_up" className="btn-outline-danger" onClick={() => { onClose() }}>close</button>
             </div>

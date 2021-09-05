@@ -3,11 +3,12 @@ import NewRoomForm from '../components/NewRoomForm'
 import RoomCard from '../components/RoomCard'
 import RoomOptions from '../components/RoomOptions'
 import axios from '../services/axios.config'
+import ReactTooltip from 'react-tooltip'
 import './MyRoomsComponent.css'
 //import $ from 'jquery'
 export default function MyRoomsComponent(/*{ Profiles_RC,MyProfile_RC } */) {
 
-//no
+    //no
 
 
     const [MyRooms, SetMyRoomsList] = useState([])
@@ -46,7 +47,7 @@ export default function MyRoomsComponent(/*{ Profiles_RC,MyProfile_RC } */) {
 
 
                     SetMyRoomsList(MyRooms =>
-                        [...MyRooms, <div key={i} onClick={() => { SetFocusedRoom(room); SetOpenRoomOptions(true) }}>
+                        [...MyRooms, <div key={i} className="room_card_" onClick={() => { SetFocusedRoom(room); SetOpenRoomOptions(true) }}>
                             <RoomCard game={room.name} img={info.data.image} />
                         </div >])
                 })
@@ -58,20 +59,20 @@ export default function MyRoomsComponent(/*{ Profiles_RC,MyProfile_RC } */) {
 
     }
 
-    // function ActionFriendInviteClicked(friend_id) {
-    //     axios.post('/notifications/new_note',
-    //         {
-    //             from_id: MyProfile_RC.userId,
-    //             to_id: friend_id,
-    //             update: `You Have Received new invitation From ${MyProfile_RC.name} <br>
-    //                     <a href=${'/room/' + OBJMyRooms[RoomIndex]._id} >Link To Join The Room</a> `,
-    //             timestamp: new Date().now
-    //         }).then(() => {
-
-    //             console.log('invitetion Sent')
-    //         })
-
-    // }
+    /*   function ActionFriendInviteClicked(friend_id) {
+          axios.post('/notifications/new_note',
+              {
+                  from_id: MyProfile_RC.userId,
+                  to_id: friend_id,
+                  update: `You Have Received new invitation From ${MyProfile_RC.name} <br>
+                          <a href=${'/room/' + OBJMyRooms[RoomIndex]._id} >Link To Join The Room</a> `,
+                  timestamp: new Date().now
+              }).then(() => {
+   
+                  console.log('invitetion Sent')
+              })
+   
+      } */
 
 
     useEffect(() => {
@@ -90,13 +91,7 @@ export default function MyRoomsComponent(/*{ Profiles_RC,MyProfile_RC } */) {
 
 
 
-                    {/*      <ImUserPlus id="invite_friend_icon" data-tip="Invite Friend To Room"
-                        onClick={() => SetisOpen(true)} />
-                    <InviteUsersModal open={isOpen}
-                        friendTo={(friend_id) => ActionFriendInviteClicked(friend_id)}
-                        Profiles={Profiles_RC} MyProfile={MyProfile_RC}
-                        onClose={() => SetisOpen(false)}
-                    /> */}
+
 
 
 
@@ -107,11 +102,11 @@ export default function MyRoomsComponent(/*{ Profiles_RC,MyProfile_RC } */) {
 
 
                     {/*  </Carousel> */}
-                    
+
                     <div id="newRoomForm_btn" data-tip="Create New Room" onClick={() => setShownewRoomForm(!shownewRoomFormResults)}><RoomCard game="" img="images/addnewroom.png" /></div>
 
                 </ul>
-
+                <ReactTooltip />
                 {shownewRoomFormResults ? <NewRoomForm /> : null}
             </div>
             <RoomOptions open={OpenRoomOptions}

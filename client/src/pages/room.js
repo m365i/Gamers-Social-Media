@@ -15,6 +15,8 @@ import { DialogEditRoom } from '../components/DialogRoomBuilder'
 import { makeStyles } from '@material-ui/core/styles'
 import { actionChangeRoomMembership, fetchRoom, selectRoom } from '../state/roomSlice'
 import UserAvatar from '../components/UserAvatar'
+import InviteUsersModal from '../components/InviteUsersModal'
+import axios from '../services/axios.config'
 import {
 	deleteRoom as gameDeleteRoom,
 	leave as gameLeaveRoom,
@@ -73,19 +75,46 @@ function Room() {
 
 	const { id } = useParams()
 
-	const {user} = useSelector(selectUser)
-	const {name, game, creator_info, platform, description, isMember, isOwner, isPrivate, members, loading, error} = useSelector(selectRoom)
+	const { user } = useSelector(selectUser)
+	const { name, game, creator_info, platform, description, isMember, isOwner, isPrivate, members, loading, error } = useSelector(selectRoom)
 	const dispatch = useDispatch()
 
 	const [deleteRoomLoading, setDeleteRoomLoading] = useState(false)
 	const [changeRoomMembershipLoading, setChangeRoomMembershipLoading] = useState(false)
 
 	const [openEditDialog, setOpenEditDialog] = useState(false)
+	const [isOpen, SetisOpen] = useState(false)
+
+	const [userProfile, SetuserProfile] = useState(null)
+	const [all_profiles_list, set_profiles_list] = useState([])
+
+
+
+	const fetchData = async () => {
+		await axios.get(`profiles/profile/${user.id}`).then((res) => {
+			//console.log(res.data[0])
+			SetuserProfile(res.data[0])
+
+		})
+
+		await axios.get('/profiles/all_profiles').then((all_profiles) => {
+			set_profiles_list(all_profiles.data)
+			//console.log(all_profiles_list)
+		})
+
+
+	}
+
+
+
+
+
 
 	useEffect(() => {
 		if (id) {
 			dispatch(fetchRoom({ roomId: id, userId: (user ? user.id : undefined) }))
 		}
+		fetchData()
 	}, [user, id])
 
 	function editRoom() {
@@ -139,6 +168,24 @@ function Room() {
 			})
 	}
 
+	function ActionFriendInviteClicked(friend_id) {
+
+
+		axios.post('/notifications/new_note',
+			{
+				from_id: userProfile.userId,
+				to_id: friend_id,
+				update: `You Have Received new invitation From ${userProfile.name} <br>
+								<a href=${'/room/' + id} >Link To Join The Room</a> `,
+				timestamp: new Date().now
+			}).then(() => {
+
+				console.log('invitetion Sent')
+			})
+
+	}
+
+
 	if (loading) {
 		return (
 			<>
@@ -172,10 +219,10 @@ function Room() {
 							<Chip
 								size="small"
 								color="primary"
-								avatar={<UserAvatar userId={creator_info.userId} circle size="25px"/> }
+								avatar={<UserAvatar userId={creator_info.userId} circle size="25px" />}
 								label={'owner: ' + creator_info.name}
 							/>
-							{ 
+							{
 								isPrivate ?
 									<>
 										&nbsp;
@@ -195,6 +242,18 @@ function Room() {
 						{
 							isOwner ?
 								<>
+									<Button variant="text" onClick={() => SetisOpen(true)}
+										color="inherit" data-tip="Invite Friend To Room">
+										<i className="fas fa-user-plus"></i>
+										&nbsp;Add
+									</Button>
+
+									<InviteUsersModal open={isOpen}
+										friendTo={(friend_id) => ActionFriendInviteClicked(friend_id)}
+										Profiles={all_profiles_list} MyProfile={userProfile}
+										onClose={() => SetisOpen(false)} />
+
+
 									<Button
 										variant="text"
 										color="inherit"
