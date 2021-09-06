@@ -14,6 +14,7 @@ import RoomCard from '../components/RoomCard'
 import UserAvatar from '../components/UserAvatar'
 import axios from '../services/axios.config'
 import { selectUser } from '../state/userSlice'
+
 import './members.css'
 
 
@@ -25,10 +26,28 @@ export default function Members() {
 	const { user } = useSelector(selectUser)
 	const [userProfile, SetuserProfile] = useState(null)
 	const [NumberOfFriends, SetNumberOfFriends] = useState(0)
+	const [MyPlatform, SetMyPlatform] = useState('')
+	const [MyGame, SetMyGame] = useState('')
+	const [ShowPlatformEdit, SetShowPlatformEdit] = useState(false)
+	const [AllGamesList, SetAllGamesList] = useState([])
+	const [ShowGameList, SetShowGameList] = useState(false)
 	//const [FriendFocused, SetFriendFocused] = useState(null)
 	const [isOpen, SetisOpen] = useState(false)
 
 	const fetchData = async () => {
+
+		axios.get('/games/list?offset=0&length=100').then((res) => {
+			//console.log(res.data)
+			for (let i = 0; i < res.data.length; i++) {
+				const game = res.data[i]
+
+				SetAllGamesList(AllGamesList =>
+					[...AllGamesList, <option key={i} className="form-control" value={game.name} >{game.name}</option>])
+
+			}
+
+		})
+
 		let { data: userProfiles } = await axios.get(`profiles/profile/${user.id}`)
 		//console.log(res.data[0])
 
@@ -53,6 +72,8 @@ export default function Members() {
 		set_profiles_list(all_data.allPrfiles)
 		SetNumberOfFriends(all_data.userProfile.friends.length)
 		InsertDataToForm(all_data.userProfile, all_data.allPrfiles)
+		SetMyPlatform(all_data.userProfile.platform)
+		SetMyGame(all_data.userProfile.game)
 		//SetImage_PreView()
 		// eslint-disable-next-line 
 	}, [])
@@ -359,6 +380,25 @@ export default function Members() {
 
 	}
 
+	function PlatfromChanged() {
+		SetShowPlatformEdit(!ShowPlatformEdit)
+		userProfile.platform = $('select[name=MyPlatformSelector] option').filter(':selected').val()
+
+		axios.put(`profiles/profile/${user.id}`, userProfile).then(() => {
+			SetMyPlatform(userProfile.platform)
+		})
+	}
+
+	function GameChanged() {
+		SetShowGameList(!ShowGameList)
+		userProfile.game = $('select[name=MyGameSelector] option').filter(':selected').val()
+		axios.put(`profiles/profile/${user.id}`, userProfile).then(() => {
+			SetMyGame(userProfile.game)
+		})
+
+	}
+
+
 	return (
 		<>
 
@@ -455,18 +495,42 @@ export default function Members() {
 
 								</div>
 
-								<div className="my-5">
-									<div className="info_card float-right mx-3">
-										<strong><i className="fas fa-basketball-ball"></i> Game:</strong>
-										<div>info_card</div>
+								<div className="my-5" >
+									<div className="info_card float-right mx-3 game_user">
+
+										<div data-tip="edit" onClick={GameChanged}>
+											<strong><i className="fas fa-basketball-ball"></i> Game:</strong>
+										</div>
+
+										<div>{MyGame}</div>
+										{ShowGameList ? <div>
+											<select name="MyGameSelector" className="form-control PlatformSelector">
+												{AllGamesList}
+											</select>
+										</div> : null}
 									</div>
 
-									<div className="info_card float-right mx-3">
-										<strong><i className="fas fa-gamepad"></i> Platform:</strong>
-										<div>info_card</div>
+									<div className="info_card float-right mx-3 platform_user"  >
+										<div data-tip="edit" onClick={PlatfromChanged}>
+											<strong><i className="fas fa-gamepad" ></i> Platform:</strong>
+
+										</div>
+
+										<div>{MyPlatform}</div>
+										{ShowPlatformEdit ? <div>
+											<select name="MyPlatformSelector" className="form-control PlatformSelector">
+												<option className="form-control" value={'Pc'} >Pc</option>
+												<option className="form-control" value={'Xbox'} >Xbox</option>
+												<option className="form-control" value={'Playstation'} >Playstation</option>
+												<option className="form-control" value={'Android'} >Android</option>
+												<option className="form-control" value={'Apple'} >Apple</option>
+												<option className="form-control" value={'linux'} >linux</option>
+												<option className="form-control" value={'Psp'} >Psp</option>
+											</select>
+										</div> : null}
 									</div>
 
-									<div className="info_card float-right mx-3">
+									<div className="info_card float-right mx-3 ">
 										<strong><i className="fas fa-users"></i> Friends:</strong>
 										<div id="number_of_friends">{NumberOfFriends}</div>
 									</div>

@@ -11,7 +11,9 @@ import { makeStyles } from '@material-ui/core/styles'
 import SideViewFormLayout from '../components/SideViewFormLayout'
 import Joi from 'joi'
 import passwordStrength from '../util/passwordStrength'
-
+import { ReactCountryDropdown } from 'react-country-dropdown'
+import 'react-country-dropdown/dist/index.css'
+import './signup.css'
 const useStyles = makeStyles((theme) => ({
 	link: {
 		margin: theme.spacing(1),
@@ -43,6 +45,8 @@ export default function Signup() {
 	const [password, setPassword] = useState('')
 	const [passwordValidation, setPasswordValidation] = useState(undefined)
 	const [repassword, setRePassword] = useState('')
+	const [birthdate, setbirthdate] = useState(null)
+	const [country, setcountry] = useState('Israel')
 	const [repasswordValidation, setRePasswordValidation] = useState(undefined)
 	const [agreeToTermsAndConditions, setAgreeToTermsAndConditions] = useState(false)
 	const [agreeToTermsAndConditionsValidation, setAgreeToTermsAndConditionsValidation] = useState(undefined)
@@ -70,6 +74,14 @@ export default function Signup() {
 	function onRePasswordChange(event) {
 		setRePassword(event.target.value)
 		setRePasswordValidation(undefined)
+	}
+
+	function onBirthDayChange(event) {
+		setbirthdate(event.target.value)
+	}
+	function onCountryChange(selectedCountry) {
+		setcountry(selectedCountry.name)
+		//console.log(selectedCountry.name)
 	}
 
 	function onAgreeToTermsAndConditionsChange(event) {
@@ -127,7 +139,7 @@ export default function Signup() {
 			return
 		}
 		// attempt signup
-		signup(name, email, password)
+		signup(name, email, password, birthdate, country)
 			.then(() => {
 				history.replace({
 					pathname: '/login',
@@ -184,16 +196,21 @@ export default function Signup() {
 					margin='normal'
 				/>
 
-				{/* <TextField
+				<TextField
 					id="date"
 					variant='outlined'
 					label="Birthday"
 					type="date"
+					onChange={onBirthDayChange}
 					defaultValue="2017-05-24"
 					InputLabelProps={{
 						shrink: true,
 					}}
-				/> */}
+				/>
+
+
+
+
 
 
 				<FormControl component='fieldset' fullWidth>
@@ -230,6 +247,9 @@ export default function Signup() {
 					fullWidth
 					margin='normal'
 				/>
+
+				<ReactCountryDropdown onSelect={onCountryChange} countryCode='IL' />
+
 
 				<FormControl required error={agreeToTermsAndConditionsValidation !== undefined} component='fieldset' fullWidth>
 					<FormControlLabel
