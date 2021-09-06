@@ -35,7 +35,7 @@ exports.login = function (req, res, next) {
 }
 
 exports.signup = async function (req, res, next) {
-	const { name, email, password } = req.body
+	const { name, email, password, birthdate, country } = req.body
 	// validate input
 	try {
 		const name_validator = Joi.string().min(3).max(64).pattern(/^[a-zA-Z0-9][a-zA-Z0-9 -_'+]+$/)
@@ -61,7 +61,7 @@ exports.signup = async function (req, res, next) {
 		let user = new User({ email })
 		user.setPassword(password)
 		const { _id } = await user.save()
-		let profile = new Profile({ userId: _id, name: name, email: email, birth: '', country: '', status: '', friends: [], rooms: [] })
+		let profile = new Profile({ userId: _id, name: name, email: email, birth: birthdate, country: country, status: '', friends: [], platform: '', game: '', })
 		await profile.save()
 		return res.status(StatusCodes.OK).send('signup was successful')
 	} catch (err) {

@@ -7,10 +7,10 @@ const { StatusCodes } = require('http-status-codes')
 
 exports.autoComplete = async function (req, res, next) {
 	const { email } = req.query
-	if(!email) {
+	if (!email) {
 		return res.status(StatusCodes.BAD_REQUEST).send('profile email is missing')
 	}
-	const results = await profileModel.find({email: {$regex: new RegExp(`^${email}`, 'g')}}).limit(5)
+	const results = await profileModel.find({ email: { $regex: new RegExp(`^${email}`, 'g') } }).limit(5)
 	res.status(StatusCodes.OK).send(results)
 }
 
@@ -61,7 +61,7 @@ exports.update = (req, res) => {
 		})
 	}
 
-	const { name, email, birth, country, status } = req.body
+	const { name, email, birth, country, status, platform, game } = req.body
 
 	// Find note and update it with the request body
 	profileModel.findOneAndUpdate({ userId: req.params.profileId }, {
@@ -70,6 +70,8 @@ exports.update = (req, res) => {
 		email: email,
 		country: country,
 		status: status,
+		platform: platform,
+		game: game
 	}, { new: true })
 		.then(profile => {
 			if (!profile) {

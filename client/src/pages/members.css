@@ -4,6 +4,12 @@
   /*transition: all 0.8s;*/
 }
 
+.PlatformSelector {
+  position: absolute;
+  z-index: 5;
+  width: 200px !important;
+}
+
 @keyframes opac {
   from {
     opacity: 0;
@@ -19,6 +25,13 @@
   height: 50px;
 }
 */
+.platform_user {
+  cursor: pointer;
+}
+
+.game_user {
+  cursor: pointer;
+}
 
 .cameraUpdate {
   background: #666666;
@@ -56,7 +69,6 @@
   color: orange;
   font-family: "Open Sans", sans-serif;
 }
-
 
 .hideInput {
   display: none;

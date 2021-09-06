@@ -20,7 +20,10 @@ const profileSchema = new mongoose.Schema({
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'User'
 		}
-	]
+	],
+	platform: String,
+	game: String,
+
 })
 
 module.exports = mongoose.model('Profile', profileSchema)
