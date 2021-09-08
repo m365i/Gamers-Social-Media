@@ -14,6 +14,8 @@ import RoomCard from '../components/RoomCard'
 import UserAvatar from '../components/UserAvatar'
 import axios from '../services/axios.config'
 import { selectUser } from '../state/userSlice'
+import { ReactCountryDropdown } from 'react-country-dropdown'
+import 'react-country-dropdown/dist/index.css'
 
 import './members.css'
 
@@ -31,9 +33,10 @@ export default function Members() {
 	const [ShowPlatformEdit, SetShowPlatformEdit] = useState(false)
 	const [AllGamesList, SetAllGamesList] = useState([])
 	const [ShowGameList, SetShowGameList] = useState(false)
+	//const [CountryData, SetCountryData] = useState([])
 	//const [FriendFocused, SetFriendFocused] = useState(null)
 	const [isOpen, SetisOpen] = useState(false)
-
+	const countries_data = async () => await $.get('https://restcountries.eu/rest/v2/all')
 	const fetchData = async () => {
 
 		axios.get('/games/list?offset=0&length=100').then((res) => {
@@ -52,14 +55,14 @@ export default function Members() {
 		//console.log(res.data[0])
 
 
-
+		//console.log(countries_data)
 		const { data: all_profiles } = await axios.get('/profiles/all_profiles')
 
 		//console.log(all_profiles_list)
 
 		return {
 			userProfile: userProfiles[0],
-			allPrfiles: all_profiles,
+			allProfiles: all_profiles,
 		}
 
 
@@ -67,13 +70,14 @@ export default function Members() {
 
 
 	useEffect(async () => {
+
 		const all_data = await fetchData()
 		SetuserProfile(all_data.userProfile)
-		set_profiles_list(all_data.allPrfiles)
+		set_profiles_list(all_data.allProfiles)
 		SetNumberOfFriends(all_data.userProfile.friends.length)
-		InsertDataToForm(all_data.userProfile, all_data.allPrfiles)
 		SetMyPlatform(all_data.userProfile.platform)
 		SetMyGame(all_data.userProfile.game)
+		InsertDataToForm(all_data.userProfile, all_data.allProfiles)
 		//SetImage_PreView()
 		// eslint-disable-next-line 
 	}, [])
@@ -249,31 +253,36 @@ export default function Members() {
 	}
 
 	function OpenEditCountry() {
+
 		$('#Country_lable').hide()
 		$('#edit_Country').css('display', 'block')
-		$('#edit_Country').val(userProfile.country)
+		$('#edit_Country').val(userProfile.country.name)
 		$('#save_country_icon').css('display', 'block')
 		$('#close_country_icon').css('display', 'block')
 
 	}
-
-	function SaveNewCountry() {
-
-		userProfile.country = $('#edit_Country').val()
-		//console.log(userProfile.birth)
-		//maybe add validation
-		axios.put(`profiles/profile/${user.id}`, userProfile).then(() => {
-			$('#Country_lable').text('Country: ' + userProfile.country)
-		})
-
-
+	function CloseCountryEdit() {
 		$('#Country_lable').show()
 		$('#edit_Country').hide()
 		$('#save_country_icon').hide()
 		$('#close_country_icon').hide()
 	}
 
-	function CloseCountryEdit() {
+
+	function onCountryChange(selectedCountry) {
+		userProfile.country = selectedCountry
+		//console.log(userProfile.birth)
+		//maybe add validation
+		countries_data().then((res) => {
+
+			//console.log(res[0].flag)
+			const my_country = res.filter((val) => val.name == userProfile.country.name)
+			$('#country_img').attr('src', my_country[0].flag)
+		})
+		axios.put(`profiles/profile/${user.id}`, userProfile).then(() => {
+			$('#Country_lable').text('Country: ' + userProfile.country.name)
+		})
+
 		$('#Country_lable').show()
 		$('#edit_Country').hide()
 		$('#save_country_icon').hide()
@@ -282,11 +291,18 @@ export default function Members() {
 
 	function InsertDataToForm(user, others) {
 
+		countries_data().then((res) => {
+
+			//console.log(res[0].flag)
+			const my_country = res.filter((val) => val.name == user.country.name)
+			$('#country_img').attr('src', my_country[0].flag)
+		})
+
 		$('#name_lable').text(user.name)
 		$('#email_lable').text('Email: ' + user.email)
 		$('#birthdate_label').text('BirthDate: ' + new Date(user.birth).toLocaleDateString('he-IL', { timeZone: 'Asia/Jerusalem' }).replace(/\D/g, '/'))
 		$('#age_lable').text('Age: ' + String(calcAge(user.birth)))
-		$('#Country_lable').text('Country: ' + user.country)
+		$('#Country_lable').text('Country: ' + user.country.name)
 
 		//console.log(messages_list)
 		const friends = user.friends.map(friendId => {
@@ -485,11 +501,15 @@ export default function Members() {
 										</div>
 
 										<h5 id="Country_lable"></h5>
-										<input id="edit_Country" className="hideInput"></input>
-										<FaSave id="save_country_icon" className="edit_icon hideIcon" data-tip="save"
-											onClick={SaveNewCountry} />
-										<FaWindowClose id="close_country_icon" className="edit_icon hideIcon" data-tip="close"
+										<div id="edit_Country">
+											<ReactCountryDropdown onSelect={onCountryChange} countryCode={user.country.code} />
+										</div>
+										<FaWindowClose id="close_country_icon" className="close_icon edit_icon hideIcon" data-tip="close"
 											onClick={CloseCountryEdit} />
+
+									</div>
+									<div className="row">
+										<img id="country_img" />
 									</div>
 
 
