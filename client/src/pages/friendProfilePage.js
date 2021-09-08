@@ -270,7 +270,7 @@ export default function Members() {
 		$('#email_lable').text('Email: ' + user.email)
 		$('#birthdate_label').text('BirthDate: ' + new Date(user.birth).toLocaleDateString('he-IL', { timeZone: 'Asia/Jerusalem' }).replace(/\D/g, '/'))
 		$('#age_lable').text('Age: ' + String(calcAge(user.birth)))
-		$('#Country_lable').text('Country: ' + user.country)
+		$('#Country_lable').text('Country: ' + user.country.name)
 
 
 		//console.log(messages_list)

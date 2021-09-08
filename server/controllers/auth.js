@@ -36,6 +36,7 @@ exports.login = function (req, res, next) {
 
 exports.signup = async function (req, res, next) {
 	const { name, email, password, birthdate, country } = req.body
+	console.log(country)
 	// validate input
 	try {
 		const name_validator = Joi.string().min(3).max(64).pattern(/^[a-zA-Z0-9][a-zA-Z0-9 -_'+]+$/)

@@ -46,7 +46,13 @@ export default function Signup() {
 	const [passwordValidation, setPasswordValidation] = useState(undefined)
 	const [repassword, setRePassword] = useState('')
 	const [birthdate, setbirthdate] = useState(null)
-	const [country, setcountry] = useState('Israel')
+	const [country, setcountry] = useState({
+		latlng: [31.5, 34.75],
+		name: 'Israel',
+		code: 'IL',
+		capital: 'Jerusalem',
+		region: 'Asia'
+	})
 	const [repasswordValidation, setRePasswordValidation] = useState(undefined)
 	const [agreeToTermsAndConditions, setAgreeToTermsAndConditions] = useState(false)
 	const [agreeToTermsAndConditionsValidation, setAgreeToTermsAndConditionsValidation] = useState(undefined)
@@ -80,8 +86,8 @@ export default function Signup() {
 		setbirthdate(event.target.value)
 	}
 	function onCountryChange(selectedCountry) {
-		setcountry(selectedCountry.name)
-		//console.log(selectedCountry.name)
+		setcountry(selectedCountry)
+		//console.log(selectedCountry)
 	}
 
 	function onAgreeToTermsAndConditionsChange(event) {

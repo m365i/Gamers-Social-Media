@@ -57,7 +57,7 @@ export default function AllUsersModal({ open, onClose, Profiles, MyProfile, frie
 
     function GetAllUserProfiles() {
         let items = []
-
+        if (!Profiles) return
         for (let i = 0; i < Profiles.length; i++) {
             if (MyProfile.name == Profiles[i].name) {
                 continue
