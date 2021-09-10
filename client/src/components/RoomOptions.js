@@ -38,7 +38,7 @@ export default function RoomOptions({ open, onClose, Room }) {
     return ReactDom.createPortal(
         <>
             <div style={OVERLAY_STYLES} />
-            <div className="container-md align-content-center " style={MODAL_STYLES}>
+            <div className="container-md align-content-center "  style={MODAL_STYLES}>
                 <label id="openlabel_">Would you Like to Open this Room?</label>
                 <button id="btn_modal_ye" className="btn-outline-success" onClick={() => { window.open(`/room/${Room._id}`); onClose() }}>Yes</button>
                 <button id="btn_modal_no" className="btn-outline-danger" onClick={() => { onClose() }}>No</button>

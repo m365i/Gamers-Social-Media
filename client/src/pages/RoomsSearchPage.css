@@ -1,0 +1,38 @@
+.carousel .slide label {
+  position: absolute;
+  z-index: 5;
+  color: white;
+  font-size: 20px;
+  text-shadow: 0 0 3px #484033, 0 0 8px #484033, 0 0 5px #484033;
+  margin-left: 20px;
+  font-weight: bold;
+  color: orange;
+  font-family: "Open Sans", sans-serif;
+}
+
+/*
+  #FriendsComponent {
+    border: 4px double rgb(255, 189, 66);
+    width: 409px;
+    height: 208px;
+  }*/
+
+/* .carousel ul {
+    display: none;
+  }
+   */
+
+.carousel .slide {
+  height: 200px;
+  width: 200px;
+  cursor: pointer;
+}
+
+.carousel .slide selected {
+  height: 200px;
+}
+
+.carousel .slide img {
+  width: 60%;
+  height: 200px;
+}

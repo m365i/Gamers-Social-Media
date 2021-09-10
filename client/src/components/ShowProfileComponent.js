@@ -16,7 +16,7 @@ export default function ShowProfileComponent({ ShowProfile }) {
                 <br />
                 <label><b>birth date:</b>&nbsp;&nbsp;{new Date(ShowProfile.birth).toLocaleDateString('he-IL', { timeZone: 'Asia/Jerusalem' }).replace(/\D/g, '/')}</label>
                 <br />
-                <label><b>country:</b>&nbsp;&nbsp;{ShowProfile.country}</label>
+                <label><b>country:</b>&nbsp;&nbsp;{ShowProfile.country.name}</label>
 
 
             </div>
