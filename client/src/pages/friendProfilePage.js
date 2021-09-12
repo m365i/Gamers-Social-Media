@@ -1,22 +1,19 @@
 
 
 //import React, { useState, useEffect } from 'react'
-import AddAPhotoIcon from '@material-ui/icons/AddAPhoto'
 import $ from 'jquery'
 import React, { useEffect, useState } from 'react'
-import { FaSave, FaUserFriends, FaWindowClose } from 'react-icons/fa'
+//import { Link } from 'react-router-dom'
+import { FaSave, FaWindowClose } from 'react-icons/fa'
 import { useSelector } from 'react-redux'
 import 'react-responsive-carousel/lib/styles/carousel.min.css' // requires a loader
-import { Link } from 'react-router-dom'
 import ReactTooltip from 'react-tooltip'
 import AllUsersModal from '../components/AllUsersModal'
 import RoomCard from '../components/RoomCard'
 import UserAvatar from '../components/UserAvatar'
 import axios from '../services/axios.config'
 import { selectUser } from '../state/userSlice'
-import { ReactCountryDropdown } from 'react-country-dropdown'
-import 'react-country-dropdown/dist/index.css'
-
+import { useParams } from 'react-router-dom'
 import './members.css'
 
 
@@ -28,41 +25,27 @@ export default function Members() {
 	const { user } = useSelector(selectUser)
 	const [userProfile, SetuserProfile] = useState(null)
 	const [NumberOfFriends, SetNumberOfFriends] = useState(0)
-	const [MyPlatform, SetMyPlatform] = useState('')
-	const [MyGame, SetMyGame] = useState('')
-	const [ShowPlatformEdit, SetShowPlatformEdit] = useState(false)
-	const [AllGamesList, SetAllGamesList] = useState([])
-	const [ShowGameList, SetShowGameList] = useState(false)
-	//const [CountryData, SetCountryData] = useState([])
 	//const [FriendFocused, SetFriendFocused] = useState(null)
 	const [isOpen, SetisOpen] = useState(false)
-	const countries_data = async () => await $.get('https://restcountries.eu/rest/v2/all')
+	const { id } = useParams()
 	const fetchData = async () => {
 
-		axios.get('/games/list?offset=0&length=100').then((res) => {
-			//console.log(res.data)
-			for (let i = 0; i < res.data.length; i++) {
-				const game = res.data[i]
+		if (id == user.id) {
+			window.location = '/members'
+		}
 
-				SetAllGamesList(AllGamesList =>
-					[...AllGamesList, <option key={i} className="form-control" value={game.name} >{game.name}</option>])
-
-			}
-
-		})
-
-		let { data: userProfiles } = await axios.get(`profiles/profile/${user.id}`)
+		let { data: userProfiles } = await axios.get(`profiles/profile/${id}`)
 		//console.log(res.data[0])
 
 
-		//console.log(countries_data)
+
 		const { data: all_profiles } = await axios.get('/profiles/all_profiles')
 
 		//console.log(all_profiles_list)
 
 		return {
 			userProfile: userProfiles[0],
-			allProfiles: all_profiles,
+			allPrfiles: all_profiles,
 		}
 
 
@@ -70,14 +53,11 @@ export default function Members() {
 
 
 	useEffect(async () => {
-
 		const all_data = await fetchData()
 		SetuserProfile(all_data.userProfile)
-		set_profiles_list(all_data.allProfiles)
+		set_profiles_list(all_data.allPrfiles)
 		SetNumberOfFriends(all_data.userProfile.friends.length)
-		SetMyPlatform(all_data.userProfile.platform)
-		SetMyGame(all_data.userProfile.game)
-		InsertDataToForm(all_data.userProfile, all_data.allProfiles)
+		InsertDataToForm(all_data.userProfile, all_data.allPrfiles)
 		//SetImage_PreView()
 		// eslint-disable-next-line 
 	}, [])
@@ -132,7 +112,7 @@ export default function Members() {
 		var imagefile = document.querySelector('#img_upload_input')
 		formData.append('file', imagefile.files[0])
 		//console.log(formData.get('file'))
-		axios.post(`/profile/img/upload_img/${user.id}`, formData, {
+		axios.post(`/profile/img/upload_img/${id}`, formData, {
 			headers: {
 				'Content-Type': 'multipart/form-data'
 			}
@@ -140,21 +120,21 @@ export default function Members() {
 
 	}
 
-	function OpenInput() {
-
-		$('#img_upload_input').click()
-		console.log('open')
-		//$('#image-preview1').show()
-	}
-
-	function OpenEditName() {
-
-		$('#name_lable').hide()
-		$('#edit_name').css('display', 'block')
-		$('#edit_name').val(userProfile.name)
-		$('#save_name_icon').css('display', 'block')
-		$('#close_name_icon').css('display', 'block')
-	}
+	/* 	function OpenInput() {
+	
+			$('#img_upload_input').click()
+			console.log('open')
+			//$('#image-preview1').show()
+		} */
+	/* 
+		function OpenEditName() {
+	
+			$('#name_lable').hide()
+			$('#edit_name').css('display', 'block')
+			$('#edit_name').val(userProfile.name)
+			$('#save_name_icon').css('display', 'block')
+			$('#close_name_icon').css('display', 'block')
+		} */
 
 	function SaveNewName() {
 		userProfile.name = $('#edit_name').val()
@@ -176,14 +156,14 @@ export default function Members() {
 		$('#save_name_icon').hide()
 		$('#close_name_icon').hide()
 	}
-
-	function OpenEditEmail() {
-		$('#email_lable').hide()
-		$('#edit_email').css('display', 'block')
-		$('#edit_email').val(user.email)
-		$('#save_email_icon').css('display', 'block')
-		$('#close_email_icon').css('display', 'block')
-	}
+	/* 
+		function OpenEditEmail() {
+			$('#email_lable').hide()
+			$('#edit_email').css('display', 'block')
+			$('#edit_email').val(user.email)
+			$('#save_email_icon').css('display', 'block')
+			$('#close_email_icon').css('display', 'block')
+		} */
 
 	function SaveNewEmail() {
 		userProfile.email = $('#edit_email').val()
@@ -206,7 +186,7 @@ export default function Members() {
 		$('#close_email_icon').hide()
 	}
 
-	function OpenEditAge() {
+	/* function OpenEditAge() {
 		$('#age_lable').hide()
 		$('#birthdate_label').hide()
 		$('#edit_age').css('display', 'block')
@@ -214,7 +194,7 @@ export default function Members() {
 		$('#save_age_icon').css('display', 'block')
 		$('#close_age_icon').css('display', 'block')
 	}
-
+ */
 
 	function calcAge(birth) {
 		if (birth) {
@@ -252,37 +232,32 @@ export default function Members() {
 		$('#birthdate_label').show()
 	}
 
-	function OpenEditCountry() {
+	/* 	function OpenEditCountry() {
+			$('#Country_lable').hide()
+			$('#edit_Country').css('display', 'block')
+			$('#edit_Country').val(userProfile.country)
+			$('#save_country_icon').css('display', 'block')
+			$('#close_country_icon').css('display', 'block')
+	
+		} */
 
-		$('#Country_lable').hide()
-		$('#edit_Country').css('display', 'block')
-		$('#edit_Country').val(userProfile.country.name)
-		$('#save_country_icon').css('display', 'block')
-		$('#close_country_icon').css('display', 'block')
+	function SaveNewCountry() {
 
-	}
-	function CloseCountryEdit() {
+		userProfile.country = $('#edit_Country').val()
+		//console.log(userProfile.birth)
+		//maybe add validation
+		axios.put(`profiles/profile/${user.id}`, userProfile).then(() => {
+			$('#Country_lable').text('Country: ' + userProfile.country)
+		})
+
+
 		$('#Country_lable').show()
 		$('#edit_Country').hide()
 		$('#save_country_icon').hide()
 		$('#close_country_icon').hide()
 	}
 
-
-	function onCountryChange(selectedCountry) {
-		userProfile.country = selectedCountry
-		//console.log(userProfile.birth)
-		//maybe add validation
-		countries_data().then((res) => {
-
-			//console.log(res[0].flag)
-			const my_country = res.filter((val) => val.name == userProfile.country.name)
-			$('#country_img').attr('src', my_country[0].flag)
-		})
-		axios.put(`profiles/profile/${user.id}`, userProfile).then(() => {
-			$('#Country_lable').text('Country: ' + userProfile.country.name)
-		})
-
+	function CloseCountryEdit() {
 		$('#Country_lable').show()
 		$('#edit_Country').hide()
 		$('#save_country_icon').hide()
@@ -291,18 +266,12 @@ export default function Members() {
 
 	function InsertDataToForm(user, others) {
 
-		countries_data().then((res) => {
-
-			//console.log(res[0].flag)
-			const my_country = res.filter((val) => val.name == user.country.name)
-			$('#country_img').attr('src', my_country[0].flag)
-		})
-
 		$('#name_lable').text(user.name)
 		$('#email_lable').text('Email: ' + user.email)
 		$('#birthdate_label').text('BirthDate: ' + new Date(user.birth).toLocaleDateString('he-IL', { timeZone: 'Asia/Jerusalem' }).replace(/\D/g, '/'))
 		$('#age_lable').text('Age: ' + String(calcAge(user.birth)))
 		$('#Country_lable').text('Country: ' + user.country.name)
+
 
 		//console.log(messages_list)
 		const friends = user.friends.map(friendId => {
@@ -396,25 +365,6 @@ export default function Members() {
 
 	}
 
-	function PlatfromChanged() {
-		SetShowPlatformEdit(!ShowPlatformEdit)
-		userProfile.platform = $('select[name=MyPlatformSelector] option').filter(':selected').val()
-
-		axios.put(`profiles/profile/${user.id}`, userProfile).then(() => {
-			SetMyPlatform(userProfile.platform)
-		})
-	}
-
-	function GameChanged() {
-		SetShowGameList(!ShowGameList)
-		userProfile.game = $('select[name=MyGameSelector] option').filter(':selected').val()
-		axios.put(`profiles/profile/${user.id}`, userProfile).then(() => {
-			SetMyGame(userProfile.game)
-		})
-
-	}
-
-
 	return (
 		<>
 
@@ -424,7 +374,7 @@ export default function Members() {
 						<div className="row mx-auto text-center">
 							<div className="col-md-3 my-4">
 
-								<UserAvatar userId={user.id} size="300px" circle />
+								<UserAvatar userId={id} size="300px" circle />
 								<input
 									type="file"
 									name="file"
@@ -436,9 +386,9 @@ export default function Members() {
 
 								/>
 								{/* <div id="img_preview_div" className="preview-images"></div> */}
-								<div className="cameraUpdate">
+								{/* 		<div className="cameraUpdate">
 									<AddAPhotoIcon id="add_profile_img_icon" data-tip="add" onClick={OpenInput} />
-								</div>
+								</div> */}
 
 
 							</div>
@@ -449,9 +399,9 @@ export default function Members() {
 									<div className="row">
 										{/* <FaEdit className="edit_icon float-left" data-tip="edit" onClick={OpenEditName} /> */}
 										<ReactTooltip />
-										<div data-tip="edit" onClick={OpenEditName}>
+										{/* 	<div data-tip="edit" onClick={OpenEditName}>
 											<i className="fas fa-edit mt-3 mx-1" />
-										</div>
+										</div> */}
 
 										<h1 id="name_lable">{userProfile?.name}</h1>
 										<input id="edit_name" className="hideInput" ></input>
@@ -462,9 +412,9 @@ export default function Members() {
 									</div>
 
 									<div className="row">
-										<div data-tip="edit" onClick={OpenEditEmail}>
+										{/* 		<div data-tip="edit" onClick={OpenEditEmail}>
 											<i className="fas fa-edit mt-1 mx-1"></i>
-										</div>
+										</div> */}
 										<h5 id="email_lable"></h5>
 										<input id="edit_email" className="hideInput"></input>
 										<FaSave id="save_email_icon" className="edit_icon hideIcon" data-tip="save"
@@ -474,10 +424,10 @@ export default function Members() {
 									</div>
 
 									<div className="row">
-										<div data-tip="edit" onClick={OpenEditAge}>
+										{/* 		<div data-tip="edit" onClick={OpenEditAge}>
 											<i className="fas fa-edit mt-1 mx-1"  ></i>
 										</div>
-
+ */}
 										<h5 id="birthdate_label"></h5>
 										<input type="date" id="edit_age" className="hideInput"></input>
 										<FaSave id="save_age_icon" className="edit_icon hideIcon" data-tip="save"
@@ -496,61 +446,33 @@ export default function Members() {
 
 
 									<div className="row">
-										<div data-tip="edit" onClick={OpenEditCountry}>
+										{/* 		<div data-tip="edit" onClick={OpenEditCountry}>
 											<i className="fas fa-edit mt-1 mx-1"></i>
-										</div>
+										</div> */}
 
 										<h5 id="Country_lable"></h5>
-										<div id="edit_Country">
-											<ReactCountryDropdown onSelect={onCountryChange} countryCode={user.country.code} />
-										</div>
-										<FaWindowClose id="close_country_icon" className="close_icon edit_icon hideIcon" data-tip="close"
+										<input id="edit_Country" className="hideInput"></input>
+										<FaSave id="save_country_icon" className="edit_icon hideIcon" data-tip="save"
+											onClick={SaveNewCountry} />
+										<FaWindowClose id="close_country_icon" className="edit_icon hideIcon" data-tip="close"
 											onClick={CloseCountryEdit} />
-
-									</div>
-									<div className="row">
-										<img id="country_img" />
 									</div>
 
 
 								</div>
 
-								<div className="my-5" >
-									<div className="info_card float-right mx-3 game_user">
-
-										<div data-tip="edit" onClick={GameChanged}>
-											<strong><i className="fas fa-basketball-ball"></i> Game:</strong>
-										</div>
-
-										<div>{MyGame}</div>
-										{ShowGameList ? <div>
-											<select name="MyGameSelector" className="form-control PlatformSelector">
-												{AllGamesList}
-											</select>
-										</div> : null}
+								<div className="my-5">
+									<div className="info_card float-right mx-3">
+										<strong><i className="fas fa-basketball-ball"></i> Game:</strong>
+										<div>info_card</div>
 									</div>
 
-									<div className="info_card float-right mx-3 platform_user"  >
-										<div data-tip="edit" onClick={PlatfromChanged}>
-											<strong><i className="fas fa-gamepad" ></i> Platform:</strong>
-
-										</div>
-
-										<div>{MyPlatform}</div>
-										{ShowPlatformEdit ? <div>
-											<select name="MyPlatformSelector" className="form-control PlatformSelector">
-												<option className="form-control" value={'Pc'} >Pc</option>
-												<option className="form-control" value={'Xbox'} >Xbox</option>
-												<option className="form-control" value={'Playstation'} >Playstation</option>
-												<option className="form-control" value={'Android'} >Android</option>
-												<option className="form-control" value={'Apple'} >Apple</option>
-												<option className="form-control" value={'linux'} >linux</option>
-												<option className="form-control" value={'Psp'} >Psp</option>
-											</select>
-										</div> : null}
+									<div className="info_card float-right mx-3">
+										<strong><i className="fas fa-gamepad"></i> Platform:</strong>
+										<div>info_card</div>
 									</div>
 
-									<div className="info_card float-right mx-3 ">
+									<div className="info_card float-right mx-3">
 										<strong><i className="fas fa-users"></i> Friends:</strong>
 										<div id="number_of_friends">{NumberOfFriends}</div>
 									</div>
@@ -573,9 +495,9 @@ export default function Members() {
 									<h3 className="float-left">Friends</h3>
 
 									<div className="float-right">
-										<FaUserFriends id="add_friend_icon"
+										{/* 	<FaUserFriends id="add_friend_icon"
 											data-tip="add / remove friend"
-											onClick={() => SetisOpen(true)} />
+											onClick={() => SetisOpen(true)} /> */}
 										<AllUsersModal
 											open={isOpen}
 											friendTo={(friend_id, action) => ActionFriendClicked(friend_id, action)}
@@ -591,9 +513,9 @@ export default function Members() {
 								<div id="FriendsComponent" className="row container" >
 									<ul className="list-group list-group-horizontal-md room-list" style={{ listStyleType: 'none' }}>
 										{Carouselitems.map((item, i) => <div key={i}>
-											<Link to={`/friend_profile/${item.id}`}>
+											<a href={`/friend_profile/${item.id}`}>
 												<RoomCard game={item.name} img={process.env.REACT_APP_SERVER_URL + '/api/profile/img/get_img/' + item.id} fallbackImg={'https://avatars.dicebear.com/api/bottts/' + item.id + '.svg'} />
-											</Link>
+											</a>
 										</div>)}
 
 										{/* <Carousel infiniteLoop useKeyboardArrows autoPlay>

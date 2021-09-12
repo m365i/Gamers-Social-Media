@@ -1,6 +1,16 @@
 
 var mongoose = require('mongoose')
 
+const CountrySchema = new mongoose.Schema({
+	capital: String,
+	code: String,
+	latlng: [{ type: Number }],
+	name: String,
+	region: String
+})
+
+
+
 const profileSchema = new mongoose.Schema({
 	userId: {
 		type: mongoose.Schema.Types.ObjectId,
@@ -9,7 +19,7 @@ const profileSchema = new mongoose.Schema({
 	},
 	name: String,
 	birth: Date,
-	country: String,
+	country: { type: CountrySchema },
 	status: String,
 	email: {
 		type: String,
@@ -20,7 +30,10 @@ const profileSchema = new mongoose.Schema({
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'User'
 		}
-	]
+	],
+	platform: String,
+	game: String,
+
 })
 
 module.exports = mongoose.model('Profile', profileSchema)
