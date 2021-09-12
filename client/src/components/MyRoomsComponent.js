@@ -85,7 +85,8 @@ export default function MyRoomsComponent(/*{ Profiles_RC,MyProfile_RC } */) {
     return (
         <div>
             <div className="container-md" id="my_rooms_comp_old">
-                <ul className="list-group list-group-horizontal-md room-list" style={{ listStyleType: 'none' }}>
+                <ul className="list-group list-group-horizontal-md room-list" 
+				style={{ listStyleType: 'none' }}>
 
                     {/* <label id="rooms_lable">My ROOMS</label> */}
 
