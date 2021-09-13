@@ -40,6 +40,7 @@ services:
       SMTP_EXIST: "true"
       SMTP_SERVER: smtp
       SMTP_PORT: 25
+      SMTP_SUPPORT_RECEIPT: no@replay
       SERVER_URL: http://localhost
       CLIENT_URL: http://localhost
       SESSION_SECRET: 32eyh392eyd89539deuq2doy3u298yd938r
