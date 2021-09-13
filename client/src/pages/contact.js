@@ -102,7 +102,7 @@ export default function Contact() {
 
 	if (success) {
 		return (
-			<SideViewFormLayout image={process.env.PUBLIC_URL + './images/photo-1504716325983-cb91edab7e7d.webp'}>
+			<SideViewFormLayout image={process.env.PUBLIC_URL + './images/contactbg.jpg'}>
 				<Typography component='h1' variant='h5' className={classes.title}>
 					Message Has Been Sent!
 				</Typography>
@@ -123,7 +123,7 @@ export default function Contact() {
 	}
 
 	return (
-		<SideViewFormLayout image={process.env.PUBLIC_URL + './images/photo-1504716325983-cb91edab7e7d.webp'}>
+		<SideViewFormLayout image={process.env.PUBLIC_URL + './images/contactbg.jpg'}>
 
 			<Typography component='h1' variant='h5' className={classes.title}>
 				Contact Us
